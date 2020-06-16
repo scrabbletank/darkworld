@@ -17,6 +17,7 @@ import { TownData } from './TownData';
 import { PlayerData } from './PlayerData';
 import { MoonlightData } from './MoonlightData';
 import { RegionRegistry } from './RegionRegistry';
+import { Building } from './Building';
 
 class TileData {
 
@@ -56,7 +57,7 @@ class TileData {
             in: this.isInvaded,
             ip: this.invasionPower,
             yld: this.yields,
-            bld: this.building,
+            bld: this.building === undefined ? "" : this.building.save(),
             def: this.defense,
             fcd: this.fightCooldown,
             x: this.x,
@@ -81,7 +82,7 @@ class TileData {
         tile.isInvaded = saveObj.in;
         tile.invasionPower = saveObj.ip;
         tile.yields = saveObj.yld;
-        tile.building = saveObj.bld;
+        tile.building = saveObj.bld === "" ? undefined : Building.loadFromFile(saveObj.bld);
         tile.defense = saveObj.def;
         tile.fightCooldown = saveObj.fcd;
         tile.x = saveObj.x;
@@ -129,19 +130,15 @@ class TileData {
     }
     incInvasionPower(baseline) {
         if (this.getInvasionMulti() < 5) {
-            var defense = baseline + this.defense;
-            var powerMulti = Math.max(0.1, 1 + (this.difficulty - defense) * 0.1);
+            var def = baseline + this.defense;
+            var powerMulti = Math.max(0.1, 1 + (this.difficulty - def) * 0.1);
             this.invasionPower += Statics.TIME_PER_DAY * powerMulti;
         }
     }
 
     //should be called after killing invasion monsters
     decreaseInvasionPower() {
-        this.invasionPower = this.invasionPower / Statics.SIGHTING_BATTLE_MULTI;
-        if (this.getInvasionMulti() <= 0) {
-            this.isInvaded = false;
-            this.invasionPower = 0;
-        }
+        this.invasionPower = Math.max(0, math.min(30000, this.invasionPower - (this.invasionPower / Statics.SIGHTING_BATTLE_MULTI)));
     }
 
     generateMonsters() {
@@ -190,7 +187,7 @@ export class Region {
         this.invasionCounter = 0;
         this.resourcesPerDay = [0, 0, 0, 0, 0, 0];
         // the town counts as a trade house for calculating bonuses
-        this.tradeHouseLocations = [[Math.floor(this.width / 2), this.height - 4]];
+        this.tradeHouseLocations = [{ x: Math.floor(this.width / 2), y: this.height - 4 }];
         this.tradeHouseBonus = 0;
         this.worldHeight = 350;
         this.type = regionType;
@@ -332,13 +329,14 @@ export class Region {
         var max = 0;
         var maxPos = [0, 0];
         for (var i = 0; i < this.height; i++) {
-            for (var t = 0; t < this.height; t++) {
+            for (var t = 0; t < this.width; t++) {
                 if (this.map[i][t].difficulty >= this.difficultyRange[1]) {
                     mysticGateSpots.push([i, t]);
                 }
                 if (this.map[i][t].difficulty > max) {
                     maxPos[0] = i;
                     maxPos[1] = t;
+                    max = this.map[i][t].difficulty;
                 }
             }
         }
@@ -382,6 +380,9 @@ export class Region {
         this.invasionCounter = 0;
         var tile = this.sightings[Common.randint(0, this.sightings.length)];
         this.map[tile[0]][tile[1]].invade();
+        if (this.map[tile[0]][tile[1]].building != undefined) {
+            this.destroyBuilding(tile[1], tile[0]);
+        }
         this.townData.currentPopulation = this.townData.currentPopulation * Statics.POP_MULTI_AFTER_INVASION;
         this.tilesExplored -= 1;
     }
@@ -393,7 +394,7 @@ export class Region {
         var invadeList = [];
         for (var y = 1; y < this.height - 1; y++) {
             for (var x = 1; x < this.width - 1; x++) {
-                if (this.map[y][x].explored === false) {
+                if (this.map[y][x].explored === false || this.map[y][x].name === "Town" || this.map[y][x].name === "Mystic Gate") {
                     continue;
                 }
                 var canInvade = false;
@@ -419,7 +420,7 @@ export class Region {
     }
 
     endSighting(x, y) {
-        this.sightings = this.sightings.filter(item => item[0] !== y && item[1] !== x);
+        this.sightings = this.sightings.filter(item => (item[0] === y && item[1] === x) === false);
         this.map[y][x].isInvaded = false;
         this.map[y][x].invasionPower = 0;
         this.invasionCounter = Math.max(0, this.invasionCounter - Statics.INVASION_REDUCTION_FROM_SIGHTING);
@@ -431,7 +432,7 @@ export class Region {
 
         //we start at 1 as we include the towns position for distance calculations while the town itself provides no bonus
         for (var i = 1; i < this.tradeHouseLocations.length; i++) {
-            var closest = Common.nearestPointInList(this.tradeHouseLocations[0], this.tradeHouseLocations[1], this.tradeHouseLocations, true);
+            var closest = Common.nearestPointInList(this.tradeHouseLocations[i].x, this.tradeHouseLocations[i].y, this.tradeHouseLocations, true);
             this.tradeHouseBonus += Math.max(5, Math.min(20, (closest[1] / Statics.TRADE_HOUSE_MAX_DISTANCE) * 20)) * tier / 100;
         }
         this.townData.economyMulti += this.tradeHouseBonus;
@@ -450,24 +451,25 @@ export class Region {
         };
         var moonData = new MoonlightData();
         tile.defense += Statics.BUILDING_BASE_DEFENSE + moonData.moonperks.hardenedvillagers.level;
+        var prodBonus = 1 + (tile.defense * moonData.moonperks.moonlightworkers.level * 0.01);
         switch (tile.building.name) {
             case "Lumberyard":
-                this.resourcesPerDay[Statics.RESOURCE_WOOD] += tile.building.tier * yieldHelper(Statics.RESOURCE_WOOD, tile.yields);
+                this.resourcesPerDay[Statics.RESOURCE_WOOD] += tile.building.tier * yieldHelper(Statics.RESOURCE_WOOD, tile.yields) * prodBonus;
                 break;
             case "Hunter's Lodge":
-                this.resourcesPerDay[Statics.RESOURCE_LEATHER] += tile.building.tier * yieldHelper(Statics.RESOURCE_LEATHER, tile.yields);
+                this.resourcesPerDay[Statics.RESOURCE_LEATHER] += tile.building.tier * yieldHelper(Statics.RESOURCE_LEATHER, tile.yields) * prodBonus;
                 break;
             case "Mine":
-                this.resourcesPerDay[Statics.RESOURCE_METAL] += tile.building.tier * yieldHelper(Statics.RESOURCE_METAL, tile.yields);
+                this.resourcesPerDay[Statics.RESOURCE_METAL] += tile.building.tier * yieldHelper(Statics.RESOURCE_METAL, tile.yields) * prodBonus;
                 break;
             case "Herbalist's Hut":
-                this.resourcesPerDay[Statics.RESOURCE_FIBER] += tile.building.tier * yieldHelper(Statics.RESOURCE_FIBER, tile.yields);
+                this.resourcesPerDay[Statics.RESOURCE_FIBER] += tile.building.tier * yieldHelper(Statics.RESOURCE_FIBER, tile.yields) * prodBonus;
                 break;
             case "Quarry":
-                this.resourcesPerDay[Statics.RESOURCE_STONE] += tile.building.tier * yieldHelper(Statics.RESOURCE_STONE, tile.yields);
+                this.resourcesPerDay[Statics.RESOURCE_STONE] += tile.building.tier * yieldHelper(Statics.RESOURCE_STONE, tile.yields) * prodBonus;
                 break;
             case "Crystal Loom":
-                this.resourcesPerDay[Statics.RESOURCE_CRYSTAL] += tile.building.tier * yieldHelper(Statics.RESOURCE_CRYSTAL, tile.yields);
+                this.resourcesPerDay[Statics.RESOURCE_CRYSTAL] += tile.building.tier * yieldHelper(Statics.RESOURCE_CRYSTAL, tile.yields) * prodBonus;
                 break;
             case "Town House":
                 this.townData.increaseMaxPop(5 * tile.building.tier);
@@ -482,7 +484,7 @@ export class Region {
                 }
                 break;
             case "Trade House":
-                this.tradeHouseLocations.push([tile.x, tile.y]);
+                this.tradeHouseLocations.push({ x: tile.x, y: tile.y });
                 this._calculateTradeHouseBonus(tile.building.tier);
                 break;
             case "Tavern":
@@ -505,7 +507,7 @@ export class Region {
         var moonData = new MoonlightData();
         tile.defense -= Statics.BUILDING_BASE_DEFENSE + moonData.moonperks.hardenedvillagers.level;
         var prodBonus = 1 + (tile.defense * moonData.moonperks.moonlightworkers.level * 0.01);
-        switch (building.name) {
+        switch (tile.building.name) {
             case "Lumberyard":
                 this.resourcesPerDay[Statics.RESOURCE_WOOD] -= tile.building.tier * yieldHelper(Statics.RESOURCE_WOOD, tile.yields) * prodBonus;
                 break;
@@ -537,7 +539,7 @@ export class Region {
                 }
                 break;
             case "Town House":
-                this.tradeHouseLocations = this.tradeHouseLocations.filter(item => item[0] !== tile.x && item[1] !== tile.y);
+                this.tradeHouseLocations = this.tradeHouseLocations.filter(item => item.x !== tile.x && item.y !== tile.y);
                 this._calculateTradeHouseBonus();
                 break;
             case "Tavern":
@@ -545,6 +547,21 @@ export class Region {
                 this.townData.economyMulti -= (0.1 + moonData.moonperks.moonwine.level * 0.02) * tile.building.tier;
                 break;
         }
+    }
+
+    nextWeakestTile() {
+        var pos = [-1, -1];
+        var min = this.difficultyRange[1] * 2;
+        for (var y = 0; y < this.height; y++) {
+            for (var x = 0; x < this.width; x++) {
+                if (this.map[y][x].explored === false && this.map[y][x].revealed === true &&
+                    this.map[y][x].difficulty < min) {
+                        pos = [x, y];
+                        min = this.map[y][x].difficulty;
+                }
+            }
+        }
+        return pos;
     }
 
     placeBuilding(x, y, building) {
@@ -573,11 +590,11 @@ export class Region {
         var resource = [];
         var govBonus = 1 + player.talents.governance.level * 0.03;
         for (var i = 0; i < this.resourcesPerDay.length; i++) {
-            resource.push(this.resourcesPerDay[i] * this.townData.productionMulti * govBonus);
+            resource.push(Math.max(0, this.resourcesPerDay[i] * this.townData.productionMulti * govBonus));
         }
         player.addResource(resource, Math.floor(this.difficultyRange[0] / 20));
 
-        if (this.tilesExplored >= 10) {
+        if (this.tilesExplored >= 11) {
             this.sightingsDelay -= Statics.TIME_PER_DAY;
             if (this.sightingsDelay <= 0) {
                 this._addSighting();

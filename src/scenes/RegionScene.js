@@ -9,6 +9,7 @@ import { TileSelectWindow } from "../ui/TileSelectWindow";
 import { PlayerData } from "../data/PlayerData";
 import { RebirthDialog } from "../ui/RebirthDialog";
 import { MoonlightData } from "../data/MoonlightData";
+import { TextButton } from "../ui/TextButton";
 
 
 export class RegionScene extends SceneUIBase {
@@ -29,6 +30,8 @@ export class RegionScene extends SceneUIBase {
 
         this.tileSelectWindow = undefined;
         this.rebirthDialog = undefined;
+
+        this.autoExploreActive = false;
     }
 
     preload() {
@@ -139,18 +142,19 @@ export class RegionScene extends SceneUIBase {
     _tileActionHandler(action, blob) {
         switch (action) {
             case "explore":
-                this._exploreTile(blob.tile.x, blob.tile.y);
+                this._exploreTile(blob.tile.x, blob.tile.y, false);
                 break;
             case "build":
                 var player = new PlayerData();
                 var tier = Math.floor(this.region.difficultyRange[0] / 20);
                 if (Common.canCraft(blob.building.resourceCosts, player.resources[tier]) === true &&
-                blob.building.goldCost <= player.gold) {
+                    blob.building.goldCost <= player.gold) {
                     player.spendResource(blob.building.resourceCosts, tier);
                     player.addGold(-blob.building.goldCost);
                     this.region.placeBuilding(blob.tile.x, blob.tile.y, blob.building);
                     blob.tile.building = blob.building;
                     this._updateBuildings();
+                    this.scene.get("TownScene")._updateStatus();
                 }
                 break;
             case "upgrade":
@@ -161,6 +165,9 @@ export class RegionScene extends SceneUIBase {
                     player.spendResource(blob.tile.building.resourceCosts, tier);
                     player.addGold(-blob.tile.building.goldCost);
                     this.region.upgradeBuilding(blob.tile.x, blob.tile.y);
+                    this.tileElements[blob.tile.y][blob.tile.x].building.setTexture(blob.tile.building.texture.sprite,
+                        blob.tile.building.texture.tile + 8 * (blob.tile.building.tier - 1));
+                    this.scene.get("TownScene")._updateStatus();
                 }
                 break;
         }
@@ -172,10 +179,8 @@ export class RegionScene extends SceneUIBase {
         this.rebirthDialog = undefined;
 
         var player = new PlayerData();
-        var worldData = new WorldData();
         var moonData = new MoonlightData();
-        var moonlightEarned = MoonlightData.getMoonlightEarned(player.statLevel,
-            Math.floor(worldData.getCurrentRegion().difficultyRange[1] / 20));
+        var moonlightEarned = player.earnableMoonlight(Math.floor(this.region.difficultyRange[1] / 20));
 
         moonData.moonlight += moonlightEarned;
 
@@ -188,16 +193,46 @@ export class RegionScene extends SceneUIBase {
         this.rebirthDialog = undefined;
     }
 
-    _exploreTile(x, y) {
+    _exploreTile(x, y, fromAutoExplore) {
         if (this.progression.unlocks.combatTab === false) {
             this.progression.registerFeatureUnlocked(Statics.UNLOCK_COMBAT_TAB,
                 "Well this isn't so bad, walking aimlessly through this fog covered wilderness.\n" +
                 "I wonder if I'll meet a new friend.\n");
         }
         for (var i = 0; i < this.tileClickHandlers.length; i++) {
-            this.tileClickHandlers[i](x, y);
+            this.tileClickHandlers[i](x, y, fromAutoExplore);
         }
         this._updateColors();
+    }
+
+    _onExploredCallback(tile) {
+        if (tile.y === 0) {
+            //setup new world types
+            if (this.progression.unlocks.worldTab === false) {
+                this.progression.registerFeatureUnlocked(Statics.UNLOCK_WORLD_TAB,
+                    "You did it, you've reached the edge of the world. This is all there is...\n\n" +
+                    "Oh wait, it looks like there's a trail over there leading to a new region! there's " +
+                    "a whole world out there. I was wondering what that last tab was going to be.");
+            }
+
+            if (WorldData.instance.regionList.length - 1 === WorldData.instance.currentRegion &&
+                WorldData.instance.nextRegions.length === 0) {
+                WorldData.instance.generateRegionChoices();
+                this.scene.get("WorldScene")._refreshRegions();
+            }
+        }
+        if (tile.explored === false) {
+            this.region.exploreTile(tile.x, tile.y);
+            this._updateColors();
+            this.progression.registerTileExplored();
+
+            if (this.autoExploreActive === true) {
+                var pos = this.region.nextWeakestTile();
+                if (pos[0] !== -1) {
+                    this._exploreTile(pos[0], pos[1], true);
+                }
+            }
+        }
     }
 
     _updateColors() {
@@ -219,12 +254,13 @@ export class RegionScene extends SceneUIBase {
     _updateBuildings() {
         for (var i = 0; i < this.region.height; i++) {
             for (var t = 0; t < this.region.width; t++) {
-                if (this.tileElements[i][t].building === undefined && this.region.map[i][t].building !== undefined) {
+                var bld = this.region.map[i][t].building;
+                if (this.tileElements[i][t].building === undefined && bld !== undefined) {
 
                     this.tileElements[i][t].building = this.add.image(this.relativeX(t * this.WIDTH + this.offsetX + 20),
-                        this.relativeY(i * this.HEIGHT + this.offsetY + 20), this.region.map[i][t].building.texture.sprite,
-                        this.region.map[i][t].building.texture.tile).setOrigin(0.5);
-                } else if (this.tileElements[i][t].building !== undefined && this.region.map[i][t].building === undefined) {
+                        this.relativeY(i * this.HEIGHT + this.offsetY + 20), bld.texture.sprite,
+                        bld.texture.tile + 8 * (bld.tier - 1)).setOrigin(0.5);
+                } else if (this.tileElements[i][t].building !== undefined && bld === undefined) {
                     this.tileElements[i][t].building.destroy();
                     this.tileElements[i][t].building = undefined;
                 }
@@ -256,9 +292,27 @@ export class RegionScene extends SceneUIBase {
             this.tileElements.push(row);
         }
         this._updateColors();
+        var invasionPercent = this.region.invasionCounter / Statics.INVASION_THRESHOLD;
+        this.invasionLabel.setText("Invasion\n" + Math.floor(invasionPercent * 100) + "%");
+        this.invasionLabel.setVisible(this.progression.unlocks.buildings);
+        this.autoExploreLabel.setVisible(this.progression.persistentUnlocks.autoExplore);
+        this.autoExploreButton.setVisible(this.progression.persistentUnlocks.autoExplore);
+    }
+
+    _toggleAutoExplore() {
+        this.autoExploreActive = !this.autoExploreActive;
+        if (this.autoExploreActive === true) {
+            this.autoExploreButton.setText("ON");
+            this.autoExploreButton.setTextColor(Phaser.Display.Color.GetColor(255, 255, 255));
+        } else {
+            this.autoExploreButton.setText("OFF");
+            this.autoExploreButton.setTextColor(Phaser.Display.Color.GetColor(175, 0, 140));
+        }
     }
 
     create() {
+        //add handlers
+        this.scene.get("CombatScene").registerEvent("onExplore", (a) => { this._onExploredCallback(a); });
         //background
         this.add.rectangle(this.relativeX(0), this.relativeY(0), 900, 700, 0x000000)
             .setOrigin(0)
@@ -266,6 +320,16 @@ export class RegionScene extends SceneUIBase {
 
         this.invasionLabel = this.add.bitmapText(this.relativeX(740), this.relativeY(90), "courier20", "Invasion", 20, 1);
         this.invasionLabel.setVisible(this.progression.unlocks.buildings);
+        var invasionPercent = this.region.invasionCounter / Statics.INVASION_THRESHOLD;
+        this.invasionLabel.setTint(Phaser.Display.Color.GetColor(40 + invasionPercent * 215, 40 + invasionPercent * 215, 40 + invasionPercent * 215));
+
+        this.autoExploreLabel = this.add.bitmapText(this.relativeX(700), this.relativeY(130), "courier20", "Auto Explore:");
+        this.autoExploreButton = new TextButton(this, this.relativeX(835), this.relativeY(130), 40, 20, "OFF")
+            .onClickHandler(() => { this._toggleAutoExplore() });
+        this.autoExploreButton.setTextColor(Phaser.Display.Color.GetColor(175, 0, 140));
+
+        this.autoExploreLabel.setVisible(this.progression.persistentUnlocks.autoExplore);
+        this.autoExploreButton.setVisible(this.progression.persistentUnlocks.autoExplore);
 
         this.floatingText = undefined;
 
@@ -286,6 +350,7 @@ export class RegionScene extends SceneUIBase {
         }
         this._updateColors();
         this._updateBuildings();
+
 
         this.progression.addOnUnlockHandler((a, b, c) => { this._handleProgressionEvent(a, b, c) });
     }

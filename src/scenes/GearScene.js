@@ -153,10 +153,15 @@ export class GearScene extends SceneUIBase {
         this._setupGearDisplays();
     }
     _onUpgradeHandler(gear) {
-        if (Common.canCraft(gear.costs, this.player.resources[Math.max(0, gear.tier - 1)]) === false) {
+        var craftCostMulti = gear.tier <= 0 ? 1 : this.player.craftingCosts[gear.tier - 1];
+        var res = [];
+        for (var i = 0; i < gear.costs.length; i++) {
+            res.push(gear.costs[i] * craftCostMulti);
+        }
+        if (Common.canCraft(res, this.player.resources[Math.max(0, gear.tier - 1)]) === false) {
             return;
         }
-        this.player.spendResource(gear.costs, Math.max(0, gear.tier - 1));
+        this.player.spendResource(res, Math.max(0, gear.tier - 1));
         if (this._isEquipedItem(gear)) {
             this.player.unequip(gear.slotType);
             gear.bringToLevel(gear.level + 1);
@@ -191,7 +196,7 @@ export class GearScene extends SceneUIBase {
         }
         this.craftDisplays = [];
         for (var i = this.page * 6; i < Math.min(this.gearList.length, this.page * 6 + 6); i++) {
-            var x = this.relativeX(340 + i % 2 * 280);
+            var x = this.relativeX(320 + i % 2 * 290);
             var y = this.relativeY(40 + Math.floor((i - this.page * 6) / 2) * 215);
             this.craftDisplays.push(new GearCraftDisplay(this, x, y, this.gearList[i])
                 .registerEvents("onEquip", (gear) => { this._onEquipHandler(gear); })

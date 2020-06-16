@@ -110,6 +110,7 @@ export class CreatureBlock {
     }
     CritDamage() {
         var ret = this.stats.critDamage + this.statBonuses.critDamage + this.Accuracy() * Statics.CRITDMG_PER_ACCURACY;
+        ret = Math.pow(ret, Statics.CRITDMG_DIMINISHING_POWER);
         return Math.floor(ret * 100) / 100;
     }
     DamageMin() {
@@ -158,7 +159,7 @@ export class CreatureBlock {
         return dmg;
     }
     rollDamage() {
-        return Common.randint(this.DamageMin(), this.DamageMax());
+        return Common.randint(this.DamageMin(), this.DamageMax() + 1);
     }
     tickRegen(delta, inCombat = true) {
         var oldVal = this.currentHealth;
@@ -239,11 +240,7 @@ export class CreatureBlock {
 
         this.currentHealth = this.MaxHealth();
         this.name = level < 1 ? "Weak " + name : name;
-        if (rLvl < 0) {
-            this.xpReward = shadeBase * 0.75;
-        } else {
-            this.xpReward = shadeBase + (shadeBase / 2) * rLvl;
-        }
+        this.xpReward = shadeBase + (shadeBase / 4) * rLvl;
         this.drops = rewards;
         this.icon = icon;
     }

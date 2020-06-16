@@ -27,12 +27,20 @@ export class ProgressionStore {
                         "You think you saw a town in the distance towards the north, but you could be seeing things."
                 },
                 {
-                    count: 10,
+                    count: 5,
                     text: "You've seen a lot of what this world has to offer by now, and most of it wants " +
                         "to kill you. The people in the town seem nice though, and many of them have been wanting " +
                         "some way to help out. With the lands sort of safe to walk again they can get back to working.\n\n" +
                         "The only problem is they don't have anything to build with so they want you to bring them some " +
                         "from the monsters you've been killing."
+                },
+                {
+                    count: 10,
+                    text: "Your surprised at how easy this has been going. Sure, every day is a new battle for your life " +
+                        "against horrible shadow monsters, but the tile's you've cleared seem way more vibrant and full of life.\n\n" +
+                        "Some of the townsfolk have been worried that the mists will return but the odds of that happening have " +
+                        "got to be astronomically low. Just to get them off your back you told them to give you some kind of " +
+                        "alert on the Region tab if something goes wrong. Hah! Like that will ever happen."
                 },
                 {
                     count: 30,
@@ -111,19 +119,19 @@ export class ProgressionStore {
                         "but at least you found one use for it."
                 },
                 {
-                    count: 10,
+                    count: 25,
                     text: "You're not entirely sure what this shade is doing, but boy do you feel strong!"
                 },
                 {
-                    count: 25,
+                    count: 50,
                     text: "You've been infusing a lot of shade lately, is there a limit to how much your body can take?"
                 },
                 {
-                    count: 50,
-                    text: "doesn't seem like it. At least 50 isn't the limit."
+                    count: 100,
+                    text: "doesn't seem like it. At least 100 isn't the limit."
                 },
                 {
-                    count: 100,
+                    count: 300,
                     text: "I've lost count. By all measures my abilities shouldn't be humanly possible, yet I'm still finding " +
                         "monsters stronger than me."
                 }
@@ -164,6 +172,21 @@ export class ProgressionStore {
                 deaths: 0
             };
 
+            this.persistentUnlocks = {
+                challenges: false,
+                autoExplore: false
+            }
+
+            this.totalCounts = {
+                tilesExplored: 0,
+                monsterKills: 0,
+                shadeGained: 0,
+                resourcesGained: 0,
+                statPointsGained: 0,
+                deaths: 0,
+                timesGated: 0
+            }
+
             this.onUnlockHandlers = [];
             ProgressionStore.instance = this;
         }
@@ -202,6 +225,9 @@ export class ProgressionStore {
             statPointsGained: 0,
             deaths: 0
         };
+
+        this.totalCounts.timesGated += 1;
+        this.persistentUnlocks.autoExplore = true;
     }
 
     _onUnlock(type, count, text) {
@@ -216,6 +242,7 @@ export class ProgressionStore {
 
     registerTileExplored() {
         this.counts.tilesExplored += 1;
+        this.totalCounts.tilesExplored += 1;
         for (var i = this.exploresUnlocked; i < this.exploreUnlocks.length; i++) {
             if (this.exploreUnlocks[i].count <= this.counts.tilesExplored) {
                 this._onUnlock(Statics.UNLOCK_EXPLORE, this.exploreUnlocks[i].count, this.exploreUnlocks[i].text);
@@ -225,6 +252,7 @@ export class ProgressionStore {
     }
     registerMonsterKill() {
         this.counts.monsterKills += 1;
+        this.totalCounts.monsterKills += 1;
         for (var i = this.killsUnlocked; i < this.killUnlocks.length; i++) {
             if (this.killUnlocks[i].count <= this.counts.monsterKills) {
                 this._onUnlock(Statics.UNLOCK_KILL, this.killUnlocks[i].count, this.killUnlocks[i].text);
@@ -234,6 +262,7 @@ export class ProgressionStore {
     }
     registerShadeGain(shade) {
         this.counts.shadeGained += shade;
+        this.totalCounts.shadeGained += shade;
         for (var i = this.shadesUnlocked; i < this.shadeUnlocks.length; i++) {
             if (this.shadeUnlocks[i].count <= this.counts.shadeGained) {
                 this._onUnlock(Statics.UNLOCK_SHADE, this.shadeUnlocks[i].count, this.shadeUnlocks[i].text);
@@ -243,6 +272,7 @@ export class ProgressionStore {
     }
     registerResourceGain(resourceList) {
         this.counts.resourcesGained += Common.sumList(resourceList);
+        this.totalCounts.resourcesGained += Common.sumList(resourceList);
         for (var i = this.resourceUnlocked; i < this.resourceUnlocks.length; i++) {
             if (this.resourceUnlocks[i].count <= this.counts.resourcesGained) {
                 this._onUnlock(Statics.UNLOCK_RESOURCE, this.resourceUnlocks[i].count, this.resourceUnlocks[i].text);
@@ -252,6 +282,7 @@ export class ProgressionStore {
     }
     registerStatPointGain(amount) {
         this.counts.statPointsGained += amount;
+        this.totalCounts.statPointsGained += amount;
         for (var i = this.statPointUnlocked; i < this.statPointUnlocks.length; i++) {
             if (this.statPointUnlocks[i].count <= this.counts.statPointsGained) {
                 this._onUnlock(Statics.UNLOCK_STATPOINT, this.statPointUnlocks[i].count, this.statPointUnlocks[i].text);
@@ -261,6 +292,7 @@ export class ProgressionStore {
     }
     registerDeath(amount) {
         this.counts.deaths += amount;
+        this.totalCounts.deaths += amount;
         for (var i = this.deathUnlocked; i < this.deathUnlocks.length; i++) {
             if (this.deathUnlocks[i].count <= this.counts.deaths) {
                 this._onUnlock(Statics.UNLOCK_DEATH, this.deathUnlocks[i].count, this.deathUnlocks[i].text);
@@ -301,6 +333,9 @@ export class ProgressionStore {
             case Statics.UNLOCK_MOTES_UI:
                 this.unlocks.motes = true;
                 break;
+            case Statics.UNLOCK_WORLD_TAB:
+                this.unlocks.worldTab = true;
+                break;
         }
 
         this._onUnlock(feature, 0, text);
@@ -315,7 +350,9 @@ export class ProgressionStore {
             run: this.resourceUnlocked,
             stun: this.statPointUnlocked,
             dun: this.deathUnlocked,
-            count: this.counts
+            count: this.counts,
+            tcount: this.totalCounts,
+            pun: this.persistentUnlocks
         }
 
         return saveObj;
@@ -330,5 +367,7 @@ export class ProgressionStore {
         this.statPointUnlocked = saveObj.stun;
         this.deathUnlocked = saveObj.dun;
         this.counts = saveObj.count;
+        this.totalCounts = saveObj.tcount;
+        this.persistentUnlocks = saveObj.pun;
     }
 }
