@@ -5,12 +5,12 @@ const path = require('path');
 
 module.exports = {
     
-    externals: {
-      phaser: {
-        root: "phaser",
-        commonjs2: "phaser",
-      },
-    },
+    // externals: {
+    //   phaser: {
+    //     root: "phaser",
+    //     commonjs2: "phaser",
+    //   },
+    // },
     entry: './src/index.js',
 
     output: {

@@ -18,7 +18,9 @@ export class Common {
 
     static numberString(x) {
         var ret = new Intl.NumberFormat('en-US').format(x);
-        if (ret.length >= 12) {
+        if (ret.length >= 16) {
+            ret = ret.substr(0, ret.length - 12) + "B";
+        } else if (ret.length >= 12) {
             ret = ret.substr(0, ret.length - 8) + "M";
         } else if (ret.length >= 9) {
             ret = ret.substr(0, ret.length - 4) + "K";
@@ -163,5 +165,16 @@ export class Common {
             a.r + (b.r - a.r) * lerp,
             a.g + (b.g - a.g) * lerp,
             a.b + (b.b - a.b) * lerp);
+    }
+
+    static yieldHelper(type, yields) {
+        var amount = 0;
+        for (var i = 0; i < yields.length; i++) {
+            if (yields[i].type === type) {
+                amount = yields[i].rate;
+                break;
+            }
+        }
+        return amount;
     }
 }
