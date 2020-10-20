@@ -27,6 +27,7 @@ export class CombatScene extends SceneUIBase {
         this.onKillHandlers = [];
         this.onExploreHandlers = [];
         this.target = 0;
+        this.regionTier = 0;
 
         this.playerHitAnim = undefined;
         this.monsterHitAnim = [undefined, undefined, undefined];
@@ -119,7 +120,7 @@ export class CombatScene extends SceneUIBase {
     }
     _onExplore(tile) {
         for (var i = 0; i < this.onExploreHandlers.length; i++) {
-            this.onExploreHandlers[i](tile);
+            this.onExploreHandlers[i](tile, this.regionTier);
         }
     }
     _hideEnemyDisplays() {
@@ -184,6 +185,7 @@ export class CombatScene extends SceneUIBase {
             this.restButton.setVisible(false);
         }
         this.playerDisplay.initWithCreature(this.player.statBlock);
+        this.regionTier = WorldData.instance.getCurrentRegion().regionLevel;
     }
 
     rebirth() {
@@ -326,7 +328,7 @@ export class CombatScene extends SceneUIBase {
                 var motes = 0;
                 for (var i = 0; i < this.monsters.length; i++) {
                     gold += 1 + Math.floor(Math.max(1, this.monsters[i].level) / 5);
-                    shade += this.monsters[i].xpReward * 50;
+                    shade += this.monsters[i].xpReward;
                     motes += this.monsters[i].motes;
                     // calculating bonus drops here
                     var lvl = this.player.talents.bounty.level;
@@ -334,7 +336,7 @@ export class CombatScene extends SceneUIBase {
                     for (var t = 0; t < numRewards; t++) {
                         var idx = Common.randint(0, this.monsters[i].drops.length);
                         var dropMulti = Math.max(1, this.monsters[i].level - Math.max(0, Math.min(8, Math.floor(this.monsters[i].level / 20)) * 20));
-                        rewards[this.monsters[i].drops[idx].type] += Math.max(0, this.monsters[i].drops[idx].amount * dropMulti * 50);
+                        rewards[this.monsters[i].drops[idx].type] += Math.max(0, this.monsters[i].drops[idx].amount * dropMulti);
                     }
                 }
                 this.player.statBlock.encounterCounter -= 1;
