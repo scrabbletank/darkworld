@@ -209,7 +209,7 @@ export class ProgressionStore {
             exploreTab: false,
             combatTab: false,
             townTab: false,
-            talentsTab: MoonlightData.instance.challenges.talent.completions > 0,
+            talentsTab: MoonlightData.getInstance().challenges.talent.completions > 0,
             worldTab: false,
             // Mechanics
             infuseUI: false,

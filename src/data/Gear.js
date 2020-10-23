@@ -1,3 +1,6 @@
+import { MoonlightData } from './MoonlightData';
+import { Statics } from './Statics';
+
 export class Gear {
     constructor(name, tier, slotType, stats, statsLvl, costs, costsLvl) {
         // this.statBonuses = {
@@ -22,6 +25,7 @@ export class Gear {
         this.slotType = slotType;
         this.name = name;
         this.statBonuses = stats;
+        this._totalBonuses = stats;
         this.statsPerLevel = statsLvl;
         this.level = 0;
         this.costs = costs;
@@ -43,7 +47,31 @@ export class Gear {
             }
         }
         this.level = level;
+        this._calculateStats();
     }
+
+    getMotePower() {
+        var softCap = MoonlightData.getInstance().getMoteSoftCap();
+        return (Math.min(softCap, this.motesFused) +
+            Math.pow(Math.max(0, this.motesFused - softCap), Statics.MOTE_SOFT_CAP_POWER)) * Statics.MOTE_BONUS
+    }
+
+    _calculateStats() {
+        this._totalBonuses = {};
+        var motePower = 1 + this.getMotePower();
+        for (const prop in this.statBonuses) {
+            if (this.statBonuses[prop] !== 0) {
+                this._totalBonuses[prop] = this.statBonuses[prop] > 0 ? this.statBonuses[prop] * motePower : this.statBonuses[prop];
+            }
+        }
+    }
+
+    fuseMotes(motes) {
+        this.motesFused += motes;
+        this._calculateStats();
+    }
+
+    getStatBonuses() { return this._totalBonuses; }
 
     save() {
         var saveObj = {
@@ -55,7 +83,7 @@ export class Gear {
     }
 
     load(saveObj, ver) {
-        this.bringToLevel(saveObj.lv);
         this.motesFused = saveObj.mote;
+        this.bringToLevel(saveObj.lv);
     }
 }

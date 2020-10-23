@@ -11,6 +11,7 @@ import { MoonlightData } from "../data/MoonlightData";
 import { TextButton } from "../ui/TextButton";
 import { DynamicSettings } from "../data/DynamicSettings";
 
+var toPhaserColor = (clr) => { return Phaser.Display.Color.GetColor(clr[0], clr[1], clr[2]); };
 
 export class RegionScene extends SceneUIBase {
 
@@ -76,8 +77,8 @@ export class RegionScene extends SceneUIBase {
     }
 
     _setupTile(x, y) {
-        var clr = this.region.map[y][x].color;
-        var border = this.region.map[y][x].borderColor;
+        var clr = toPhaserColor(this.region.map[y][x].color);
+        var border = toPhaserColor(this.region.map[y][x].borderColor);
         if (this.region.map[y][x].revealed === false) {
             clr = Phaser.Display.Color.GetColor(0, 0, 0);
             border = Phaser.Display.Color.GetColor(40, 80, 40);
@@ -86,7 +87,7 @@ export class RegionScene extends SceneUIBase {
         }
         var rect = this.add.rectangle(this.relativeX((x + 0.5) * this.WIDTH + this.offsetX),
             this.relativeY((y + 0.5) * this.HEIGHT + this.offsetY), this.WIDTH - 1, this.HEIGHT - 1, clr);
-        rect.strokeColor = Phaser.Display.Color.GetColor(40, 80, 40);
+        rect.strokeColor = border;
         rect.isStroked = true;
         rect.lineWidth = 1.5;
         rect.setInteractive({ useHandCursor: true })
@@ -95,7 +96,7 @@ export class RegionScene extends SceneUIBase {
             .on('pointerout', () => { this._disableTooltip() });
 
         var bld = undefined;
-        if (this.region.map[y][x].building !== undefined) {
+        if (this.region.map[y][x].building !== undefined && this.region.map[y][x].revealed === true) {
             var texture = this._getBuildingImage(x, y);
             bld = this.add.image(this.relativeX((x + 0.5) * this.WIDTH + this.offsetX),
                 this.relativeY((y + 0.5) * this.HEIGHT + this.offsetY), texture.sprite, texture.tile);
@@ -130,9 +131,9 @@ export class RegionScene extends SceneUIBase {
 
         var xAdj = this.relativeX(x * this.WIDTH + this.offsetX);
         xAdj += xAdj + 190 > 1100 ? -150 : 0;
-        var yAdj = this.relativeY(y * this.HEIGHT + this.offsetY - 75);
+        var yAdj = this.relativeY(y * this.HEIGHT + this.offsetY - 82);
         yAdj += yAdj < 100 ? 115 : 0;
-        this.floatingText = new FloatingTooltip(this, txt, xAdj, yAdj, 190, 75);
+        this.floatingText = new FloatingTooltip(this, txt, xAdj, yAdj, 190, 82);
     }
     _disableTooltip() {
         this.floatingText.destroy();
@@ -226,27 +227,27 @@ export class RegionScene extends SceneUIBase {
         this.rebirthDialog.destroy();
         this.rebirthDialog = undefined;
 
-        var moonlightEarned = PlayerData.instance.earnableMoonlight(this.region.regionLevel + 1) *
-            (1 + 0.1 * MoonlightData.instance.challenges.time.completions);
-        MoonlightData.instance.moonlight += moonlightEarned;
+        var moonlightEarned = PlayerData.getInstance().earnableMoonlight(this.region.regionLevel + 1) *
+            (1 + 0.1 * MoonlightData.getInstance().challenges.time.completions);
+        MoonlightData.getInstance().moonlight += moonlightEarned;
 
         if (this.region.regionLevel >= 1) {
             ProgressionStore.instance.persistentUnlocks.challenge = true;
         }
         if (this.region.regionLevel >= 2) {
-            MoonlightData.instance.challenges.buildings.unlocked = true;
-            MoonlightData.instance.challenges.talent.unlocked = true;
+            MoonlightData.getInstance().challenges.buildings.unlocked = true;
+            MoonlightData.getInstance().challenges.talent.unlocked = true;
         }
 
         //handle challenge completion here
-        if (DynamicSettings.instance.maxRunTime !== -1 &&
-            WorldData.instance.time.time - WorldData.instance.timeAtRunStart < DynamicSettings.instance.maxRunTime) {
-            var challenge = MoonlightData.instance.getChallengeFromName(DynamicSettings.instance.challengeName);
+        if (DynamicSettings.getInstance().maxRunTime !== -1 &&
+            WorldData.getInstance().time.time - WorldData.getInstance().timeAtRunStart < DynamicSettings.getInstance().maxRunTime) {
+            var challenge = MoonlightData.getInstance().getChallengeFromName(DynamicSettings.getInstance().challengeName);
             switch (challenge.name) {
                 case "A Matter of Years":
                     if (challenge.completions == 0) {
-                        MoonlightData.instance.challenges.forge.unlocked = true;
-                        MoonlightData.instance.challenges.explore.unlocked = true;
+                        MoonlightData.getInstance().challenges.forge.unlocked = true;
+                        MoonlightData.getInstance().challenges.explore.unlocked = true;
                     }
             }
             if (challenge.completions < challenge.maxCompletions) {
@@ -311,17 +312,14 @@ export class RegionScene extends SceneUIBase {
     }
 
     _updateTile(tile) {
-        var clr = tile.color;
-        var border = tile.borderColor;
+        var clr = toPhaserColor(tile.color);
         if (tile.revealed === false) {
             clr = Phaser.Display.Color.GetColor(0, 0, 0);
-            border = Phaser.Display.Color.GetColor(40, 80, 40);
         } else if (tile.explored === false && tile.revealed === true) {
             clr = Common.colorLerp(clr, Phaser.Display.Color.GetColor(0, 0, 0), 0.65);
         }
         this.tileElements[tile.y][tile.x].rect.fillColor = clr;
-        // this.tileElements[tile.y][tile.x].rect.strokeColor = border;
-        if (tile.building !== undefined) {
+        if (tile.building !== undefined && tile.revealed === true) {
             this.updateBuildings = true;
             var texture = this._getBuildingImage(tile.x, tile.y);
             if (this.tileElements[tile.y][tile.x].building !== undefined) {

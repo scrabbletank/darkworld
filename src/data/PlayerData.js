@@ -28,8 +28,8 @@ export class PlayerData {
             this.gold = 0;
             this.motes = 0;
             this.challengeExploreMulti = 1;
-            if (MoonlightData.instance.challenges.explore.completions > 0) {
-                this.challengeExploreMulti = 1.25 + (MoonlightData.instance.challenges.explore.completions * 0.1);
+            if (MoonlightData.getInstance().challenges.explore.completions > 0) {
+                this.challengeExploreMulti = 1.25 + (MoonlightData.getInstance().challenges.explore.completions * 0.1);
             }
 
             this.weapon = undefined;
@@ -70,11 +70,18 @@ export class PlayerData {
         return PlayerData.instance;
     }
 
+    static getInstance() {
+        if (!PlayerData.instance) {
+            return new PlayerData();
+        }
+        return PlayerData.instance;
+    }
+
     rebirth() {
         this.statBlock.rebirth();
         this.shade = 0;
         this.statPoints = 3;
-        this.talentPoints = MoonlightData.instance.challenges.talent.completions;
+        this.talentPoints = MoonlightData.getInstance().challenges.talent.completions;
         this.statLevel = 1;
         this.talentLevel = 1;
         this.nextStatCost = Statics.STAT_COST_BASE;
@@ -83,15 +90,15 @@ export class PlayerData {
         [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]];
         this.craftingCosts = [1, 1, 1, 1, 1, 1, 1, 1];
         for (var i = 0; i < this.craftingCosts.length; i++) {
-            this.craftingCosts[i] = this.craftingCosts[i] * DynamicSettings.instance.gearCostMulti;
+            this.craftingCosts[i] = this.craftingCosts[i] * DynamicSettings.getInstance().gearCostMulti;
             this.craftingCosts[i] = this.craftingCosts[i] * Math.pow(Statics.FORGE_REDUCTION,
-                MoonlightData.instance.challenges.forge.completions);
+                MoonlightData.getInstance().challenges.forge.completions);
         }
         this.gold = 0;
         this.motes = 0;
         this.challengeExploreMulti = 1;
-        if (MoonlightData.instance.challenges.explore.completions > 0) {
-            this.challengeExploreMulti = 1.25 + (MoonlightData.instance.challenges.explore.completions * 0.1);
+        if (MoonlightData.getInstance().challenges.explore.completions > 0) {
+            this.challengeExploreMulti = 1.25 + (MoonlightData.getInstance().challenges.explore.completions * 0.1);
         }
 
         this.weapon = undefined;
@@ -129,6 +136,9 @@ export class PlayerData {
 
     increaseStat(stat, val) {
         var statChange = Math.min(this.statPoints, val);
+        if (statChange == 0) {
+            return;
+        }
         this.statPoints -= statChange;
         switch (stat) {
             case 'str':
@@ -188,6 +198,12 @@ export class PlayerData {
         return MoonlightData.getMoonlightEarned((this.statLevel - 1) + (this.talentLevel - 1) * 3, gateReached);
     }
 
+    getExploreMulti() {
+        return (1 + this.talents.explorer.level * 0.1) *
+            (1 + Statics.AGI_EXPLORE_MULTI * Math.pow(this.statBlock.Agility(), Statics.AGI_EXPLORE_POWER)) *
+            this.challengeExploreMulti;
+    }
+
     getStatCost(buyAmount) {
         var ret = 0;
         for (var i = 0; i < buyAmount; i++) {
@@ -197,7 +213,7 @@ export class PlayerData {
     }
     getTalentCost(buyAmount) {
         var ret = 0;
-        var challengeMod = MoonlightData.instance.challenges.talent.completions > 0 ? 0.02 : 0;
+        var challengeMod = MoonlightData.getInstance().challenges.talent.completions > 0 ? 0.02 : 0;
         for (var i = 0; i < buyAmount; i++) {
             ret += Statics.TALENT_COST_BASE * Math.pow(Statics.TALENT_COST_POWER - challengeMod, (this.talentLevel - 1 + i));
         }
@@ -213,7 +229,7 @@ export class PlayerData {
         }
     }
     buyTalent(buyAmount) {
-        var challengeMod = MoonlightData.instance.challenges.talent.completions > 0 ? 0.02 : 0;
+        var challengeMod = MoonlightData.getInstance().challenges.talent.completions > 0 ? 0.02 : 0;
         for (var i = 0; i < buyAmount; i++) {
             this.talentPoints += 1;
             this.shade -= this.nextTalentCost;

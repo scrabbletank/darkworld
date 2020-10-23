@@ -79,7 +79,7 @@ export class MoonlightScene extends SceneUIBase {
             this.challengeBox.destroy();
             this.challengeBox = undefined;
         }
-        if (DynamicSettings.instance.challengeName !== "") {
+        if (DynamicSettings.getInstance().challengeName !== "") {
             this.challengeBox = new ActiveChallengeDialog(this, 200, 150)
                 .onAbandonHandler(() => { this._abandonChallenge(); })
                 .onCancelHandler(() => { this._removeChallengeWindow(); });
@@ -97,7 +97,7 @@ export class MoonlightScene extends SceneUIBase {
     }
     _beginChallenge(challenge) {
         if (this.canLevelPerks === true) {
-            DynamicSettings.instance.setupChallenge(challenge);
+            DynamicSettings.getInstance().setupChallenge(challenge);
             var game = this.scene.get("DarkWorld");
             this.canLevelPerks = false;
             game.rebirth();
@@ -131,28 +131,11 @@ export class MoonlightScene extends SceneUIBase {
         this.moonlightLabel.setText("MOONLIGHT\n" + Common.numberString(this.moonlight.moonlight));
     }
 
-    _haveMoonlightRequirements(perk) {
-        for (var i = 0; i < perk.requires.length; i++) {
-            if (this.moonlight.moonperks[perk.requires[i]].level === 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     _levelUpPerk(perk) {
         if (this.canLevelPerks === false) {
             return;
         }
-        if (perk.level >= perk.maxLevel && perk.maxLevel !== -1) {
-            return;
-        }
-        var cost = Math.floor((perk.cost[0] + perk.cost[1] * (perk.level)) * Math.pow(perk.cost[2], perk.level));
-        if (this.moonlight.moonlight < cost || this._haveMoonlightRequirements(perk) === false) {
-            return;
-        }
-        this.moonlight.moonlight -= cost;
-        perk.level += 1;
+        this.moonlight.levelUpPerk(perk);
     }
 
     _setTooltip(perk, x, y) {

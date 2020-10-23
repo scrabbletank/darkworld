@@ -87,11 +87,11 @@ export class TileSelectWindow {
                 if (tile.yields.length > 0) {
                     if (tile.houseBuildable) {
                         bld.push("house");
-                        if (region.townData.upgrades.market.level > 0) {
+                        if (region.townData.getMarketLevel() > 0) {
                             bld.push("market");
                         }
                     }
-                    if (region.townData.upgrades.tavern.level > 0) {
+                    if (region.townData.getTavernLevel() > 0) {
                         bld.push("tavern");
                     }
                     bld.push("watchtower");
@@ -141,9 +141,9 @@ export class TileSelectWindow {
 
     _canUpgrade(bld) {
         if (bld.name === "Market") {
-            return bld.tier < WorldData.instance.getCurrentRegion().townData.upgrades.market.level;
+            return bld.tier < WorldData.instance.getCurrentRegion().townData.getMarketLevel();
         } else if (bld.name === "Tavern") {
-            return bld.tier < WorldData.instance.getCurrentRegion().townData.upgrades.tavern.level;
+            return bld.tier < WorldData.instance.getCurrentRegion().townData.getTavernLevel();
         } else {
             return bld.tier < 3;
         }

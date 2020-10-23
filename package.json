@@ -12,9 +12,13 @@
     "webpack-dev-server": "^3.11.0",
     "websocket-extensions": "^0.1.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/preset-env": "^7.12.1",
+    "babel-jest": "^26.6.0",
+    "jest": "^26.6.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "webpack",
     "start": "npm run build && webpack-dev-server --port=8000"
   },

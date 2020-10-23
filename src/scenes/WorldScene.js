@@ -33,8 +33,8 @@ export class WorldScene extends SceneUIBase {
     }
 
     _setupRegionTile(x, y, region, index) {
-        var diff = (region.regionLevel * DynamicSettings.instance.regionDifficultyIncrease) + "-" +
-            ((region.regionLevel + 1) * DynamicSettings.instance.regionDifficultyIncrease);
+        var diff = (region.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease) + "-" +
+            ((region.regionLevel + 1) * DynamicSettings.getInstance().regionDifficultyIncrease);
         var explorePercent = Math.floor(region.getExplorePercent() * 100) + "%";
         this.regionIcons.push(new ImageButton(this, x, y, 64, 64, { sprite: "icons", tile: 40 })
             .onClickHandler(() => { this._selectRegion(index); })

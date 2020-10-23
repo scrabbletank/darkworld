@@ -6,7 +6,7 @@ import { DynamicSettings } from "./DynamicSettings";
 export class WorldData {
     constructor() {
         if (!WorldData.instance) {
-            var regSize = DynamicSettings.instance.regionSize;
+            var regSize = DynamicSettings.getInstance().regionSize;
             this.regionList = [];
             this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate"));
             this.currentRegion = 0;
@@ -21,8 +21,15 @@ export class WorldData {
         return WorldData.instance;
     }
 
+    static getInstance() {
+        if (!WorldData.instance) {
+            return new WorldData();
+        }
+        return WorldData.instance;
+    }
+
     rebirth() {
-        var regSize = DynamicSettings.instance.regionSize;
+        var regSize = DynamicSettings.getInstance().regionSize;
         this.regionList = [];
         this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate"));
         this.currentRegion = 0;
@@ -62,7 +69,7 @@ export class WorldData {
     }
 
     addRegion(index) {
-        var regSize = DynamicSettings.instance.regionSize;
+        var regSize = DynamicSettings.getInstance().regionSize;
         this.regionList.push(new Region(regSize[0], regSize[1], this.regionList.length, this.nextRegions[index]));
         this.regionList[this.regionList.length - 1].worldHeight = Math.floor((index + 1) * (700 / (this.nextRegions.length + 1)));
         this.nextRegions = [];

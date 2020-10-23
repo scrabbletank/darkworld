@@ -2,7 +2,6 @@
 
 import { Statics } from "./Statics";
 import { Common } from "../utils/Common";
-import { GearData } from "./GearData";
 
 // stat calculations:
 // attacks always hit, but attack speed is adjusted by hit chance/evasion. Higher hit chance means
@@ -152,7 +151,7 @@ export class CreatureBlock {
 
     canAttack() { return this.attackCooldown >= this.attackSpeed; }
 
-    takeDamage(damage, isCrit) {
+    takeDamage(damage, __isCrit) {
         var dmg = damage;
         dmg = Math.max(1, dmg - this.Armor());
         this.currentHealth -= dmg;
@@ -162,7 +161,7 @@ export class CreatureBlock {
     rollDamage() {
         return Common.randint(this.DamageMin(), this.DamageMax() + 1);
     }
-    tickRegen(delta, inCombat = true) {
+    tickRegen(delta, __inCombat = true) {
         var oldVal = this.currentHealth;
         var healMulti = 1;
         this.currentHealth = Math.min(this.MaxHealth(), this.currentHealth + this.HealthRegen() * (delta / 1000) * healMulti);
@@ -194,17 +193,15 @@ export class CreatureBlock {
     }
 
     equip(gear) {
-        var gearData = new GearData();
-        var motePower = 1 + gearData.getMotePower(gear.motesFused);
-        for (const prop in this.statBonuses) {
-            this.statBonuses[prop] += gear.statBonuses[prop] * motePower;
+        var bonus = gear.getStatBonuses();
+        for (const prop in bonus) {
+            this.statBonuses[prop] += bonus[prop];
         }
     }
     unequip(gear) {
-        var gearData = new GearData();
-        var motePower = 1 + gearData.getMotePower(gear.motesFused);
-        for (const prop in this.statBonuses) {
-            this.statBonuses[prop] -= gear.statBonuses[prop] * motePower;
+        var bonus = gear.getStatBonuses();
+        for (const prop in bonus) {
+            this.statBonuses[prop] -= bonus[prop];
         }
     }
 

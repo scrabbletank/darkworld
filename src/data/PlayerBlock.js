@@ -7,6 +7,10 @@ export class PlayerBlock extends CreatureBlock {
         super();
         this.player = player;
         this.moonData = new MoonlightData();
+        this.secondWindCooldown = 0;
+        this.secondWindDuration = 0;
+        this.hitCounter = 0;
+        this.encounterCounter = 0;
     }
 
     rebirth() {
@@ -45,8 +49,8 @@ export class PlayerBlock extends CreatureBlock {
         this.level = 0;
         this.currentHealth = 25;
         this.attackCooldown = 0;
-        this.secondWindCooldown = 80000;
-        this.secondWindDuration = 10000;
+        this.secondWindCooldown = 0;
+        this.secondWindDuration = 0;
         this.hitCounter = 0;
         this.encounterCounter = 0;
     }
@@ -58,37 +62,37 @@ export class PlayerBlock extends CreatureBlock {
     }
     Strength() {
         var ret = this.stats.strength + this.statBonuses.strength;
-        ret = ret * (1 + (this.moonData.moonperks.str.level + MoonlightData.instance.challengePoints) * 0.01);
+        ret = ret * (1 + (this.moonData.moonperks.str.level + MoonlightData.getInstance().challengePoints) * 0.01);
         return Math.floor(ret);
     }
     Dexterity() {
         var ret = this.stats.dexterity + this.statBonuses.dexterity;
-        ret = ret * (1 + (this.moonData.moonperks.dex.level + MoonlightData.instance.challengePoints) * 0.01);
+        ret = ret * (1 + (this.moonData.moonperks.dex.level + MoonlightData.getInstance().challengePoints) * 0.01);
         return Math.floor(ret);
     }
     Agility() {
         var ret = this.stats.agility + this.statBonuses.agility;
-        ret = ret * (1 + (this.moonData.moonperks.agi.level + MoonlightData.instance.challengePoints) * 0.01);
+        ret = ret * (1 + (this.moonData.moonperks.agi.level + MoonlightData.getInstance().challengePoints) * 0.01);
         return Math.floor(ret);
     }
     Endurance() {
         var ret = this.stats.endurance + this.statBonuses.endurance;
-        ret = ret * (1 + (this.moonData.moonperks.end.level + MoonlightData.instance.challengePoints) * 0.01);
+        ret = ret * (1 + (this.moonData.moonperks.end.level + MoonlightData.getInstance().challengePoints) * 0.01);
         return Math.floor(ret);
     }
     Recovery() {
         var ret = this.stats.recovery + this.statBonuses.recovery;
-        ret = ret * (1 + (this.moonData.moonperks.rec.level + MoonlightData.instance.challengePoints) * 0.01);
+        ret = ret * (1 + (this.moonData.moonperks.rec.level + MoonlightData.getInstance().challengePoints) * 0.01);
         return Math.floor(ret);
     }
     Defense() {
         var ret = this.stats.defense + this.statBonuses.defense;
-        ret = ret * (1 + (this.moonData.moonperks.def.level + MoonlightData.instance.challengePoints) * 0.01);
+        ret = ret * (1 + (this.moonData.moonperks.def.level + MoonlightData.getInstance().challengePoints) * 0.01);
         return Math.floor(ret);
     }
     Accuracy() {
         var ret = this.stats.accuracy + this.statBonuses.accuracy;
-        ret = ret * (1 + (this.moonData.moonperks.acc.level + MoonlightData.instance.challengePoints) * 0.01);
+        ret = ret * (1 + (this.moonData.moonperks.acc.level + MoonlightData.getInstance().challengePoints) * 0.01);
         return Math.floor(ret);
     }
     Hit() {
@@ -153,8 +157,8 @@ export class PlayerBlock extends CreatureBlock {
         if (Math.random() < this.player.talents.parry.level * 0.05) {
             dmg = dmg / 2;
         }
-        dmg = super.takeDamage(damage, isCrit);
-        if (this.player.talents.secondwind.level > 0 && this.secondWindCooldown < 0 && this.currentHealth < this.MaxHealth() / 2) {
+        dmg = super.takeDamage(dmg, isCrit);
+        if (this.player.talents.secondwind.level > 0 && this.secondWindCooldown <= 0 && this.currentHealth < this.MaxHealth() / 2) {
             this.secondWindDuration = 10000;
             this.secondWindCooldown = Statics.SECONDWIND_COOLDOWN - this.player.talents.secondwind.level * 10000;
         }
@@ -162,6 +166,7 @@ export class PlayerBlock extends CreatureBlock {
             this.currentHealth = 1;
             this.encounterCounter = Statics.DEFY_DEATH_COUNTER - this.player.talents.defydeath.level;
         }
+        return dmg;
     }
 
     tickRegen(delta, inCombat = true) {

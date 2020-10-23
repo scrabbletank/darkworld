@@ -1,3 +1,4 @@
+import { Common } from "../utils/Common";
 import { Statics } from "./Statics";
 
 var RegionRegistry = {
@@ -5,7 +6,7 @@ var RegionRegistry = {
         mountain: {
             name: "Mountains",
             enemies: ["wolf", "bear", "goblin", "formation"],
-            clr: Phaser.Display.Color.GetColor(140, 110, 0),
+            clr: [140, 110, 0],
             explorationNeeded: 35000,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 1.25 },
@@ -17,7 +18,7 @@ var RegionRegistry = {
         drakemountain: {
             name: "Drake Mountains",
             enemies: ["wolf", "bear", "goblin", "formation", "drake"],
-            clr: Phaser.Display.Color.GetColor(130, 30, 30),
+            clr: [130, 30, 30],
             explorationNeeded: 28000,
             yields: [
                 { type: Statics.RESOURCE_METAL, rate: 2.25 },
@@ -28,7 +29,7 @@ var RegionRegistry = {
         forest: {
             name: "Forest",
             enemies: ["wolf", "bear", "plant", "bloom", "slime", "goblin"],
-            clr: Phaser.Display.Color.GetColor(0, 160, 0),
+            clr: [0, 160, 0],
             explorationNeeded: 16000,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 1.75 },
@@ -39,7 +40,7 @@ var RegionRegistry = {
         wode: {
             name: "Wode",
             enemies: ["wolf", "bear", "plant", "bloom", "slime", "elk"],
-            clr: Phaser.Display.Color.GetColor(0, 130, 30),
+            clr: [0, 130, 30],
             explorationNeeded: 20000,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 2.25 },
@@ -51,7 +52,7 @@ var RegionRegistry = {
         ancientforest: {
             name: "Ancient Forest",
             enemies: ["bear", "moss", "plant", "elk", "bloom"],
-            clr: Phaser.Display.Color.GetColor(0, 90, 0),
+            clr: [0, 90, 0],
             explorationNeeded: 24000,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 2.5 },
@@ -63,7 +64,7 @@ var RegionRegistry = {
         plains: {
             name: "Plains",
             enemies: ["slime", "goblin", "lizard", "bloom"],
-            clr: Phaser.Display.Color.GetColor(20, 220, 20),
+            clr: [20, 220, 20],
             explorationNeeded: 10000,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 0.9 },
@@ -75,7 +76,7 @@ var RegionRegistry = {
         savanna: {
             name: "Savanna",
             enemies: ["gnoll", "lion", "coyote", "lizard", "bloom"],
-            clr: Phaser.Display.Color.GetColor(190, 190, 60),
+            clr: [190, 190, 60],
             explorationNeeded: 17500,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 0.75 },
@@ -87,7 +88,7 @@ var RegionRegistry = {
         desert: {
             name: "Desert",
             enemies: ["formation", "coyote", "slime", "cactus"],
-            clr: Phaser.Display.Color.GetColor(220, 190, 140),
+            clr: [220, 190, 140],
             explorationNeeded: 16000,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 0.75 },
@@ -98,7 +99,7 @@ var RegionRegistry = {
         hills: {
             name: "Hills",
             enemies: ["slime", "goblin", "lizard", "bloom", "formation"],
-            clr: Phaser.Display.Color.GetColor(130, 190, 50),
+            clr: [130, 190, 50],
             explorationNeeded: 14000,
             yields: [
                 { type: Statics.RESOURCE_LEATHER, rate: 1 },
@@ -109,7 +110,7 @@ var RegionRegistry = {
         plateau: {
             name: "Plateau",
             enemies: ["elk", "goblin", "lizard", "cactus", "wolf"],
-            clr: Phaser.Display.Color.GetColor(200, 120, 40),
+            clr: [200, 120, 40],
             explorationNeeded: 15000,
             yields: [
                 { type: Statics.RESOURCE_LEATHER, rate: 3 },
@@ -120,21 +121,21 @@ var RegionRegistry = {
         lake: {
             name: "Lake",
             enemies: ["whale", "slime", "bear", "fish"],
-            clr: Phaser.Display.Color.GetColor(20, 40, 170),
+            clr: [20, 40, 170],
             explorationNeeded: 30000,
             yields: []
         },
         oasis: {
             name: "Oasis",
             enemies: ["catfish", "fish", "coyote", "cactus"],
-            clr: Phaser.Display.Color.GetColor(0, 140, 190),
+            clr: [0, 140, 190],
             explorationNeeded: 21000,
             yields: []
         },
         swamp: {
             name: "Swamp",
             enemies: ["lizard", "slime", "goblin", "bloom"],
-            clr: Phaser.Display.Color.GetColor(0, 110, 90),
+            clr: [0, 110, 90],
             explorationNeeded: 25000,
             yields: [
                 { type: Statics.RESOURCE_WOOD, rate: 1 },
@@ -146,14 +147,14 @@ var RegionRegistry = {
         town: {
             name: "Town",
             enemies: ["wolf"],
-            clr: Phaser.Display.Color.GetColor(230, 230, 230),
+            clr: [230, 230, 230],
             explorationNeeded: 10,
             yields: []
         },
         mysticgate: {
             name: "Mystic Gate",
             enemies: ["gateguardian"],
-            clr: Phaser.Display.Color.GetColor(153, 50, 204),
+            clr: [153, 50, 204],
             explorationNeeded: 30000,
             yields: []
         }

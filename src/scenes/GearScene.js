@@ -4,7 +4,6 @@ import { GearCraftDisplay } from "../ui/GearCraftDisplay";
 import { Statics } from "../data/Statics";
 import { ProgressionStore } from "../data/ProgressionStore";
 import { GearDisplay } from "../ui/GearDisplay";
-import { Common } from "../utils/Common";
 import { GearData } from "../data/GearData";
 import { PlayerData } from "../data/PlayerData";
 
@@ -153,40 +152,14 @@ export class GearScene extends SceneUIBase {
         this._setupGearDisplays();
     }
     _onUpgradeHandler(gear) {
-        var craftCostMulti = gear.tier <= 0 ? 1 : this.player.craftingCosts[gear.tier - 1];
-        var res = [];
-        for (var i = 0; i < gear.costs.length; i++) {
-            res.push(gear.costs[i] * craftCostMulti);
-        }
-        if (Common.canCraft(res, this.player.resources[Math.max(0, gear.tier - 1)]) === false) {
-            return;
-        }
-        this.player.spendResource(res, Math.max(0, gear.tier - 1));
-        if (this._isEquipedItem(gear)) {
-            this.player.unequip(gear.slotType);
-            gear.bringToLevel(gear.level + 1);
-            this.player.equip(gear);
-            this._setupGearDisplays();
-        } else {
-            gear.bringToLevel(gear.level + 1);
-        }
-
+        GearData.getInstance().upgradeGear(gear);
+        this._setupGearDisplays();
         this._setupView();
     }
     _onFuseHandler(gear) {
-        if (this.player.motes <= 0) {
-            return;
-        }
-        var wasEquipped = this._isEquipedItem(gear);
-        if (wasEquipped === true) {
-            this.player.unequip(gear.slotType);
-        }
         var motesFused = Math.min(this.player.motes, this.scene.get("DarkWorld").buyAmount);
-        this.player.addMote(-motesFused);
-        gear.motesFused += motesFused;
-        if (wasEquipped === true) {
-            this.player.equip(gear);
-        }
+        GearData.getInstance().fuseGear(gear, motesFused);
+
         this._setupView();
         this._setupGearDisplays();
     }

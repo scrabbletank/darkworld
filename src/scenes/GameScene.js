@@ -211,7 +211,7 @@ export class GameScene extends SceneUIBase {
         this.regionButton.setVisible(this.progression.unlocks.exploreTab);
         this.combatButton.setVisible(this.progression.unlocks.combatTab);
         this.townButton.setVisible(WorldData.instance.getCurrentRegion().townData.townExplored);
-        if (DynamicSettings.instance.talentsEnabled === true) {
+        if (DynamicSettings.getInstance().talentsEnabled === true) {
             this.talentButton.setVisible(this.progression.unlocks.talentsTab);
         } else {
             this.talentButton.setVisible(false);
@@ -226,7 +226,7 @@ export class GameScene extends SceneUIBase {
         this.regionScene.registerEvent("onTileClick", (x, y, ae) => { this._handleTileClick(x, y, ae); });
 
         this.combatScene = new CombatScene([200, 100], "CombatScene");
-        this.combatScene.registerEvent("onKill", (a, b, c, d) => { this._onKillCallback(a, b, c, d); });
+        this.combatScene.registerEvent("onReward", (a, b) => { this._onRewardCallback(a, b); });
 
         this.loreScene = new LoreScene([200, 100], "LoreScene");
         this.gearScene = new GearScene([200, 100], "GearScene");
@@ -303,7 +303,7 @@ export class GameScene extends SceneUIBase {
                 this._updateResources();
                 break;
             case Statics.UNLOCK_TALENTS_TAB:
-                if (DynamicSettings.instance.talentsEnabled === true) {
+                if (DynamicSettings.getInstance().talentsEnabled === true) {
                     this.talentButton.setVisible(true);
                 }
                 break;
@@ -453,7 +453,7 @@ export class GameScene extends SceneUIBase {
         this.statProgressBar.setVisible(this.progression.unlocks.infuseUI);
         this.statInfuseButton.setVisible(this.progression.unlocks.infuseUI);
         this.statInfuseLabel.setVisible(this.progression.unlocks.infuseUI);
-        if (DynamicSettings.instance.talentsEnabled === true) {
+        if (DynamicSettings.getInstance().talentsEnabled === true) {
             this.talentProgressBar.setVisible(this.progression.unlocks.infuseUI);
             this.talentInfuseButton.setVisible(this.progression.unlocks.infuseUI);
             this.talentInfuseLabel.setVisible(this.progression.unlocks.infuseUI);
@@ -525,23 +525,21 @@ export class GameScene extends SceneUIBase {
         this.player.increaseStat(stat, this.buyAmount);
     }
 
-    _onKillCallback(tile, shade, rewards, gold) {
-        var region = new WorldData().getCurrentRegion();
+    _onRewardCallback(tile, rewards) {
         var tier = Math.floor(tile.difficulty / 20)
         if (this.progression.unlocks.craftingUI === true) {
-            var gearData = new GearData();
-            gearData.tiersAvailable = Math.max(gearData.tiersAvailable, tier + 1);
+            GearData.getInstance().tiersAvailable = Math.max(GearData.getInstance().tiersAvailable, tier + 1);
             this.gearScene._updateTierButtons();
         }
-        shade = shade * (1 + this.moonlight.moonperks.shadow.level * 0.1);
-        this.player.shade += shade;
-        this.player.addResource(rewards, tier);
+        this.player.shade += rewards.shade;
+        this.player.addResource(rewards.resource, tier);
+        this.player.addMote(rewards.motes);
         this._updateShade();
         this.progression.registerMonsterKill();
-        this.progression.registerShadeGain(shade);
-        this.progression.registerResourceGain(rewards);
+        this.progression.registerShadeGain(rewards.shade);
+        this.progression.registerResourceGain(rewards.resource);
         if (this.progression.unlocks.townTab === true) {
-            var goldMulti = (tile.amountExplored < tile.explorationNeeded ? 5 : 1) * region.townData.bountyMulti;
+            var goldMulti = (tile.amountExplored < tile.explorationNeeded ? 5 : 1) * WorldData.getCurrentRegion().townData.bountyMulti;
             this.player.addGold(gold * goldMulti);
         }
     }

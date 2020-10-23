@@ -1,6 +1,8 @@
 import { Gear } from "./Gear";
 import { Statics } from "./Statics";
 import { MoonlightData } from "./MoonlightData";
+import { PlayerData } from "./PlayerData";
+import { Common } from "../utils/Common";
 
 export class GearData {
     constructor() {
@@ -13,6 +15,13 @@ export class GearData {
         return GearData.instance;
     }
 
+    static getInstance() {
+        if (!GearData.instance) {
+            return new GearData();
+        }
+        return GearData.instance;
+    }
+
     save() {
         var gearList = [];
         for (var i = 0; i < this.gear.length; i++) {
@@ -21,7 +30,6 @@ export class GearData {
         var saveObj = {
             gear: gearList,
             ta: this.tiersAvailable,
-            msc: this.moteSoftCap
         }
 
         return saveObj;
@@ -32,12 +40,6 @@ export class GearData {
             this.gear[i].load(saveObj.gear[i], ver);
         }
         this.tiersAvailable = saveObj.ta;
-        this.moteSoftCap = saveObj.msc;
-    }
-
-    getMotePower(motes) {
-        return (Math.min(this.moteSoftCap, motes) +
-            Math.pow(Math.max(0, motes - this.moteSoftCap), Statics.MOTE_SOFT_CAP_POWER)) * Statics.MOTE_BONUS
     }
 
     rebirth() {
@@ -52,11 +54,53 @@ export class GearData {
         }
     }
 
+    _isEquipedItem(gear) {
+        switch (gear.slotType) {
+            case Statics.GEAR_WEAPON:
+                return PlayerData.getInstance().weapon !== undefined && gear.name === PlayerData.getInstance().weapon.name;
+            case Statics.GEAR_ARMOR:
+                return PlayerData.getInstance().armor !== undefined && gear.name === PlayerData.getInstance().armor.name;
+            case Statics.GEAR_TRINKET:
+                return PlayerData.getInstance().trinket !== undefined && gear.name === PlayerData.getInstance().trinket.name;
+        }
+    }
+
+    upgradeGear(gear) {
+        var player = PlayerData.getInstance();
+        var craftCostMulti = gear.tier <= 0 ? 1 : player.craftingCosts[gear.tier - 1];
+        var res = [];
+        for (var i = 0; i < gear.costs.length; i++) {
+            res.push(gear.costs[i] * craftCostMulti);
+        }
+        if (Common.canCraft(res, player.resources[Math.max(0, gear.tier - 1)]) === false) {
+            return;
+        }
+        player.spendResource(res, Math.max(0, gear.tier - 1));
+        if (this._isEquipedItem(gear)) {
+            player.unequip(gear.slotType);
+            gear.bringToLevel(gear.level + 1);
+            player.equip(gear);
+        } else {
+            gear.bringToLevel(gear.level + 1);
+        }
+    }
+
+    fuseGear(gear, motes) {
+        var player = PlayerData.getInstance();
+        if (this._isEquipedItem(gear)) {
+            player.unequip(gear.slotType);
+            gear.fuseMotes(motes);
+            player.equip(gear);
+        } else {
+            gear.fuseMotes(motes);
+        }
+        player.addMote(-motes);
+    }
+
     _initGear() {
         var moonData = new MoonlightData();
         this.gear = [];
         this.tiersAvailable = 0;
-        this.moteSoftCap = Statics.MOTE_BASE_SOFT_CAP + moonData.moonperks.blackirongear.level * 40;
 
         // TIER 0
 

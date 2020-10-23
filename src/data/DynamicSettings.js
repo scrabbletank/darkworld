@@ -24,6 +24,13 @@ export class DynamicSettings {
         return DynamicSettings.instance;
     }
 
+    static getInstance() {
+        if (!DynamicSettings.instance) {
+            return new DynamicSettings();
+        }
+        return DynamicSettings.instance;
+    }
+
     reset() {
         this.minGateRegion = 1;
         this.regionSize = [9, 11];

@@ -27,13 +27,10 @@ export class GearCraftDisplay {
         this.moteButton = undefined;
         this.moteLabel = undefined;
 
-        this.motePower = 0;
         if (gear.level > 0 && progression.unlocks.motes === true) {
-            var gearData = new GearData();
-            this.motePower = gearData.getMotePower(gear.motesFused);
             if (gear.motesFused > 0) {
                 this.moteLabel = sceneContext.add.bitmapText(x + 243, y + 21, "courier16",
-                    "+" + Math.floor(this.motePower * 1000) / 10 + "%").setOrigin(1, 0.5);
+                    "+" + Math.floor(gear.getMotePower() * 1000) / 10 + "%").setOrigin(1, 0.5);
                 this.moteLabel.setTint(Phaser.Display.Color.GetColor(200, 0, 200));
             }
             this.moteButton = new ImageButton(sceneContext, x + 248, y + 5, 32, 32, { sprite: "icons", tile: 39 })
@@ -42,10 +39,9 @@ export class GearCraftDisplay {
 
         this.statLabels = []
         var txt = "";
-        for (const prop in gear.statBonuses) {
-            if (gear.statBonuses[prop] !== 0) {
-                txt += Common.getBonusText(prop, gear.statBonuses[prop] * (1 + this.motePower)) + "\n";
-            }
+        var bonus = gear.getStatBonuses();
+        for (const prop in bonus) {
+            txt += Common.getBonusText(prop, bonus[prop]) + "\n";
         }
         this.statLabels.push(sceneContext.add.bitmapText(x + 5, y + 45, "courier16", txt));
         if (progression.unlocks.resourceUI === true) {

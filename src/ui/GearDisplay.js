@@ -16,18 +16,11 @@ export class GearDisplay {
     
             var types = ["Weapon", "Armor", "Trinket"]
             this.typeLabel = sceneContext.add.bitmapText(x + 5, y + 25, "courier16", "Tier " + gear.tier + " " + types[gear.slotType]);
-    
-            this.motePower = 1;
-            if (gear.level > 0 && progression.unlocks.motes === true) {
-                var gearData = new GearData();
-                this.motePower = 1 + gearData.getMotePower(gear.motesFused);
-            }
 
             var txt = "";
-            for (const prop in gear.statBonuses) {
-                if (gear.statBonuses[prop] !== 0) {
-                    txt += Common.getBonusText(prop, gear.statBonuses[prop] * this.motePower) + "\n";
-                }
+            var bonus = gear.getStatBonuses();
+            for (const prop in bonus) {
+                txt += Common.getBonusText(prop, bonus[prop]) + "\n";
             }
             this.statLabel = sceneContext.add.bitmapText(x + 5, y + 45, "courier16", txt);
         }

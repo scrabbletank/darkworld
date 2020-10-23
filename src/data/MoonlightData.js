@@ -99,6 +99,17 @@ export class MoonlightData {
         return MoonlightData.instance;
     }
 
+    static getInstance() {
+        if (!MoonlightData.instance) {
+            return new MoonlightData();
+        }
+        return MoonlightData.instance;
+    }
+
+    static getMoonlightEarned(statLvl, region) {
+        return Math.floor(statLvl * Math.pow(Statics.MOONLIGHT_REGION_POWER, region));
+    }
+
     getChallengeFromName(name) {
         switch (name) {
             case "A Matter of Years":
@@ -114,8 +125,28 @@ export class MoonlightData {
         }
     }
 
-    static getMoonlightEarned(statLvl, region) {
-        return Math.floor(statLvl * Math.pow(Statics.MOONLIGHT_REGION_POWER, region));
+    getShadowBonus() { return 1 + this.moonperks.shadow.level * 0.1; }
+    getMoteSoftCap() { return Statics.MOTE_BASE_SOFT_CAP + this.moonperks.blackirongear.level * 40; }
+
+    _haveMoonlightRequirements(perk) {
+        for (var i = 0; i < perk.requires.length; i++) {
+            if (this.moonperks[perk.requires[i]].level === 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    levelUpPerk(perk) {
+        if (perk.level >= perk.maxLevel && perk.maxLevel !== -1) {
+            return;
+        }
+        var cost = Math.floor((perk.cost[0] + perk.cost[1] * (perk.level)) * Math.pow(perk.cost[2], perk.level));
+        if (this.moonlight < cost || this._haveMoonlightRequirements(perk) === false) {
+            return;
+        }
+        this.moonlight -= cost;
+        perk.level += 1;
     }
 
     save() {

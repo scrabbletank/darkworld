@@ -102,7 +102,7 @@ export class TownData {
                 break;
             case "Reinforced Houses":
                 this.townDefenseBonus += 1;
-                WorldData.instance.getCurrentRegion().handleReinforcedHouses();
+                WorldData.getInstance().getCurrentRegion().handleReinforcedHouses();
                 break;
             case "Banking":
                 this.economyMulti += 0.05;
@@ -132,6 +132,12 @@ export class TownData {
     getMaxPopulation() {
         return this.maxPopulation + this.tavernPopulation;
     }
+    getMarketLevel() {
+        return this.upgrades.market.level;
+    }
+    getTavernLevel() {
+        return this.upgrades.tavern.level;
+    }
     setTavernPopulation(pop) {
         this.tavernPopulation = pop;
     }
@@ -143,8 +149,7 @@ export class TownData {
     endOfWeek() {
         if (this.townExplored === true) {
             this.currentPopulation = Math.min(this.getMaxPopulation(), this.currentPopulation * Statics.POPULATION_GROWTH);
-            var player = new PlayerData();
-            player.addGold(this.getTownIncome());
+            PlayerData.getInstance().addGold(this.getTownIncome());
         }
     }
 

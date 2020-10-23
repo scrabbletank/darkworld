@@ -41,8 +41,8 @@ export class Building {
     }
 
     static getTooltip(tile, name, tier) {
-        var region = WorldData.instance.getCurrentRegion();
-        var prodBonus = 1 + (tile.defense * MoonlightData.instance.moonperks.moonlightworkers.level * 0.01);
+        var region = WorldData.getInstance().getCurrentRegion();
+        var prodBonus = 1 + (tile.defense * MoonlightData.getInstance().moonperks.moonlightworkers.level * 0.01);
         switch (name) {
             case "Lumberyard":
                 var prod = tier * Common.yieldHelper(Statics.RESOURCE_WOOD, tile.yields) *
