@@ -67,7 +67,8 @@ export class TownScene extends SceneUIBase {
         var gold = TownData.getTechGoldCost(tech, region.townData.tier);
         var resource = TownData.getTechResourceCost(tech, region.townData.tier);
         var player = new PlayerData();
-        if (player.gold >= gold && Common.canCraft(resource, player.resources[region.townData.tier - 1]) === true) {
+        if (player.gold >= gold && Common.canCraft(resource, player.resources[region.townData.tier - 1]) === true &&
+            region.townData.friendshipLevel >= tech.level) {
             player.addGold(-gold);
             player.spendResource(resource, region.townData.tier - 1);
             region.townData.increaseTechLevel(tech);
@@ -91,6 +92,8 @@ export class TownScene extends SceneUIBase {
             "Economy: " + Math.floor(region.townData.economyMulti * 100 * govBonus) + "%\n" +
             "Production: " + Math.floor(region.townData.productionMulti * 100) + "%\n" +
             "Bounty Gold: " + Math.floor(region.townData.bountyMulti * 100) + "%\n" +
+            "Friendship: " + Math.floor(region.townData.friendship) + "/" + region.townData.friendshipToNext + "\n" +
+            "Friendship\nLevel: " + region.townData.friendshipLevel + " (+" + Math.floor((region.townData.getFriendshipBonus() - 1) * 100) + "% Shade)\n" +
             "Daily Production:\n";
 
         for (var i = 0; i < region.resourcesPerDay.length; i++) {

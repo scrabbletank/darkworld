@@ -112,17 +112,19 @@ export class CombatManager {
     stopCombat() { this.combatActive = false; }
 
     _handleRewards() {
+        this.fightCooldown = Statics.COMBAT_COOLDOWN;
         var rewards = {
+            tier: this.activeTile.parent.regionLevel,
             resource: [0, 0, 0, 0, 0, 0],
             shade: 0,
             gold: 0,
-            motes: 0
+            motes: 0,
+            friendship: 0
         }
-        this.fightCooldown = Statics.COMBAT_COOLDOWN;
 
         for (var i = 0; i < this.monsters.length; i++) {
             rewards.gold += 1 + Math.floor(Math.max(1, this.monsters[i].level) / 5);
-            rewards.shade += this.monsters[i].xpReward * MoonlightData.getInstance().getShadowBonus();
+            rewards.shade += this.monsters[i].xpReward;
             rewards.motes += this.monsters[i].motes;
             // calculating bonus drops here
             var lvl = PlayerData.getInstance().talents.bounty.level;
@@ -132,7 +134,10 @@ export class CombatManager {
                 var dropMulti = Math.max(1, this.monsters[i].level - Math.max(0, Math.min(8, Math.floor(this.monsters[i].level / 20)) * 20));
                 rewards.resource[this.monsters[i].drops[idx].type] += Math.max(0, this.monsters[i].drops[idx].amount * dropMulti);
             }
+            rewards.friendship += this.activeTile.getFriendshipReward();
         }
+        rewards.gold = (rewards.gold + (this.activeTile.explored ? 1 : 5)) * this.activeTile.parent.townData.bountyMulti;
+        rewards.shade *= MoonlightData.getInstance().getShadowBonus() * this.activeTile.parent.townData.getFriendshipBonus();
 
         if (this.activeTile.isInvaded === true) {
             if (this.progression.unlocks.motes === false) {
@@ -152,7 +157,7 @@ export class CombatManager {
         }
 
         if (this.rewardCallback !== undefined) {
-            this.rewardCallback(this.activeTile, rewards);
+            this.rewardCallback(rewards);
         }
     }
 

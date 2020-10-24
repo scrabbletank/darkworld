@@ -226,7 +226,7 @@ export class GameScene extends SceneUIBase {
         this.regionScene.registerEvent("onTileClick", (x, y, ae) => { this._handleTileClick(x, y, ae); });
 
         this.combatScene = new CombatScene([200, 100], "CombatScene");
-        this.combatScene.registerEvent("onReward", (a, b) => { this._onRewardCallback(a, b); });
+        this.combatScene.registerEvent("onReward", (a) => { this._onRewardCallback(a); });
 
         this.loreScene = new LoreScene([200, 100], "LoreScene");
         this.gearScene = new GearScene([200, 100], "GearScene");
@@ -299,7 +299,7 @@ export class GameScene extends SceneUIBase {
                 this.combatButton.setVisible(true);
                 break;
             case Statics.UNLOCK_TOWN_TAB:
-                this.townButton.setVisible(WorldData.instance.getCurrentRegion().townData.townExplored);
+                this.townButton.setVisible(true);
                 this._updateResources();
                 break;
             case Statics.UNLOCK_TALENTS_TAB:
@@ -525,22 +525,22 @@ export class GameScene extends SceneUIBase {
         this.player.increaseStat(stat, this.buyAmount);
     }
 
-    _onRewardCallback(tile, rewards) {
-        var tier = Math.floor(tile.difficulty / 20)
+    _onRewardCallback(rewards) {
         if (this.progression.unlocks.craftingUI === true) {
-            GearData.getInstance().tiersAvailable = Math.max(GearData.getInstance().tiersAvailable, tier + 1);
+            GearData.getInstance().tiersAvailable = Math.max(GearData.getInstance().tiersAvailable, rewards.tier + 1);
             this.gearScene._updateTierButtons();
         }
         this.player.shade += rewards.shade;
-        this.player.addResource(rewards.resource, tier);
+        this.player.addResource(rewards.resource, rewards.tier);
         this.player.addMote(rewards.motes);
         this._updateShade();
         this.progression.registerMonsterKill();
         this.progression.registerShadeGain(rewards.shade);
         this.progression.registerResourceGain(rewards.resource);
         if (this.progression.unlocks.townTab === true) {
-            var goldMulti = (tile.amountExplored < tile.explorationNeeded ? 5 : 1) * WorldData.getCurrentRegion().townData.bountyMulti;
-            this.player.addGold(gold * goldMulti);
+            this.player.addGold(rewards.gold);
+            WorldData.getInstance().getCurrentRegion().townData.addFriendship(rewards.friendship);
+            this.townScene._updateStatus();
         }
     }
 

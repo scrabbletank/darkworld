@@ -43,6 +43,9 @@ export class TownData {
         this.buildingIncome = 0;
         this.townExplored = false;
         this.researchEnabled = false;
+        this.friendship = 0;
+        this.friendshipLevel = 0;
+        this.friendshipToNext = 25;
 
         this.buildings = {
             forge: {
@@ -142,6 +145,20 @@ export class TownData {
         this.tavernPopulation = pop;
     }
 
+    addFriendship(value) {
+        this.friendship += value;
+        if (this.friendship >= this.friendshipToNext) {
+            this.friendshipLevel += 1;
+            this._calcFriendshipToNext();
+        }
+    }
+    getFriendshipBonus() {
+        return 1 + (this.friendshipLevel * Statics.FRIENDSHIP_SHADE_BONUS);
+    }
+    _calcFriendshipToNext() {
+        this.friendshipToNext = Statics.FRIENDSHIP_BASE + Math.floor(Math.pow(this.friendshipLevel * Statics.FRIENDSHIP_FLAT, Statics.FRIENDSHIP_POWER) /
+            Statics.FRIENDSHIP_FLAT) * Statics.FRIENDSHIP_FLAT;
+    }
     endOfDay() {
 
     }
@@ -175,7 +192,9 @@ export class TownData {
             up: upgrades,
             gc: this.goldCapBonus,
             te: this.townExplored,
-            re: this.researchEnabled
+            re: this.researchEnabled,
+            fr: this.friendship,
+            frl: this.friendshipLevel
         }
 
         return saveObj;
@@ -192,6 +211,9 @@ export class TownData {
         this.goldCapBonus = saveObj.gc;
         this.townExplored = saveObj.te;
         this.researchEnabled = saveObj.re;
+        this.friendship = saveObj.fr;
+        this.friendshipLevel = saveObj.frl;
+        this._calcFriendshipToNext();
         for (var i = 0; i < saveObj.bld.length; i++) {
             this.buildings[saveObj.bld[i][0]].level = saveObj.bld[i][1];
         }

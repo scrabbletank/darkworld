@@ -51,6 +51,7 @@ export class TileData {
         this.roadBuildable = false;
         this.dockBuildable = false;
         this.houseBuildable = false;
+        this.parent = undefined;
     }
 
     save() {
@@ -90,7 +91,7 @@ export class TileData {
         return tile;
     }
 
-    init(regName, difficulty, baseDifficulty) {
+    init(regName, difficulty, baseDifficulty, region) {
         var tileType = RegionRegistry.TILE_TYPES[regName];
         this.regName = regName;
         this.difficulty = difficulty;
@@ -110,6 +111,7 @@ export class TileData {
                 rate: tileType.yields[i].rate
             });
         }
+        this.parent = region;
     }
 
     sighting() {
@@ -128,6 +130,9 @@ export class TileData {
     }
 
     getInvasionMulti() { return Math.min(5, Math.floor(Math.max(0, Math.log2(this.invasionPower / Statics.SIGHTING_DIVIDER)))); }
+    getFriendshipReward() {
+        return 1 + 0.05 * (this.difficulty - (this.parent.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease));
+    }
 
     explore(delta) {
         if (this.explored === true) {
@@ -276,7 +281,7 @@ export class Region {
             var row = [];
             for (var t = 0; t < saveObj.map[i].length; t++) {
                 var tile = TileData.loadFromSave(saveObj.map[i][t], ver);
-                tile.init(tile.regName, tile.difficulty, this.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease);
+                tile.init(tile.regName, tile.difficulty, this.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease, region);
                 row.push(tile);
             }
             region.map.push(row);
@@ -336,7 +341,7 @@ export class Region {
                     DynamicSettings.getInstance().regionDifficultyIncrease);
                 var difficulty = Math.max(minDiff,
                     Math.min(maxDiff - 1, Math.floor(base + (difficultyNodes[cIdx[0]].power - base) / (2 + cIdx[1]))));
-                this.map[i][t].init(terrainData, difficulty, minDiff);
+                this.map[i][t].init(terrainData, difficulty, minDiff, this);
             }
         }
 
@@ -358,9 +363,9 @@ export class Region {
         }
         mysticGateSpots.push(maxPos);
         var gatePos = mysticGateSpots[Common.randint(0, mysticGateSpots.length)];
-        this.map[gatePos[0]][gatePos[1]].init("mysticgate", maxDiff, minDiff);
+        this.map[gatePos[0]][gatePos[1]].init("mysticgate", maxDiff, minDiff, this);
 
-        this.map[townPoint[1]][townPoint[0]].init("town", minDiff, minDiff);
+        this.map[townPoint[1]][townPoint[0]].init("town", minDiff, minDiff, this);
         this.map[townPoint[1]][townPoint[0]].building = BuildingRegistry.getBuildingByName("town");
         this.placeBuilding(townPoint[0], townPoint[1], BuildingRegistry.getBuildingByName("town"));
         this.map[spawnPoint[1]][spawnPoint[0]].revealed = true;
