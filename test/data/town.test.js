@@ -92,4 +92,14 @@ describe('townTests', () => {
         townData.endOfWeek();
         expect(townData.currentPopulation).toBeGreaterThan(pop);
     });
+
+    test('Increasing friendship level increases friendship bonus', () => {
+        var townData = new TownData(1);
+
+        var bonus = townData.getFriendshipBonus();
+        var oldXp = townData.friendshipToNext;
+        townData.addFriendship(townData.friendshipToNext);
+        expect(townData.getFriendshipBonus()).toBeGreaterThan(bonus);
+        expect(townData.friendshipToNext).toBeGreaterThan(oldXp);
+    });
 });
