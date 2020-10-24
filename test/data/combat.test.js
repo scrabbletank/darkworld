@@ -2,17 +2,19 @@ import { CombatManager } from '../../src/data/CombatManager';
 import { PlayerData } from '../../src/data/PlayerData';
 import { CreatureRegistry } from '../../src/data/CreatureRegistry';
 import { Common } from '../../src/utils/Common';
-import { TileData } from '../../src/data/Region'
+import { TileData, Region } from '../../src/data/Region'
 
 describe('combatTests', () => {
     var combat;
     var tile;
+    var region;
 
     beforeEach(() => {
         PlayerData.getInstance().rebirth();
         combat = new CombatManager();
+        region = new Region(8, 8, 0, "temperate")
         tile = new TileData();
-        tile.init("forest", 1, 0);
+        tile.init("forest", 1, 0, region);
         combat.setTile(tile);
         jest.clearAllMocks();
     });

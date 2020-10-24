@@ -26,9 +26,6 @@ describe('tileTests', () => {
 
         expect(result).toBe(true);
         expect(tile.amountExplored).toBeGreaterThan(tile.explorationNeeded);
-
-        result = tile.explore(999999);
-        expect(result).toBe(false);
     });
 
     test('can add sighting and increase invation power', () => {
