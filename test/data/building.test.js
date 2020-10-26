@@ -1,6 +1,7 @@
 import { BuildingRegistry } from '../../src/data/BuildingRegistry'
 import { WorldData } from '../../src/data/WorldData';
 import { Statics } from '../../src/data/Statics';
+import { PlayerData } from '../../src/data/PlayerData';
 
 describe('buildingTests', () => {
 
@@ -140,5 +141,17 @@ describe('buildingTests', () => {
         expect(region.map[2][3].roadBuildable).toBe(true);
         expect(region.map[4][3].roadBuildable).toBe(true);
         expect(region.townData.getTownIncome()).toBeGreaterThan(income);
+    });
+    
+    test('Alchemy labs convert resources', () => {
+        PlayerData.getInstance().resources[0] = [500, 500, 500, 500, 500, 500];
+        region.placeBuilding(3, 3, BuildingRegistry.getBuildingByName("alchemy"));
+        region.upgradeBuilding(3, 3);
+        region.upgradeBuilding(3, 3);
+
+        region.updateDay();
+
+        expect(PlayerData.getInstance().resources[0][0]).toBeLessThan(500);
+        expect(PlayerData.getInstance().resources[1][0]).toBeGreaterThan(0);
     });
 });

@@ -84,6 +84,9 @@ export class TileSelectWindow {
                 if (tile.dockBuildable === true) {
                     bld.push("docks");
                 }
+                if (region.townData.alchemyEnabled === true) {
+                    bld.push("alchemy");
+                }
                 if (tile.yields.length > 0) {
                     if (tile.houseBuildable) {
                         bld.push("house");

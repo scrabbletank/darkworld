@@ -202,6 +202,13 @@ export class ProgressionStore {
         return ProgressionStore.instance;
     }
 
+    static getInstance() {
+        if (!ProgressionStore.instance) {
+            return new ProgressionStore();
+        }
+        return ProgressionStore.instance;
+    }
+
     rebirth() {
         this.unlocks = {
             // Tabs
@@ -343,6 +350,8 @@ export class ProgressionStore {
                 break;
             case Statics.UNLOCK_WORLD_TAB:
                 this.unlocks.worldTab = true;
+                break;
+            case Statics.UNLOCK_GENERIC:
                 break;
         }
 

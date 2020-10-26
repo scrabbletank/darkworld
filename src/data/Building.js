@@ -104,6 +104,11 @@ export class Building {
                 var bonus = tier * 2 * region.townData.economyMulti;
                 return "Docks don't need roads and enables roads to be built beside them. Increases gold earned per week by " +
                     Math.floor(bonus) + ".";
+            case "Alchemy Lab":
+                var drain = [1, 5, 13, 33, 77];
+                var gain = [0.05, 0.3, 0.9, 3, 8];
+                return "Through strange magic converts " + drain[tier - 1] + " of all resources into " + gain[tier - 1] + " of resources " +
+                    "of the next highest tier each day.";
         }
     }
 }

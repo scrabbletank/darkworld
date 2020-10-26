@@ -43,6 +43,7 @@ export class TownData {
         this.buildingIncome = 0;
         this.townExplored = false;
         this.researchEnabled = false;
+        this.alchemyEnabled = false;
         this.friendship = 0;
         this.friendshipLevel = 0;
         this.friendshipToNext = 25;
@@ -194,7 +195,8 @@ export class TownData {
             te: this.townExplored,
             re: this.researchEnabled,
             fr: this.friendship,
-            frl: this.friendshipLevel
+            frl: this.friendshipLevel,
+            alc: this.alchemyEnabled
         }
 
         return saveObj;
@@ -213,6 +215,7 @@ export class TownData {
         this.researchEnabled = saveObj.re;
         this.friendship = saveObj.fr;
         this.friendshipLevel = saveObj.frl;
+        this.alchemyEnabled = saveObj.alc;
         this._calcFriendshipToNext();
         for (var i = 0; i < saveObj.bld.length; i++) {
             this.buildings[saveObj.bld[i][0]].level = saveObj.bld[i][1];

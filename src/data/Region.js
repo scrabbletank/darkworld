@@ -21,6 +21,7 @@ import { Building } from './Building';
 import { DynamicSettings } from './DynamicSettings';
 import { BuildingRegistry } from './BuildingRegistry';
 import { WorldData } from './WorldData';
+import { ProgressionStore } from './ProgressionStore';
 
 export class TileData {
 
@@ -199,6 +200,8 @@ export class Region {
         this.roads = [];
         this.markets = [];
         this.productionBuildings = [];
+        this.alchemyDrain = 0;
+        this.alchemyGain = 0;
 
         if (ignoreGen === true) {
             return true;
@@ -422,6 +425,14 @@ export class Region {
                 this._onTileChanged(this.map[y][x + 1]);
             }
         }
+        if (this.regionLevel > 0 && this.regionLevel <= 8 && WorldData.getInstance().getRegion(this.regionLevel - 1).townData.alchemyEnabled === false) {
+            WorldData.getInstance().getRegion(this.regionLevel - 1).townData.alchemyEnabled = true;
+            ProgressionStore.getInstance().registerFeatureUnlocked(Statics.UNLOCK_GENERIC, 
+                "You recieved a letter from the previous town. A mysterious old man came through and taught them " +
+                "the magic of alchemy. You may now build alchemy labs to convert tier " + (this.regionLevel - 1) + 
+                " resources to tier " + this.regionLevel + " resources at a horribly inefficient rate! Thanks " +
+                "mysterious old man!");
+        }
         this._onTileChanged(this.map[y][x]);
         return this.map[y][x];
     }
@@ -519,6 +530,8 @@ export class Region {
         var tavernPop = 0;
         this.townData.buildingIncome = 0;
         this.resourcesPerDay = [0, 0, 0, 0, 0, 0];
+        this.alchemyDrain = 0;
+        this.alchemyGain = 0;
         for (var i = 0; i < this.height; i++) {
             for (var t = 0; t < this.width; t++) {
                 this.map[i][t].roadDist = -1;
@@ -580,6 +593,9 @@ export class Region {
         }
 
         //calculate production bonuses
+        //for alchemy
+        var drain = [1, 5, 13, 33, 77];
+        var gain = [0.05, 0.3, 0.9, 3, 8];
         for (var i = 0; i < this.productionBuildings.length; i++) {
             var tile = this.map[this.productionBuildings[i][0]][this.productionBuildings[i][1]];
             var prodBonus = 1 + (tile.defense * MoonlightData.getInstance().moonperks.moonlightworkers.level * 0.01);
@@ -623,6 +639,10 @@ export class Region {
                         this.map[tile.y][tile.x + 1].roadBuildable = true;
                     }
                     break;
+                case "Alchemy Lab":
+                    this.alchemyDrain += drain[tile.building.tier - 1];
+                    this.alchemyGain += gain[tile.building.tier - 1];
+                    break;
             }
         }
         this.townData.setTavernPopulation(tavernPop);
@@ -639,6 +659,7 @@ export class Region {
             case "Quarry":
             case "Crystal Loom":
             case "Docks":
+            case "Alchemy Lab":
                 this.productionBuildings.push([tile.y, tile.x]);
                 break;
             case "Town House":
@@ -675,6 +696,7 @@ export class Region {
             case "Quarry":
             case "Crystal Loom":
             case "Docks":
+            case "Alchemy Lab":
                 this.productionBuildings = this.productionBuildings.filter(p => p[1] !== tile.x || p[0] !== tile.y);
                 break;
             case "Town House":
@@ -756,12 +778,28 @@ export class Region {
         this.townData.endOfDay();
         var player = new PlayerData();
 
+        //add resources from buildings here
         var resource = [];
         var govBonus = 1 + player.talents.governance.level * 0.03;
+        var tier = Math.min(this.regionLevel, 8);
         for (var i = 0; i < this.resourcesPerDay.length; i++) {
             resource.push(Math.max(0, this.resourcesPerDay[i] * this.townData.productionMulti * govBonus));
         }
-        player.addResource(resource, Math.floor(this.regionLevel));
+        player.addResource(resource, tier);
+
+        // calculate alchemy production here, first drain resources, and then give proportional resources of next tier
+        // If there are not enough resources to drain, production is scaled proportionally across all alchemy labs
+        if (this.alchemyDrain > 0) {
+            var resource = [];
+            for (var i = 0; i < player.resources[tier].length; i++) {
+                resource.push(Math.min(this.alchemyDrain, player.resources[tier][i]));
+            }
+            player.spendResource(resource, tier);
+            for (var i = 0; i < player.resources[tier].length; i++) {
+                resource[i] = (resource[i] / this.alchemyDrain) * this.alchemyGain;
+            }
+            player.addResource(resource, Math.min(tier + 1, 8));
+        }
 
         if (this.tilesExplored >= 11) {
             this.sightingsDelay -= Statics.TIME_PER_DAY;
@@ -772,7 +810,7 @@ export class Region {
         for (var i = 0; i < this.sightings.length; i++) {
             var s = this.sightings[i];
             //TODO Add ramping strength from land/building
-            this.map[s[0]][s[1]].incInvasionPower(this.regionLevel);
+            this.map[s[0]][s[1]].incInvasionPower(this.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease);
             this.invasionCounter += this.map[s[0]][s[1]].getInvasionMulti() * (1 / (1 + player.talents.guardian.level * 0.25));
         }
 

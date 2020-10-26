@@ -99,6 +99,10 @@ export class TownScene extends SceneUIBase {
         for (var i = 0; i < region.resourcesPerDay.length; i++) {
             txt += "  " + Statics.RESOURCE_NAMES[i] + ": " + (Math.floor(region.resourcesPerDay[i] * region.townData.productionMulti * govBonus * 100) / 100) + "\n";
         }
+        if (region.alchemyDrain > 0) {
+            txt += "  Alchemy Drain: " + region.alchemyDrain + "\n" +
+                "  Alchemy Gain: " + Math.floor(region.alchemyGain * 100) / 100;
+        }
 
         this.statsLabel.setText(txt);
 
