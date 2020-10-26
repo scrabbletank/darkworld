@@ -52,4 +52,12 @@ export class TooltipImage {
         this.floatingText.destroy();
         this.floatingText = undefined;
     }
+
+    destroy() {
+        if (this.floatingText !== undefined) {
+            this.floatingText.destroy();
+        }
+        this.backRect.destroy();
+        this.img.destroy();
+    }
 }

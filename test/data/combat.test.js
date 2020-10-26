@@ -3,6 +3,7 @@ import { PlayerData } from '../../src/data/PlayerData';
 import { CreatureRegistry } from '../../src/data/CreatureRegistry';
 import { Common } from '../../src/utils/Common';
 import { TileData, Region } from '../../src/data/Region'
+import { Statics } from '../../src/data/Statics';
 
 describe('combatTests', () => {
     var combat;
@@ -12,7 +13,7 @@ describe('combatTests', () => {
     beforeEach(() => {
         PlayerData.getInstance().rebirth();
         combat = new CombatManager();
-        region = new Region(8, 8, 0, "temperate")
+        region = new Region(8, 8, 0, "temperate", [])
         tile = new TileData();
         tile.init("forest", 1, 0, region);
         combat.setTile(tile);
@@ -55,7 +56,11 @@ describe('combatTests', () => {
         expect(chitMock).toHaveBeenCalled();
 
         // killing the monster should trigger rewards
-        combat.monsters[0].currentHealth = 1;
+        for (var i = 0; i < combat.monsters.length; i++) {
+            combat.monsters[i].currentHealth = 0.01;
+            combat.monsters[i].attackCooldown = 0;
+        }
+        combat.globalAttackCooldown = 0;
         PlayerData.getInstance().statBlock.attackCooldown = 99999;
         combat.update(1);
 
@@ -93,7 +98,7 @@ describe('combatTests', () => {
         var monsters = [CreatureRegistry.GetCreatureByName("wolf", 1), CreatureRegistry.GetCreatureByName("bear", 1)];
         jest.spyOn(tile, 'generateMonsters').mockImplementation(() => { return monsters; });
         monsters[1].currentHealth = 0;
-        combat.initFight(monsters);
+        combat.initFight();
 
         combat.update(5);
 

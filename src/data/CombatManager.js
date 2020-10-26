@@ -180,6 +180,11 @@ export class CombatManager {
                 this.monsters[i].tickAttackCooldown(delta, multi);
                 this.monsters[i].tickRegen(delta);
 
+                var poison = this.monsters[i].findTrait(Statics.TRAIT_POISONED);
+                if (poison !== undefined) {
+                    player.statBlock.takeDamage(this.monsters[i].DamageMax() * 0.03 * poison.level * (delta / 1000), false, true);
+                }
+
                 if (this.monsters[i].canAttack() === true) {
                     var crit = this.monsters[i].CritChance() > Math.random();
                     var dmg = this.monsters[i].attack(player.statBlock, crit);
@@ -188,7 +193,7 @@ export class CombatManager {
                     if (this.playerHitCallback !== undefined) {
                         this.playerHitCallback(this.monsters[i], crit);
                     }
-                    return;
+                    break;
                 }
             }
 
@@ -223,7 +228,6 @@ export class CombatManager {
                 this.target = this._getTarget();
                 this.globalAttackCooldown = 150;
             }
-
 
             if (this._monstersAlive() === false) {
                 this._handleRewards();

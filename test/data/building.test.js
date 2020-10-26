@@ -116,7 +116,7 @@ describe('buildingTests', () => {
     });
     
     test('roads give production bonuses based on tier and distance to roads', () => {
-        region.map[3][1].yields = [
+        region.map[3][0].yields = [
             { type: Statics.RESOURCE_WOOD, rate: 1 }
         ]
         region.placeBuilding(3, 3, BuildingRegistry.getBuildingByName("road"));

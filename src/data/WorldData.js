@@ -8,7 +8,7 @@ export class WorldData {
         if (!WorldData.instance) {
             var regSize = DynamicSettings.getInstance().regionSize;
             this.regionList = [];
-            this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate"));
+            this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate", []));
             this.currentRegion = 0;
             this.nextRegions = [];
             this.timeAtRunStart = 0;
@@ -31,7 +31,7 @@ export class WorldData {
     rebirth() {
         var regSize = DynamicSettings.getInstance().regionSize;
         this.regionList = [];
-        this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate"));
+        this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate", []));
         this.currentRegion = 0;
         this.nextRegions = [];
         this.timeAtRunStart = this.time.time;
@@ -57,20 +57,39 @@ export class WorldData {
         return cap;
     }
 
+    _randomizeTraits(count) {
+        var traits = [];
+        for (var i = 0; i < count; i++) {
+            var traitType = Common.randint(1, 7);
+            var temp = traits.find(t => t.type === traitType);
+            if (temp !== undefined) {
+                temp.level += 1;
+            } else {
+                traits.push({ type: traitType, level: 1 });
+            }
+        }
+        traits = traits.sort((a, b) => { return b.level - a.level });
+        return traits;
+    }
+
     generateRegionChoices() {
         var numChoices = Common.randint(2, 5);
         var choices = ["temperate", "mountains", "desert", "forest", "hills"];
         this.nextRegions = [];
         for (var i = 0; i < numChoices; i++) {
             var choice = Common.randint(0, choices.length);
-            this.nextRegions.push(choices[choice]);
+            var totalTraits = Math.floor((this.regionLevel - 1) / 2);
+            this.nextRegions.push({
+                type: choices[choice],
+                traits: this._randomizeTraits(totalTraits)
+            });
             choices.splice(choice, 1);
         }
     }
 
     addRegion(index) {
         var regSize = DynamicSettings.getInstance().regionSize;
-        this.regionList.push(new Region(regSize[0], regSize[1], this.regionList.length, this.nextRegions[index]));
+        this.regionList.push(new Region(regSize[0], regSize[1], this.regionList.length, this.nextRegions[index].type, this.nextRegions[index].traits));
         this.regionList[this.regionList.length - 1].worldHeight = Math.floor((index + 1) * (700 / (this.nextRegions.length + 1)));
         this.nextRegions = [];
     }

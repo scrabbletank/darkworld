@@ -173,23 +173,25 @@ export class TileData {
             for (var i = 0; i < numCreatures; i++) {
                 var num = Common.randint(0, this.enemies.length);
                 enemyList.push(CreatureRegistry.GetCreatureByName(this.enemies[num], this.difficulty));
+                if (MoonlightData.getInstance().moonperks.direbeasts.level > 0) {
+                    if (Math.random() < 0.05) {
+                        enemyList[i].addTrait("Dire", 1);
+                    }
+                }
+                for (var t = 0; t < this.parent.traits.length; t++) {
+                    enemyList[i].addTrait(this.parent.traits[t].type, this.parent.traits[t].level);
+                }
+                enemyList[i].applyTraits();
             }
         }
 
-        if (MoonlightData.getInstance().moonperks.direbeasts.level > 0) {
-            for (var i = 0; i < this.enemyList.length; i++) {
-                if (Math.random() < 0.05) {
-                    this.monsters[i].addTemplate("Dire");
-                }
-            }
-        }
 
         return enemyList;
     }
 }
 
 export class Region {
-    constructor(width = 8, height = 8, regionLevel, regionType, ignoreGen = false) {
+    constructor(width = 8, height = 8, regionLevel, regionType, traits, ignoreGen = false) {
         //non-save variables
         this.tileChangedHandler = undefined;
         this.resourcesPerDay = [0, 0, 0, 0, 0, 0];
@@ -220,6 +222,7 @@ export class Region {
             }
             this.map.push(row);
         }
+        this.traits = traits;
 
         var points = [];
         for (var i = 0; i < RegionRegistry.REGION_TYPES[regionType].points.length; i++) {
@@ -256,14 +259,15 @@ export class Region {
             sd: this.sightingsDelay,
             ic: this.invasionCounter,
             wh: this.worldHeight,
-            type: this.type
+            type: this.type,
+            tr: this.traits
         }
 
         return saveObj;
     }
 
     static loadFromSave(saveObj, ver) {
-        var region = new Region(0, 0, 0, "temperate", true);
+        var region = new Region(0, 0, 0, "temperate", [], true);
 
         region.width = saveObj.w;
         region.height = saveObj.h;
@@ -276,6 +280,7 @@ export class Region {
         region.invasionCounter = saveObj.ic;
         region.worldHeight = saveObj.wh;
         region.type = saveObj.type;
+        region.traits = saveObj.tr;
         region.map = []
         for (var i = 0; i < saveObj.map.length; i++) {
             var row = [];

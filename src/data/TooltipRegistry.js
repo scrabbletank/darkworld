@@ -1,3 +1,4 @@
+import { Statics } from "./Statics";
 import { WorldTime } from "./WorldTime";
 
 export class TooltipRegistry {
@@ -247,6 +248,29 @@ export class TooltipRegistry {
                     "                     +3 Challenge Points\n\n" +
                     "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
                     "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
+        }
+    }
+
+    static getTraitTooltip(trait) {
+        switch (trait.type) {
+            case Statics.TRAIT_DIRE:
+                return "Dire " + trait.level + ": Core stats are increased by " + trait.level * 20 + "%, drops motes and gives " +
+                    trait.level * 75 + "% more experience.";
+            case Statics.TRAIT_POISONED:
+                return "Poisoned " + trait.level + ": Deals " + trait.level * 3 + "% of its max damage per second as true damage.";
+            case Statics.TRAIT_MONSTROUS:
+                return "Monstrous " + trait.level + ": Attack speed is reduced by 15%. Has " + trait.level * 25 + "% increased health and " +
+                    trait.level * 10 + "% increased damage.";
+            case Statics.TRAIT_QUICK:
+                return "Quick " + trait.level + ": Attack speed is increased by 20%. Has " + trait.level * 25 + "% increased evasion.";
+            case Statics.TRAIT_DEADLY:
+                return "Deadly " + trait.level + ": Crit chance is doubled and has " + trait.level * 5 + "% more damage and crit damage.";
+            case Statics.TRAIT_SHIELDED:
+                return "Shielded " + trait.level + ": Every 7 seconds gains " + trait.level * 100 + "% of their armor as a shield that " +
+                    "absorbs incoming damage.";
+            case Statics.TRAIT_BESERK:
+                return "Beserk " + trait.level + ": Hit chance is increased by " + trait.level * 20 + "%, health regen by " +
+                    trait.level * 10 + "% and has a " + Math.floor(((1 - Math.pow(0.92, trait.level)) * 100)) + "% chance to trigger Follow Through.";
         }
     }
 }

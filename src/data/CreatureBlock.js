@@ -59,6 +59,9 @@ export class CreatureBlock {
         this.drops = [];
         this.motes = 0;
         this.icon = { sprite: "enemyicons", tile: 8 };
+        this.traits = [];
+        this.shieldValue = 0;
+        this.shieldCooldown = 0;
 
         this.healthChangedHandlers = [];
         this.attackCooldownChangedHandlers = [];
@@ -151,9 +154,16 @@ export class CreatureBlock {
 
     canAttack() { return this.attackCooldown >= this.attackSpeed; }
 
-    takeDamage(damage, __isCrit) {
+    takeDamage(damage, __isCrit, trueDamage = false) {
         var dmg = damage;
-        dmg = Math.max(1, dmg - this.Armor());
+        if (this.shieldValue > 0) {
+            var shieldDmg = Math.min(this.shieldValue, dmg);
+            this.shieldValue -= shieldDmg;
+            dmg -= shieldDmg;
+        }
+        if (trueDamage === false) {
+            dmg = Math.max(1, dmg - this.Armor());
+        }
         this.currentHealth -= dmg;
         this._onHealthChanged();
         return dmg;
@@ -180,6 +190,15 @@ export class CreatureBlock {
         if (oldVal != this.attackCooldown) {
             this._onAttackCooldownChanged();
         }
+        //handle shielded here
+        var shielded = this.findTrait(Statics.TRAIT_SHIELDED);
+        if (shielded !== undefined) {
+            this.shieldCooldown -= delta;
+            if (this.shieldCooldown <= 0) {
+                this.shieldValue = this.Armor() * shielded.level;
+                this.shieldCooldown = 7000;
+            }
+        }
     }
     attack(creature, isCrit = false) {
         var rawDmg = this.rollDamage();
@@ -188,6 +207,14 @@ export class CreatureBlock {
         }
         var dmg = creature.takeDamage(rawDmg, isCrit);
         this.attackCooldown = 0;
+        //handle beserk trait, giving attack speed refresh
+        var beserk = this.findTrait(Statics.TRAIT_BESERK);
+        if (beserk !== undefined) {
+            if (Math.random() < (1 - Math.pow(0.92, beserk.level))) {
+                this.attackCooldown = this.attackSpeed / 2;
+            }
+        }
+
         this._onAttackCooldownChanged();
         return dmg;
     }
@@ -243,23 +270,89 @@ export class CreatureBlock {
         this.icon = icon;
     }
 
-    addTemplate(templateName) {
-        switch (templateName) {
-            case "Dire":
-                this.name = "Dire " + this.name;
-                this.stats.strength = this.stats.strength * 1.2;
-                this.stats.dexterity = this.stats.dexterity * 1.2;
-                this.stats.agility = this.stats.agility * 1.2;
-                this.stats.endurance = this.stats.endurance * 1.2;
-                this.stats.recovery = this.stats.recovery * 1.2;
-                this.stats.defense = this.stats.defense * 1.2;
-                this.stats.accuracy = this.stats.accuracy * 1.2;
-                this.xpReward = this.xpReward * 2;
-                var newDrops = [];
-                for (var i = 0; i < this.drops.length; i++) {
-                    newDrops.push({ type: this.drops[i].type, rate: this.drops[i].rate * 2 });
-                }
-                this.motes += 1 + Math.floor(this.level / 5);
+    findTrait(trait) {
+        for (var i = 0; i < this.traits.length; i++) {
+            if (this.traits[i].type === trait) {
+                return this.traits[i];
+            }
+        }
+        return undefined;
+    }
+
+    applyTraits() {
+        var extraStats = {
+            health: 0,
+            damageMin: 0,
+            damageMax: 0,
+            strength: 0,
+            dexterity: 0,
+            agility: 0,
+            endurance: 0,
+            recovery: 0,
+            defense: 0,
+            accuracy: 0,
+            hit: 0,
+            evasion: 0,
+            critDamage: 0,
+            critChance: 0,
+            healthRegen: 0,
+            armor: 0,
+            xpReward: 0,
+            motes: 0
+        };
+
+        for (var i = 0; i < this.traits.length; i++) {
+            var trait = this.traits[i];
+            switch (trait.type) {
+                case Statics.TRAIT_DIRE:
+                    extraStats.strength += this.Strength() * (0.2 * trait.level);
+                    extraStats.dexterity += this.Dexterity() * (0.2 * trait.level);
+                    extraStats.agility += this.Agility() * (0.2 * trait.level);
+                    extraStats.endurance += this.Endurance() * (0.2 * trait.level);
+                    extraStats.recovery += this.Recovery() * (0.2 * trait.level);
+                    extraStats.defense += this.Defense() * (0.2 * trait.level);
+                    extraStats.accuracy += this.Accuracy() * (0.2 * trait.level);
+                    extraStats.xpReward += this.xpReward * (0.75 * trait.level);
+                    extraStats.motes += trait.level + Math.floor(this.level / 5);
+                    break;
+                case Statics.TRAIT_MONSTROUS:
+                    extraStats.damageMin += this.DamageMin() * (0.1 * trait.level);
+                    extraStats.damageMax += this.DamageMax() * (0.1 * trait.level);
+                    extraStats.health += this.MaxHealth() * (0.25 * trait.level);
+                    this.attackSpeed = this.attackSpeed * 1.15;
+                    break;
+                case Statics.TRAIT_QUICK:
+                    extraStats.evasion += this.Evasion() * (0.25 * trait.level);
+                    this.attackSpeed = this.attackSpeed * 0.85;
+                    break;
+                case Statics.TRAIT_DEADLY:
+                    this.critChance = this.critChance * 2;
+                    extraStats.damageMin += this.DamageMin() * (0.05 * trait.level);
+                    extraStats.damageMax += this.DamageMax() * (0.05 * trait.level);
+                    extraStats.critDamage += this.CritDamage() * (0.05 * trait.level);
+                    break;
+                case Statics.TRAIT_BESERK:
+                    extraStats.hit += this.Hit() * (0.2 * trait.level);
+                    extraStats.healthRegen += this.HealthRegen() * (0.1 * trait.level);
+                    break;
+            }
+            this.currentHealth = this.MaxHealth();
+        }
+
+        for (const prop in this.statBonuses) {
+            this.statBonuses[prop] += extraStats[prop];
+        }
+        this.xpReward += extraStats.xpReward;
+        this.motes += extraStats.motes;
+    }
+
+    addTrait(trait, level) {
+        var newTrait = this.findTrait(trait);
+        if (newTrait === undefined) {
+            newTrait = { type: trait, level: level };
+            this.traits.push(newTrait);
+        } else {
+            newTrait.level += level;
         }
     }
 }

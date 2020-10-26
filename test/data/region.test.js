@@ -62,7 +62,7 @@ describe('regionTests', () => {
     });
 
     beforeEach(() => {
-        region = new Region(8, 8, 0, "temperate", false)
+        region = new Region(8, 8, 0, "temperate", [], false)
         region.removeTileChanged();
         jest.clearAllMocks();
     });

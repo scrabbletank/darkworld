@@ -142,7 +142,7 @@ export class PlayerBlock extends CreatureBlock {
         return Math.floor(ret);
     }
 
-    takeDamage(damage, isCrit) {
+    takeDamage(damage, isCrit, trueDamage = false) {
         if (this.player.talents.dodge.level > 0) {
             this.hitCounter -= 1;
             if (this.hitCounter <= 0) {
@@ -157,7 +157,7 @@ export class PlayerBlock extends CreatureBlock {
         if (Math.random() < this.player.talents.parry.level * 0.05) {
             dmg = dmg / 2;
         }
-        dmg = super.takeDamage(dmg, isCrit);
+        dmg = super.takeDamage(dmg, isCrit, trueDamage);
         if (this.player.talents.secondwind.level > 0 && this.secondWindCooldown <= 0 && this.currentHealth < this.MaxHealth() / 2) {
             this.secondWindDuration = 10000;
             this.secondWindCooldown = Statics.SECONDWIND_COOLDOWN - this.player.talents.secondwind.level * 10000;
