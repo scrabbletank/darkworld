@@ -61,17 +61,17 @@ export class MoonlightScene extends SceneUIBase {
         this.challengePointIcon = new TooltipImage(this, 20, 20, 16, 16, { sprite: "moonicons", tile: 7 },
             "Challenge Points earned from completing challenges. Each point increases your core stats by an additional 1%.");
         this.challengePointLabel = this.add.bitmapText(40, 20, "courier20", MoonlightData.instance.challengePoints + "");
-        this.challengeBtn.setVisible(ProgressionStore.instance.persistentUnlocks.challenges);
-        this.challengePointIcon.setVisible(ProgressionStore.instance.persistentUnlocks.challenges);
-        this.challengePointLabel.setVisible(ProgressionStore.instance.persistentUnlocks.challenges);
+        this.challengeBtn.setVisible(ProgressionStore.getInstance().persistentUnlocks.challenges);
+        this.challengePointIcon.setVisible(ProgressionStore.getInstance().persistentUnlocks.challenges);
+        this.challengePointLabel.setVisible(ProgressionStore.getInstance().persistentUnlocks.challenges);
     }
 
     enableLeveling() {
         this.canLevelPerks = true;
-        this.challengeBtn.setVisible(ProgressionStore.instance.persistentUnlocks.challenges);
-        this.challengePointIcon.setVisible(ProgressionStore.instance.persistentUnlocks.challenges);
-        this.challengePointLabel.setText(MoonlightData.instance.challengePoints + "");
-        this.challengePointLabel.setVisible(ProgressionStore.instance.persistentUnlocks.challenges);
+        this.challengeBtn.setVisible(ProgressionStore.getInstance().persistentUnlocks.challenges);
+        this.challengePointIcon.setVisible(ProgressionStore.getInstance().persistentUnlocks.challenges);
+        this.challengePointLabel.setText(MoonlightData.getInstance().challengePoints + "");
+        this.challengePointLabel.setVisible(ProgressionStore.getInstance().persistentUnlocks.challenges);
     }
 
     _setupChallengeWindow() {

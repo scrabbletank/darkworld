@@ -42,8 +42,8 @@ export class Gear {
                     this.statBonuses[prop] += this.statsPerLevel[prop] * Math.ceil((i + 1) / 5);
                 }
             }
-            for (const prop in this.costs) {
-                this.costs[prop] += this.costsPerLevel[prop] * (i + 1);
+            for (var t = 0; t < this.costs.length; t++) {
+                this.costs[t] += this.costsPerLevel[t] * (i + 1);
             }
         }
         this.level = level;

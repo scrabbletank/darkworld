@@ -34,8 +34,8 @@ export class TownScene extends SceneUIBase {
             .setInteractive();
 
         this.townNameLabel = this.add.bitmapText(this.relativeX(10), this.relativeY(10), "courier20", "Town");
-        this.regionNameLabel = this.add.bitmapText(this.relativeX(10), this.relativeY(30), "courier16", "Region 1");
-        this.statsLabel = this.add.bitmapText(this.relativeX(15), this.relativeY(50), "courier16", "Region 1");
+        this.regionNameLabel = this.add.bitmapText(this.relativeX(10), this.relativeY(30), "courier16", "Region ");
+        this.statsLabel = this.add.bitmapText(this.relativeX(15), this.relativeY(50), "courier16", "");
 
         this.buildingBtn = new TextButton(this, this.relativeX(240), this.relativeY(10), 120, 20, "Buildings")
             .onClickHandler(() => { this._showBuildings(true); });
@@ -105,6 +105,7 @@ export class TownScene extends SceneUIBase {
         }
 
         this.statsLabel.setText(txt);
+        this.regionNameLabel.setText("Region " + (region.regionLevel + 1));
 
         for (var i = 0; i < this.buildingDisplays.length; i++) {
             this.buildingDisplays[i].destroy();

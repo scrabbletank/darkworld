@@ -289,7 +289,7 @@ export class Region {
             var row = [];
             for (var t = 0; t < saveObj.map[i].length; t++) {
                 var tile = TileData.loadFromSave(saveObj.map[i][t], ver);
-                tile.init(tile.regName, tile.difficulty, this.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease, region);
+                tile.init(tile.regName, tile.difficulty, region.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease, region);
                 row.push(tile);
             }
             region.map.push(row);
@@ -354,24 +354,26 @@ export class Region {
         }
 
         //find a place to put the mystic gate, either randomly in a spot max difficulty or above, or at highest difficulty place otherwise
-        var mysticGateSpots = [];
-        var max = 0;
-        var maxPos = [0, 0];
-        for (var i = 0; i < this.height; i++) {
-            for (var t = 0; t < this.width; t++) {
-                if (this.map[i][t].difficulty >= maxDiff - 1) {
-                    mysticGateSpots.push([i, t]);
-                }
-                if (this.map[i][t].difficulty > max) {
-                    maxPos[0] = i;
-                    maxPos[1] = t;
-                    max = this.map[i][t].difficulty;
+        if (this.regionLevel >= DynamicSettings.getInstance().minGateRegion) {
+            var mysticGateSpots = [];
+            var max = 0;
+            var maxPos = [0, 0];
+            for (var i = 0; i < this.height; i++) {
+                for (var t = 0; t < this.width; t++) {
+                    if (this.map[i][t].difficulty >= maxDiff - 1) {
+                        mysticGateSpots.push([i, t]);
+                    }
+                    if (this.map[i][t].difficulty > max) {
+                        maxPos[0] = i;
+                        maxPos[1] = t;
+                        max = this.map[i][t].difficulty;
+                    }
                 }
             }
+            mysticGateSpots.push(maxPos);
+            var gatePos = mysticGateSpots[Common.randint(0, mysticGateSpots.length)];
+            this.map[gatePos[0]][gatePos[1]].init("mysticgate", maxDiff, minDiff, this);
         }
-        mysticGateSpots.push(maxPos);
-        var gatePos = mysticGateSpots[Common.randint(0, mysticGateSpots.length)];
-        this.map[gatePos[0]][gatePos[1]].init("mysticgate", maxDiff, minDiff, this);
 
         this.map[townPoint[1]][townPoint[0]].init("town", minDiff, minDiff, this);
         this.map[townPoint[1]][townPoint[0]].building = BuildingRegistry.getBuildingByName("town");
@@ -427,9 +429,9 @@ export class Region {
         }
         if (this.regionLevel > 0 && this.regionLevel <= 8 && WorldData.getInstance().getRegion(this.regionLevel - 1).townData.alchemyEnabled === false) {
             WorldData.getInstance().getRegion(this.regionLevel - 1).townData.alchemyEnabled = true;
-            ProgressionStore.getInstance().registerFeatureUnlocked(Statics.UNLOCK_GENERIC, 
+            ProgressionStore.getInstance().registerFeatureUnlocked(Statics.UNLOCK_GENERIC,
                 "You recieved a letter from the previous town. A mysterious old man came through and taught them " +
-                "the magic of alchemy. You may now build alchemy labs to convert tier " + (this.regionLevel - 1) + 
+                "the magic of alchemy. You may now build alchemy labs to convert tier " + (this.regionLevel - 1) +
                 " resources to tier " + this.regionLevel + " resources at a horribly inefficient rate! Thanks " +
                 "mysterious old man!");
         }
@@ -599,6 +601,7 @@ export class Region {
         for (var i = 0; i < this.productionBuildings.length; i++) {
             var tile = this.map[this.productionBuildings[i][0]][this.productionBuildings[i][1]];
             var prodBonus = 1 + (tile.defense * MoonlightData.getInstance().moonperks.moonlightworkers.level * 0.01);
+            prodBonus = prodBonus * (1 + MoonlightData.getInstance().challenges.buildings.completions);
             switch (tile.building.name) {
                 case "Lumberyard":
                     this.resourcesPerDay[Statics.RESOURCE_WOOD] += tile.building.tier * Common.yieldHelper(Statics.RESOURCE_WOOD, tile.yields) *

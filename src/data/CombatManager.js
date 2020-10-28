@@ -3,6 +3,8 @@ import { PlayerData } from "./PlayerData";
 import { Common } from "../utils/Common";
 import { Combat } from "../utils/Combat";
 import { Statics } from "./Statics";
+import { ProgressionStore } from "./ProgressionStore";
+import { WorldData } from "./WorldData";
 
 export class CombatManager {
     constructor() {
@@ -140,8 +142,8 @@ export class CombatManager {
         rewards.shade *= MoonlightData.getInstance().getShadowBonus() * this.activeTile.parent.townData.getFriendshipBonus();
 
         if (this.activeTile.isInvaded === true) {
-            if (this.progression.unlocks.motes === false) {
-                this.progression.registerFeatureUnlocked(Statics.UNLOCK_MOTES_UI,
+            if (ProgressionStore.getInstance().unlocks.motes === false) {
+                ProgressionStore.getInstance().registerFeatureUnlocked(Statics.UNLOCK_MOTES_UI,
                     "Well it happened. Some big bad monsters came back to spew their horrible mists all over the " +
                     "place again, but fortunately for you you had prepared for this. After killing the " +
                     "great misty one in the back it dropped something you haven't seen before... sort of like Shade, but like, " +

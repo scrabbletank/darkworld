@@ -205,47 +205,56 @@ export class TooltipRegistry {
             case "A Matter of Years":
                 return "Now that you've reached out into the world and understand the basics why not do it again, but faster. As they " +
                     "say, practice makes perfect!\n\n" +
-                    "Restrictions: Reach the 2nd Gate within " + (10 - challenge.completions) + " Years.\n\n" +
+                    "Restrictions: Reach the 2nd Gate within " + (9 - challenge.completions * 2) + " Years.\n\n" +
                     "On First Completion: Unlock new challenges.\n" +
-                    "On Every Completion: Increases moonlight earned by 10%\n" +
-                    "                     +1 Challenge Point\n\n" +
+                    "On Every Completion: Increases moonlight earned by 15%\n" +
+                    "                     +2 Challenge Points\n\n" +
                     "It is possible to fail this challenge!\n\n" +
                     "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
                     "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
             case "Forged Ahead":
-                return "Those forge upgrades sure are useful, especially now that all your gear costs " + (10 + challenge.completions * 5) +
+                return "Those forge upgrades sure are useful, especially now that all your gear costs " + (10 + challenge.completions * 10) +
                     " times as much.\n\n" +
-                    "Restrictions: Gear costs increased by " + (10 + challenge.completions * 5) + " times.\n" +
+                    "Restrictions: Gear costs increased by " + (10 + challenge.completions * 10) + " times.\n" +
                     "              Reach the 2nd Gate.\n\n" +
-                    "On Every Completion: Gear costs are multiplied by x0.95\n" +
-                    "                     +1 Challenge Points\n\n" +
-                    "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
-                    "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
-            case "Vast Continent":
-                return "A Hero must be able to reach all those in need, even the ones really really really far away.\n\n" +
-                    "Restrictions: Explore speed is reduced by 25\n" +
-                    "              Reach Gate " + (1 + challenge.completions) + ".\n\n" +
-                    "On First Completion: Increases explore speed by 25%\n" +
-                    "On Every Completion: Increases explore speed by 10%\n" +
+                    "On Every Completion: Gear costs are multiplied by x0.925\n" +
                     "                     +2 Challenge Points\n\n" +
                     "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
-                    "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();;
-            case "Forgotten Labor":
-                return "None of the townsfolk in this realm know how to work. Either that or they're just really lazy.\n\n" +
-                    "Restrictions: Production buildings are unavailable.\n" +
+                    "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
+            case "Giant Lands":
+                return "Is this land massive, or are you just really small? Each region is smaller, but takes 25 times longer to explore. " +
+                    "Also all monsters have the Monstrous " + (1 + challenge.completions) + " trait.\n\n" +
+                    "Restrictions: Exploration needed is increased by 25x\n" +
                     "              Reach Gate " + (1 + challenge.completions) + ".\n\n" +
-                    "On First Completion: Unlock the Warehouse building.\n" +
-                    "On Every Completion: Increases building production by 3%\n" +
+                    "On Every Completion: Increases explore speed by 25%\n" +
                     "                     +3 Challenge Points\n\n" +
                     "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
                     "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
             case "Talentless":
                 return "You rely way too much on those talents. Let's see you get through without them.\n\n" +
                     "Restrictions: Talents are removed.\n" +
-                    "              Reach Gate " + (1 + challenge.completions) + ".\n\n" +
-                    "On First Completion: Talent costs scale slightly slower.\n" +
+                    "              Reach Gate " + (3 + challenge.completions) + ".\n\n" +
                     "On Every Completion: Start with +1 Talent points.\n" +
+                    "                     Talent costs scale slightly slower.\n" +
                     "                     +3 Challenge Points\n\n" +
+                    "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
+                    "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
+            case "Lazy Townsfolk":
+                return "None of the townsfolk in this realm know how to work. Either that or they're just really lazy.\n\n" +
+                    "Restrictions: Production buildings are unavailable.\n" +
+                    "              Reach Gate " + (3 + challenge.completions) + ".\n\n" +
+                    "On First Completion: Unlock the Warehouse building.\n" +
+                    "On Every Completion: Increases building production by 10%\n" +
+                    "                     +4 Challenge Points\n\n" +
+                    "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
+                    "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
+            case "Mega Monsters":
+                return "*slaps monster* this baby can fit so many traits inside it. How many? " + (4 + challenge.completions * 2) +
+                    " traits. That's how many.\n\n" +
+                    "Restrictions: Monsters start with " + (4 + challenge.completions * 2) + " traits.\n" +
+                    "              Reach Gate " + (5 + challenge.completions) + ".\n\n" +
+                    "On Every Completion: Monsters give 5% more shade, plus 1% per trait.\n" +
+                    "                     +5 Challenge Points\n\n" +
                     "Completions: " + challenge.completions + "/" + challenge.maxCompletions + "\n" +
                     "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
         }

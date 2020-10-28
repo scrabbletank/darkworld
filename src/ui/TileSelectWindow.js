@@ -8,6 +8,7 @@ import { Common } from "../utils/Common";
 import { WorldData } from "../data/WorldData";
 import { Building } from "../data/Building";
 import { FloatingTooltip } from "./FloatingTooltip";
+import { DynamicSettings } from "../data/DynamicSettings";
 
 export class TileSelectWindow {
     constructor(scene, x, y, tile) {
@@ -59,26 +60,28 @@ export class TileSelectWindow {
                 if (tile.yields.length > 0 && tile.roadBuildable === true) {
                     bld.push("road");
                 }
-                for (var i = 0; i < tile.yields.length; i++) {
-                    switch (tile.yields[i].type) {
-                        case Statics.RESOURCE_WOOD:
-                            bld.push("wood");
-                            break;
-                        case Statics.RESOURCE_LEATHER:
-                            bld.push("leather");
-                            break;
-                        case Statics.RESOURCE_METAL:
-                            bld.push("metal");
-                            break;
-                        case Statics.RESOURCE_FIBER:
-                            bld.push("fiber");
-                            break;
-                        case Statics.RESOURCE_STONE:
-                            bld.push("stone");
-                            break;
-                        case Statics.RESOURCE_CRYSTAL:
-                            bld.push("crystal");
-                            break;
+                if (DynamicSettings.getInstance().buildingsAllowed === true) {
+                    for (var i = 0; i < tile.yields.length; i++) {
+                        switch (tile.yields[i].type) {
+                            case Statics.RESOURCE_WOOD:
+                                bld.push("wood");
+                                break;
+                            case Statics.RESOURCE_LEATHER:
+                                bld.push("leather");
+                                break;
+                            case Statics.RESOURCE_METAL:
+                                bld.push("metal");
+                                break;
+                            case Statics.RESOURCE_FIBER:
+                                bld.push("fiber");
+                                break;
+                            case Statics.RESOURCE_STONE:
+                                bld.push("stone");
+                                break;
+                            case Statics.RESOURCE_CRYSTAL:
+                                bld.push("crystal");
+                                break;
+                        }
                     }
                 }
                 if (tile.dockBuildable === true) {

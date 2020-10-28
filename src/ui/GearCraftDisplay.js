@@ -41,7 +41,9 @@ export class GearCraftDisplay {
         var txt = "";
         var bonus = gear.getStatBonuses();
         for (const prop in bonus) {
-            txt += Common.getBonusText(prop, bonus[prop]) + "\n";
+            if (bonus[prop] !== 0) {
+                txt += Common.getBonusText(prop, bonus[prop]) + "\n";
+            }
         }
         this.statLabels.push(sceneContext.add.bitmapText(x + 5, y + 45, "courier16", txt));
         if (progression.unlocks.resourceUI === true) {

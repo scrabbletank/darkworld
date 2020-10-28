@@ -18,11 +18,13 @@ export class Common {
 
     static numberString(x) {
         var ret = new Intl.NumberFormat('en-US').format(x);
-        if (ret.length >= 16) {
+        if (ret.length >= 20) {
+            ret = ret.substr(0, ret.length - 16) + "T";
+        } else if (ret.length >= 16) {
             ret = ret.substr(0, ret.length - 12) + "B";
         } else if (ret.length >= 12) {
             ret = ret.substr(0, ret.length - 8) + "M";
-        } else if (ret.length >= 9) {
+        } else if (ret.length >= 8) {
             ret = ret.substr(0, ret.length - 4) + "K";
         }
         return ret;

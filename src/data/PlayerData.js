@@ -27,10 +27,7 @@ export class PlayerData {
             this.craftingCosts = [1, 1, 1, 1, 1, 1, 1, 1];
             this.gold = 0;
             this.motes = 0;
-            this.challengeExploreMulti = 1;
-            if (MoonlightData.getInstance().challenges.explore.completions > 0) {
-                this.challengeExploreMulti = 1.25 + (MoonlightData.getInstance().challenges.explore.completions * 0.1);
-            }
+            this.challengeExploreMulti = 1 + (MoonlightData.getInstance().challenges.explore.completions * 0.25);
 
             this.weapon = undefined;
             this.armor = undefined;
@@ -91,15 +88,12 @@ export class PlayerData {
         this.craftingCosts = [1, 1, 1, 1, 1, 1, 1, 1];
         for (var i = 0; i < this.craftingCosts.length; i++) {
             this.craftingCosts[i] = this.craftingCosts[i] * DynamicSettings.getInstance().gearCostMulti;
-            this.craftingCosts[i] = this.craftingCosts[i] * Math.pow(Statics.FORGE_REDUCTION,
+            this.craftingCosts[i] = this.craftingCosts[i] * Math.pow(0.925,
                 MoonlightData.getInstance().challenges.forge.completions);
         }
         this.gold = 0;
         this.motes = 0;
-        this.challengeExploreMulti = 1;
-        if (MoonlightData.getInstance().challenges.explore.completions > 0) {
-            this.challengeExploreMulti = 1.25 + (MoonlightData.getInstance().challenges.explore.completions * 0.1);
-        }
+        this.challengeExploreMulti = 1 + (MoonlightData.getInstance().challenges.explore.completions * 0.25);
 
         this.weapon = undefined;
         this.armor = undefined;
@@ -213,7 +207,7 @@ export class PlayerData {
     }
     getTalentCost(buyAmount) {
         var ret = 0;
-        var challengeMod = MoonlightData.getInstance().challenges.talent.completions > 0 ? 0.02 : 0;
+        var challengeMod = MoonlightData.getInstance().challenges.talent.completions * 0.008;
         for (var i = 0; i < buyAmount; i++) {
             ret += Statics.TALENT_COST_BASE * Math.pow(Statics.TALENT_COST_POWER - challengeMod, (this.talentLevel - 1 + i));
         }

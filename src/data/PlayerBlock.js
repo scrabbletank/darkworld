@@ -157,6 +157,9 @@ export class PlayerBlock extends CreatureBlock {
         if (Math.random() < this.player.talents.parry.level * 0.05) {
             dmg = dmg / 2;
         }
+        if (Math.random() <= 0.2) {
+            dmg = Math.max(1, dmg - this.Armor() * (this.player.talents.block.level * 0.25));
+        }
         dmg = super.takeDamage(dmg, isCrit, trueDamage);
         if (this.player.talents.secondwind.level > 0 && this.secondWindCooldown <= 0 && this.currentHealth < this.MaxHealth() / 2) {
             this.secondWindDuration = 10000;

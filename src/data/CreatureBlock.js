@@ -2,6 +2,7 @@
 
 import { Statics } from "./Statics";
 import { Common } from "../utils/Common";
+import { MoonlightData } from "./MoonlightData";
 
 // stat calculations:
 // attacks always hit, but attack speed is adjusted by hit chance/evasion. Higher hit chance means
@@ -117,11 +118,11 @@ export class CreatureBlock {
         return Math.floor(ret * 100) / 100;
     }
     DamageMin() {
-        var ret = this.statBonuses.damageMin * (1 + this.Strength() * Statics.SCALING_DAMAGE_PER_STRENGTH) + this.Strength() * Statics.STRENGTH_DMG_MIN;
+        var ret = this.statBonuses.damageMin + this.Strength() * Statics.STRENGTH_DMG_MIN;
         return Math.floor(Math.max(1, ret));
     }
     DamageMax() {
-        var ret = this.statBonuses.damageMax * (1 + this.Strength() * Statics.SCALING_DAMAGE_PER_STRENGTH) + this.Strength() * Statics.STRENGTH_DMG_MAX;
+        var ret = this.statBonuses.damageMax + this.Strength() * Statics.STRENGTH_DMG_MAX;
         return Math.floor(Math.max(1, ret));
     }
     HealthRegen() {
@@ -266,6 +267,7 @@ export class CreatureBlock {
         this.currentHealth = this.MaxHealth();
         this.name = level < 1 ? "Weak " + name : name;
         this.xpReward = shadeBase + (shadeBase / 4) * rLvl;
+        this.xpReward = this.xpReward * (1 + MoonlightData.getInstance().challenges.megamonsters.completions * 0.05);
         this.drops = rewards;
         this.icon = icon;
     }
@@ -336,6 +338,7 @@ export class CreatureBlock {
                     extraStats.healthRegen += this.HealthRegen() * (0.1 * trait.level);
                     break;
             }
+            extraStats.xpReward += this.xpReward * (1 + MoonlightData.getInstance().challenges.megamonsters.completions * 0.01 * trait.level);
             this.currentHealth = this.MaxHealth();
         }
 

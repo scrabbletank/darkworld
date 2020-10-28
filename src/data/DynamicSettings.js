@@ -5,7 +5,7 @@ export class DynamicSettings {
     constructor() {
         if (!DynamicSettings.instance) {
             // min region required for gates
-            this.minGateRegion = 1;
+            this.minGateRegion = 0;
             this.regionSize = [9, 11];
             this.regionDifficultyIncrease = 20;
             this.maxGearTier = 8;
@@ -17,6 +17,8 @@ export class DynamicSettings {
             this.exploreSpeed = 1;
             this.talentsEnabled = true;
             this.challengeName = "";
+            this.startingTraits = 0;
+            this.fixedTraits = [];
 
             DynamicSettings.instance = this;
         }
@@ -32,7 +34,7 @@ export class DynamicSettings {
     }
 
     reset() {
-        this.minGateRegion = 1;
+        this.minGateRegion = 0;
         this.regionSize = [9, 11];
         this.regionDifficultyIncrease = 20;
         this.maxGearTier = 8;
@@ -44,6 +46,8 @@ export class DynamicSettings {
         this.exploreSpeed = 1;
         this.talentsEnabled = true;
         this.challengeName = "";
+        this.startingTraits = 0;
+        this.fixedTraits = [];
     }
 
     setupChallenge(challenge) {
@@ -52,19 +56,24 @@ export class DynamicSettings {
         switch (challenge.name) {
             case "A Matter of Years":
                 this.minGateRegion = 1;
-                this.maxRunTime = Statics.TIME_PER_YEAR * (10 - challenge.completions);
+                this.maxRunTime = Statics.TIME_PER_YEAR * (9 - challenge.completions * 2);
             case "Forged Ahead":
                 this.minGateRegion = 1;
-                this.gearCostMulti = 10 + (5 * challenge.completions);
-            case "Vast Continent":
+                this.gearCostMulti = 10 + (10 * challenge.completions);
+            case "Giant Lands":
+                this.regionSize = [5, 7];
                 this.minGateRegion = challenge.completions;
                 this.exploreSpeed = 1 / 25;
-            case "Forgotten Labor":
-                this.minGateRegion = challenge.completions;
+                this.fixedTraits = [{ type: Statics.TRAIT_MONSTROUS, level: 1 + challenge.completions }];
+            case "Lazy Townsfolk":
+                this.minGateRegion = 2 + challenge.completions;
                 this.buildingsAllowed = false;
             case "Talentless":
-                this.minGateRegion = challenge.completions;
+                this.minGateRegion = 2 + challenge.completions;
                 this.talentsEnabled = false;
+            case "Mega Monsters":
+                this.minGateRegion = 3 + challenge.completions;
+                this.startingTraits = 4 + challenge.completions * 2;
         }
     }
 
@@ -81,7 +90,9 @@ export class DynamicSettings {
             mrun: this.maxRunTime,
             es: this.exploreSpeed,
             te: this.talentsEnabled,
-            cn: this.challengeName
+            cn: this.challengeName,
+            st: this.startingTraits,
+            ft: this.fixedTraits
         }
 
         return saveObj;
@@ -99,5 +110,7 @@ export class DynamicSettings {
         this.exploreSpeed = saveObj.es;
         this.talentsEnabled = saveObj.te;
         this.challengeName = saveObj.cn;
+        this.startingTraits = saveObj.st;
+        this.fixedTraits = saveObj.ft;
     }
 }

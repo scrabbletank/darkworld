@@ -86,11 +86,12 @@ export class MoonlightData {
             };
 
             this.challenges = {
-                time: { name: "A Matter of Years", completions: 0, maxCompletions: 10, unlocked: true, fastestTime: 0 },
-                forge: { name: "Forged Ahead", completions: 0, maxCompletions: 10, unlocked: false, fastestTime: 0 },
-                explore: { name: "Vast Continent", completions: 0, maxCompletions: 10, unlocked: false, fastestTime: 0 },
-                buildings: { name: "Forgotten Labor", completions: 0, maxCompletions: 10, unlocked: false, fastestTime: 0 },
-                talent: { name: "Talentless", completions: 0, maxCompletions: 10, unlocked: false, fastestTime: 0 }
+                time: { name: "A Matter of Years", completions: 0, maxCompletions: 5, unlocked: true, fastestTime: 0 },
+                forge: { name: "Forged Ahead", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
+                explore: { name: "Giant Lands", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
+                buildings: { name: "Lazy Townsfolk", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
+                talent: { name: "Talentless", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
+                megamonsters: { name: "Mega Monsters", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 }
             };
 
             MoonlightData.instance = this;
@@ -116,12 +117,14 @@ export class MoonlightData {
                 return this.challenges.time;
             case "Forged Ahead":
                 return this.challenges.forge;
-            case "Vast Continent":
+            case "Giant Lands":
                 return this.challenges.explore;
-            case "Forgotten Labor":
+            case "Lazy Townsfolk":
                 return this.challenges.buildings;
             case "Talentless":
                 return this.challenges.talent;
+            case "Mega Monsters":
+                return this.challenges.megamonsters;
         }
     }
 

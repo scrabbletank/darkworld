@@ -34,6 +34,8 @@ export class RegionScene extends SceneUIBase {
 
         this.autoExploreActive = false;
         this.updateBuildings = false;
+
+        this.upgradeKey = undefined;
     }
 
     preload() {
@@ -227,33 +229,7 @@ export class RegionScene extends SceneUIBase {
         this.rebirthDialog.destroy();
         this.rebirthDialog = undefined;
 
-        var moonlightEarned = PlayerData.getInstance().earnableMoonlight(this.region.regionLevel + 1) *
-            (1 + 0.1 * MoonlightData.getInstance().challenges.time.completions);
-        MoonlightData.getInstance().moonlight += moonlightEarned;
-
-        if (this.region.regionLevel >= 1) {
-            ProgressionStore.instance.persistentUnlocks.challenge = true;
-        }
-        if (this.region.regionLevel >= 2) {
-            MoonlightData.getInstance().challenges.buildings.unlocked = true;
-            MoonlightData.getInstance().challenges.talent.unlocked = true;
-        }
-
-        //handle challenge completion here
-        if (DynamicSettings.getInstance().maxRunTime !== -1 &&
-            WorldData.getInstance().time.time - WorldData.getInstance().timeAtRunStart < DynamicSettings.getInstance().maxRunTime) {
-            var challenge = MoonlightData.getInstance().getChallengeFromName(DynamicSettings.getInstance().challengeName);
-            switch (challenge.name) {
-                case "A Matter of Years":
-                    if (challenge.completions == 0) {
-                        MoonlightData.getInstance().challenges.forge.unlocked = true;
-                        MoonlightData.getInstance().challenges.explore.unlocked = true;
-                    }
-            }
-            if (challenge.completions < challenge.maxCompletions) {
-                challenge.completions += 1;
-            }
-        }
+        WorldData.getInstance().handleRunCompletion();
 
         var moonScene = this.scene.get("MoonlightScene");
         moonScene.enableLeveling();
@@ -299,7 +275,7 @@ export class RegionScene extends SceneUIBase {
                 var pos = this.region.nextWeakestTile();
                 if (pos[0] !== -1) {
                     if (this.region.map[pos[1]][pos[0]].name === "Town") {
-                        this._exploreTown(x, y);
+                        this._exploreTown(tile.x, tile.y);
                         var pos = this.region.nextWeakestTile();
                         if (pos[0] === -1) {
                             return;
@@ -456,6 +432,8 @@ export class RegionScene extends SceneUIBase {
 
         this.progression.addOnUnlockHandler((a, b, c) => { this._handleProgressionEvent(a, b, c) });
         this.region.onTileChanged((x) => { this._updateTile(x); });
+
+        this.upgradeKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.U);
     }
 
     update(__time, delta) {
@@ -472,6 +450,10 @@ export class RegionScene extends SceneUIBase {
                     this.tileElements[s[0]][s[1]].rect.fillColor = Common.colorLerp(this.region.map[s[0]][s[1]].color, Phaser.Display.Color.GetColor(255, 0, 255), lerp);
                 }
             }
+        }
+
+        if (Phaser.Input.Keyboard.JustUp(this.upgradeKey)) {
+
         }
 
         if (this.updateBuildings) {

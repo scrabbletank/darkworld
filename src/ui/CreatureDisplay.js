@@ -46,8 +46,10 @@ export class CreatureDisplay {
         this.hitnameLabel.setText("Hit: " + Common.numberString(Math.floor(creature.Hit())));
         this.evasionLabel.setText("Evasion: " + Common.numberString(Math.floor(creature.Evasion())));
 
-        this.healthBar.setFillPercent(creature.currentHealth / creature.MaxHealth());
-        this.attackBar.setFillPercent(creature.attackCooldown / creature.attackSpeed);
+        this.healthBar.setFillPercent(creature.currentHealth / creature.MaxHealth(),
+            Common.numberString(Math.ceil(creature.currentHealth)) + "/" + Common.numberString(creature.MaxHealth()));
+        this.attackBar.setFillPercent(creature.attackCooldown / creature.attackSpeed,
+            Math.floor(creature.attackCooldown / creature.attackSpeed * 100) + "%");
         this.image.setTexture(creature.icon.sprite, creature.icon.tile);
 
         for (var i = 0; i < this.traitButtons.length; i++) {

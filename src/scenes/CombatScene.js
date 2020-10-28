@@ -2,13 +2,11 @@ import { SceneUIBase } from "./SceneUIBase";
 import { CreatureDisplay } from "./../ui/CreatureDisplay";
 import { Combat } from "../utils/Combat";
 import { Common } from "../utils/Common";
-import { Statics } from "../data/Statics";
 import { ProgressBar } from "../ui/ProgressBar";
 import { SpriteAnimation } from "../ui/SpriteAnimation";
 import { ProgressionStore } from "../data/ProgressionStore";
 import { TextButton } from "../ui/TextButton";
 import { WorldData } from "../data/WorldData";
-import { MoonlightData } from "../data/MoonlightData";
 import { CombatManager } from "../data/CombatManager";
 import { PlayerData } from "../data/PlayerData";
 
@@ -49,7 +47,7 @@ export class CombatScene extends SceneUIBase {
 
     _playerHealthCallback(health) {
         this.playerDisplay.setHealthBar(health / this.player.statBlock.MaxHealth(),
-            Common.numberString(Math.floor(health)) + "/" + Common.numberString(this.player.statBlock.MaxHealth()));
+            Common.numberString(Math.ceil(health)) + "/" + Common.numberString(this.player.statBlock.MaxHealth()));
     }
     _playerAttackCooldownCallback(attackCooldown) {
         this.playerDisplay.setAttackBar(attackCooldown / this.player.statBlock.attackSpeed,
@@ -58,7 +56,7 @@ export class CombatScene extends SceneUIBase {
 
     _monsterHealthCallback(health, idx) {
         this.monsterDiplays[idx].setHealthBar(health / this.combatManager.monsters[idx].MaxHealth(),
-            Common.numberString(Math.floor(health)) + "/" + Common.numberString(this.combatManager.monsters[idx].MaxHealth()));
+            Common.numberString(Math.ceil(health)) + "/" + Common.numberString(this.combatManager.monsters[idx].MaxHealth()));
     }
     _monsterAttackCooldownCallback(attackCooldown, idx) {
         this.monsterDiplays[idx].setAttackBar(attackCooldown / this.combatManager.monsters[idx].attackSpeed,
@@ -123,12 +121,12 @@ export class CombatScene extends SceneUIBase {
     }
 
     _restHandler() {
-        if (this.combatManager.isInCombat() === true) {
+        if (this.combatManager.combatActive === true) {
             this.restButton.setText("Explore");
             this.combatManager.stopCombat();
         } else {
             this.restButton.setText("Rest");
-            this.combatManager.initFight();
+            this.combatManager.combatActive = true;
         }
     }
 
@@ -141,6 +139,13 @@ export class CombatScene extends SceneUIBase {
     }
 
     initFight(tile) {
+        if (tile.amountExplored >= tile.explorationNeeded) {
+            this.explorationBar.setFillPercent(tile.amountExplored / tile.explorationNeeded,
+                "Explored");
+        } else {
+            this.explorationBar.setFillPercent(tile.amountExplored / tile.explorationNeeded,
+                Math.floor(tile.amountExplored / tile.explorationNeeded * 100) + "%");
+        }
         this.combatManager.setTile(tile);
         this.combatManager.initFight();
         this.regionTier = WorldData.instance.getCurrentRegion().regionLevel;

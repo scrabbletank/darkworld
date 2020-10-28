@@ -2,13 +2,16 @@ import { Region } from "./Region";
 import { WorldTime } from "./WorldTime";
 import { Common } from "../utils/Common";
 import { DynamicSettings } from "./DynamicSettings";
+import { PlayerData } from "./PlayerData";
+import { MoonlightData } from "./MoonlightData";
+import { ProgressionStore } from "./ProgressionStore";
 
 export class WorldData {
     constructor() {
         if (!WorldData.instance) {
             var regSize = DynamicSettings.getInstance().regionSize;
             this.regionList = [];
-            this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate", []));
+            this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate", this._randomizeTraits()));
             this.currentRegion = 0;
             this.nextRegions = [];
             this.timeAtRunStart = 0;
@@ -31,7 +34,7 @@ export class WorldData {
     rebirth() {
         var regSize = DynamicSettings.getInstance().regionSize;
         this.regionList = [];
-        this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate", []));
+        this.regionList.push(new Region(regSize[0], regSize[1], 0, "temperate", this._randomizeTraits()));
         this.currentRegion = 0;
         this.nextRegions = [];
         this.timeAtRunStart = this.time.time;
@@ -58,8 +61,8 @@ export class WorldData {
     }
 
     _randomizeTraits(count) {
-        var traits = [];
-        for (var i = 0; i < count; i++) {
+        var traits = DynamicSettings.getInstance().fixedTraits;
+        for (var i = 0; i < count + DynamicSettings.getInstance().startingTraits; i++) {
             var traitType = Common.randint(1, 7);
             var temp = traits.find(t => t.type === traitType);
             if (temp !== undefined) {
@@ -92,6 +95,60 @@ export class WorldData {
         this.regionList.push(new Region(regSize[0], regSize[1], this.regionList.length, this.nextRegions[index].type, this.nextRegions[index].traits));
         this.regionList[this.regionList.length - 1].worldHeight = Math.floor((index + 1) * (700 / (this.nextRegions.length + 1)));
         this.nextRegions = [];
+    }
+
+    handleRunCompletion() {
+        var moonlightEarned = PlayerData.getInstance().earnableMoonlight(this.getCurrentRegion().regionLevel + 1) *
+            (1 + 0.15 * MoonlightData.getInstance().challenges.time.completions);
+        MoonlightData.getInstance().moonlight += moonlightEarned;
+
+        if (this.getCurrentRegion().regionLevel >= 1) {
+            ProgressionStore.getInstance().persistentUnlocks.challenges = true;
+        }
+        if (this.getCurrentRegion().regionLevel >= 3) {
+            MoonlightData.getInstance().challenges.buildings.unlocked = true;
+            MoonlightData.getInstance().challenges.talent.unlocked = true;
+        }
+        if (this.getCurrentRegion().regionLevel >= 4) {
+            MoonlightData.getInstance().challenges.megamonsters.unlocked = true;
+        }
+
+        //handle challenge completion here
+        if (DynamicSettings.getInstance().maxRunTime === -1 || this.time.time - this.timeAtRunStart < DynamicSettings.getInstance().maxRunTime) {
+            var challenge = MoonlightData.getInstance().getChallengeFromName(DynamicSettings.getInstance().challengeName);
+            if (challenge !== undefined) {
+                if (challenge.completions < challenge.maxCompletions) {
+                    switch (challenge.name) {
+                        case "A Matter of Years":
+                            MoonlightData.getInstance().challenges.forge.unlocked = true;
+                            MoonlightData.getInstance().challenges.explore.unlocked = true;
+                            MoonlightData.getInstance().challengePoints += 2;
+                            break;
+                        case "Forged Ahead":
+                            MoonlightData.getInstance().challengePoints += 2;
+                            break;
+                        case "Giant Lands":
+                            MoonlightData.getInstance().challengePoints += 3;
+                            break;
+                        case "Lazy Townsfolk":
+                            MoonlightData.getInstance().challengePoints += 3;
+                            break;
+                        case "Talentless":
+                            MoonlightData.getInstance().challengePoints += 4;
+                            break;
+                        case "Mega Monsters":
+                            MoonlightData.getInstance().challengePoints += 5;
+                            break;
+                    }
+                    challenge.completions += 1;
+                }
+                if (challenge.fastestTime === 0) {
+                    challenge.fastestTime = this.time.time - this.timeAtRunStart;
+                } else {
+                    challenge.fastestTime = Math.min(this.time.time - this.timeAtRunStart, challenge.fastestTime);
+                }
+            }
+        }
     }
 
 
