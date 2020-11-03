@@ -57,23 +57,29 @@ export class DynamicSettings {
             case "A Matter of Years":
                 this.minGateRegion = 1;
                 this.maxRunTime = Statics.TIME_PER_YEAR * (9 - challenge.completions * 2);
+                break;
             case "Forged Ahead":
                 this.minGateRegion = 1;
                 this.gearCostMulti = 10 + (10 * challenge.completions);
+                break;
             case "Giant Lands":
                 this.regionSize = [5, 7];
                 this.minGateRegion = challenge.completions;
                 this.exploreSpeed = 1 / 25;
                 this.fixedTraits = [{ type: Statics.TRAIT_MONSTROUS, level: 1 + challenge.completions }];
+                break;
             case "Lazy Townsfolk":
                 this.minGateRegion = 2 + challenge.completions;
                 this.buildingsAllowed = false;
+                break;
             case "Talentless":
                 this.minGateRegion = 2 + challenge.completions;
                 this.talentsEnabled = false;
+                break;
             case "Mega Monsters":
                 this.minGateRegion = 3 + challenge.completions;
                 this.startingTraits = 4 + challenge.completions * 2;
+                break;
         }
     }
 

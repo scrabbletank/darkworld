@@ -149,6 +149,7 @@ export class WorldData {
                 }
             }
         }
+        DynamicSettings.getInstance().reset();
     }
 
 

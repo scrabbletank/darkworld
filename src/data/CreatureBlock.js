@@ -133,6 +133,9 @@ export class CreatureBlock {
         var ret = this.Defense() * Statics.ARMOR_PER_DEFENSE + this.statBonuses.armor * (1 + this.Defense() * Statics.SCALING_ARMOR_PER_DEFENSE);
         return Math.floor(ret);
     }
+    AttackSpeed() {
+        return this.attackSpeed;
+    }
 
     registerEvent(event, callback) {
         if (event === 'onHealthChanged') {
@@ -153,7 +156,7 @@ export class CreatureBlock {
         }
     }
 
-    canAttack() { return this.attackCooldown >= this.attackSpeed; }
+    canAttack() { return this.attackCooldown >= this.AttackSpeed(); }
 
     takeDamage(damage, __isCrit, trueDamage = false) {
         var dmg = damage;

@@ -30,7 +30,7 @@ export class TooltipRegistry {
                     (talent.level * 10) + "% + (10%) chance for enemies to drop loot twice.";
             case "Explorer":
                 return "If you want to explore fast you gotta go fast. Increases your explore speed by " +
-                    (talent.level * 10) + "% + (10%).";
+                    (talent.level * 20) + "% + (10%).";
             case "Cleave":
                 return "Hit everything super hard. You gain a 20% chance your attacks hit an additional target dealing " +
                     (talent.level * 20) + "% + (20%) of your Strength in damage";
@@ -69,7 +69,7 @@ export class TooltipRegistry {
                     (talent.level * 25) + "% + (25%) slower.";
             case "Governance":
                 return "Spend less time fighting things and more time learning how they can fight for you! Increases economy and production by " +
-                    (talent.level * 3) + "% + (3%). This effect is multiplicative, not additive.";
+                    (talent.level * 4) + "% + (4%). This effect is multiplicative, not additive.";
         }
     }
 
@@ -281,5 +281,94 @@ export class TooltipRegistry {
                 return "Beserk " + trait.level + ": Hit chance is increased by " + trait.level * 20 + "%, health regen by " +
                     trait.level * 10 + "% and has a " + Math.floor(((1 - Math.pow(0.92, trait.level)) * 100)) + "% chance to trigger Follow Through.";
         }
+    }
+
+    static getRuneBonusText(prop, value) {
+        var sign = value >= 0 ? "+" : "-";
+        switch (prop) {
+            case "strPercent":
+                return sign + Math.round(value * 100) + "% Strength";
+            case "strFlat":
+                return sign + Math.floor(value) + " Strength";
+            case "strTalents":
+                return sign + Math.floor(value) + " Strength Talents";
+            case "dexPercent":
+                return sign + Math.round(value * 100) + "% Dexterity";
+            case "dexFlat":
+                return sign + Math.floor(value) + " Dexterity";
+            case "dexTalents":
+                return sign + Math.floor(value) + " Dexterity Talents";
+            case "agiPercent":
+                return sign + Math.round(value * 100) + "% Agility";
+            case "agiFlat":
+                return sign + Math.floor(value) + " Agility";
+            case "agiTalents":
+                return sign + Math.floor(value) + " Agility Talents";
+            case "endPercent":
+                return sign + Math.round(value * 100) + "% Endurance";
+            case "endFlat":
+                return sign + Math.floor(value) + " Endurance";
+            case "endTalents":
+                return sign + Math.floor(value) + " Endurance Talents";
+            case "recPercent":
+                return sign + Math.round(value * 100) + "% Recovery";
+            case "recFlat":
+                return sign + Math.floor(value) + " Recovery";
+            case "recTalents":
+                return sign + Math.floor(value) + " Recovery Talents";
+            case "defPercent":
+                return sign + Math.round(value * 100) + "% Defense";
+            case "defFlat":
+                return sign + Math.floor(value) + " Defense";
+            case "defTalents":
+                return sign + Math.floor(value) + " Defense Talents";
+            case "accPercent":
+                return sign + Math.round(value * 100) + "% Accuracy";
+            case "accFlat":
+                return sign + Math.floor(value) + " Accuracy";
+            case "accTalents":
+                return sign + Math.floor(value) + " Accuracy Talents";
+            case "hitPercent":
+                return sign + Math.round(value * 100) + "% Hit Chance";
+            case "evaPercent":
+                return sign + Math.round(value * 100) + "% Evasoion";
+            case "weaponPercent":
+                return sign + Math.round(value * 100) + "% Gear Damage";
+            case "armorPercent":
+                return sign + Math.round(value * 100) + "% Gear Armor";
+            case "critPercent":
+                return sign + Math.round(value * 100) + "% Crit Damage";
+            case "healthPercent":
+                return sign + Math.round(value * 100) + "% Health";
+            case "regenPercent":
+                return sign + Math.round(value * 100) + "% HP Regen";
+            case "weaponScaling":
+                return sign + Math.round(value * 100) + " Gear Damage Scaling";
+            case "armorScaling":
+                return sign + Math.round(value * 100) + " Gear Armor Scaling";
+            case "baseAttackSpeed":
+                return sign + Math.round(value * 100) + "% Faster Attacks";
+            case "OOCRegen":
+                return sign + value + " Out of Combat Regen";
+            case "enemyCrit":
+                return Math.round(Math.pow(0.92, value) * 100) + "% Crit Damage Taken";
+            case "exploreSpeed":
+                return sign + Math.round(value * 100) + "% Explore Speed";
+            case "friendshipMulti":
+                return sign + Math.round(value * 100) + "% Friendship Earned";
+            case "critChance":
+                return sign + Math.round(value * 100) + "% Crit Chance";
+            case "lootFlat":
+                return sign + value + " to Loot Dropped";
+            case "lootTalent":
+                return sign + Math.round(value * 100) + " Bounty Talent";
+            case "moteChance":
+                return sign + (Math.round(value * 1000) / 10) + "% Mote on Kill";
+            case "shadeFlat":
+                return sign + value + " Shade per Kill";
+            case "regenOnKill":
+                return sign + Math.round(value * 10) / 10 + "s of Regen on Kill";
+        }
+        return "";
     }
 }

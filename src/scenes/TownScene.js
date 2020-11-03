@@ -84,16 +84,16 @@ export class TownScene extends SceneUIBase {
     _updateStatus() {
         var region = WorldData.instance.getCurrentRegion();
         var player = new PlayerData();
-        var govBonus = (1 + player.talents.governance.level * 0.03);
+        var govBonus = (1 + player.getTalentLevel("governance") * 0.04);
 
-        var txt = "Population: " + Math.floor(region.townData.currentPopulation) + "/" + Math.floor(region.townData.getMaxPopulation()) + "\n" +
-            "Tax Income: " + Math.floor(region.townData.getTownIncome()) + "g/week\n" +
-            "T" + region.townData.tier + " Crafting Cost: " + (Math.floor(player.craftingCosts[region.townData.tier - 1] * 10000) / 100) + "%\n" +
-            "Economy: " + Math.floor(region.townData.economyMulti * 100 * govBonus) + "%\n" +
-            "Production: " + Math.floor(region.townData.productionMulti * 100) + "%\n" +
-            "Bounty Gold: " + Math.floor(region.townData.bountyMulti * 100) + "%\n" +
+        var txt = "Population: " + Math.round(region.townData.currentPopulation) + "/" + Math.floor(region.townData.getMaxPopulation()) + "\n" +
+            "Tax Income: " + Math.round(region.townData.getTownIncome()) + "g/week\n" +
+            "T" + region.townData.tier + " Crafting Cost: " + (Math.round(player.craftingCosts[region.townData.tier - 1] * 10000) / 100) + "%\n" +
+            "Economy: " + Math.round(region.townData.economyMulti * 100 * govBonus) + "%\n" +
+            "Production: " + Math.round(region.townData.productionMulti * 100) + "%\n" +
+            "Bounty Gold: " + Math.round(region.townData.bountyMulti * 100) + "%\n" +
             "Friendship: " + Math.floor(region.townData.friendship) + "/" + region.townData.friendshipToNext + "\n" +
-            "Friendship\nLevel: " + region.townData.friendshipLevel + " (+" + Math.floor((region.townData.getFriendshipBonus() - 1) * 100) + "% Shade)\n" +
+            "Friendship\nLevel: " + region.townData.friendshipLevel + " (+" + Math.round((region.townData.getFriendshipBonus() - 1) * 100) + "% Shade)\n" +
             "Daily Production:\n";
 
         for (var i = 0; i < region.resourcesPerDay.length; i++) {
@@ -101,7 +101,7 @@ export class TownScene extends SceneUIBase {
         }
         if (region.alchemyDrain > 0) {
             txt += "  Alchemy Drain: " + region.alchemyDrain + "\n" +
-                "  Alchemy Gain: " + Math.floor(region.alchemyGain * 100) / 100;
+                "  Alchemy Gain: " + Math.round(region.alchemyGain * 100) / 100;
         }
 
         this.statsLabel.setText(txt);

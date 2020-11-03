@@ -18,7 +18,8 @@ export class ProgressionStore {
                 resourceUI: false,
                 craftingUI: false,
                 buildings: false,
-                motes: false
+                motes: false,
+                runes: false
             };
             this.exploreUnlocks = [
                 {
@@ -159,10 +160,8 @@ export class ProgressionStore {
             ];
             // any one off lore that doesnt fit into the above should go here to be tracked better
             this.loreUnlocks = {
-
             };
             this.loreTexts = {
-
             };
             this.exploresUnlocked = 0;
             this.killsUnlocked = 0;
@@ -223,7 +222,8 @@ export class ProgressionStore {
             resourceUI: false,
             craftingUI: false,
             buildings: false,
-            motes: false
+            motes: false,
+            runes: false
         };
         this.exploresUnlocked = 0;
         this.killsUnlocked = 0;
@@ -315,6 +315,12 @@ export class ProgressionStore {
             }
         }
     }
+    registerLore(name) {
+        if (this.loreUnlocks[name] !== undefined && this.loreUnlocks[name] === false) {
+            this._onUnlock(Statics.UNLOCK_GENERIC, 0, this.loreTexts[name]);
+            this.loreUnlocks[name] = true;
+        }
+    }
 
     registerFeatureUnlocked(feature, text) {
         switch (feature) {
@@ -350,6 +356,9 @@ export class ProgressionStore {
                 break;
             case Statics.UNLOCK_WORLD_TAB:
                 this.unlocks.worldTab = true;
+                break;
+            case Statics.UNLOCK_RUNES_UI:
+                this.unlocks.runes = true;
                 break;
             case Statics.UNLOCK_GENERIC:
                 break;

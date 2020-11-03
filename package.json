@@ -18,7 +18,7 @@
     "jest": "^26.6.0"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
     "build": "webpack",
     "start": "npm run build && webpack-dev-server --port=8000"
   },

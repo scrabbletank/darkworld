@@ -56,6 +56,7 @@ export class GameScene extends SceneUIBase {
         this.load.spritesheet("bldicons", "./../../assets/icons/buildingicons.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("roadicons", "./../../assets/icons/roadicons.png", { frameWidth: 50, frameHeight: 50 });
         this.load.spritesheet("moonicons", "./../../assets/icons/moonicons.png", { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet("runeicons", "./../../assets/icons/runeicons.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("enemyicons", "./../../assets/enemy/enemyicons.png", { frameWidth: 16, frameHeight: 16 });
     }
 
@@ -282,6 +283,10 @@ export class GameScene extends SceneUIBase {
             Common.numberString(Math.floor(Math.min(this.player.shade, this.talentCost))) + '/' + Common.numberString(Math.floor(this.talentCost)));
         this.statInfuseButton.setEnable(this.player.shade >= this.statCost);
         this.talentInfuseButton.setEnable(this.player.shade >= this.talentCost);
+    }
+
+    notifyGear() {
+        this.gearButton.setNotification();
     }
 
     _handleProgressionEvents(type, count, text) {
@@ -634,16 +639,16 @@ export class GameScene extends SceneUIBase {
         var gearData = new GearData();
         var lore = new LoreStore();
 
-        if (saveObj.ver > 4) {
+        if (saveObj.version > 4) {
             var dynamicSettings = new DynamicSettings();
             dynamicSettings.load(saveObj.settings);
         }
+        this.moonlight.load(saveObj.moon, saveObj.version);
         gearData.load(saveObj.gear, saveObj.version);
         //player needs to load after gear
         this.player.load(saveObj.player, saveObj.version);
         this.worldData.load(saveObj.world, saveObj.version);
         this.progression.load(saveObj.progression, saveObj.version);
-        this.moonlight.load(saveObj.moon, saveObj.version);
         lore.load(saveObj.lore, saveObj.version);
         var timeOffline = Date.now() - saveObj.saveTime;
         if (timeOffline > 60000) {

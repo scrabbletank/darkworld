@@ -123,23 +123,30 @@ export class CombatManager {
             motes: 0,
             friendship: 0
         }
+        var player = PlayerData.getInstance();
 
         for (var i = 0; i < this.monsters.length; i++) {
             rewards.gold += 1 + Math.floor(Math.max(1, this.monsters[i].level) / 5);
-            rewards.shade += this.monsters[i].xpReward;
+            rewards.shade += this.monsters[i].xpReward + player.runeBonuses.shadeFlat;
+            console.log(player.runeBonuses.shadeFlat);
             rewards.motes += this.monsters[i].motes;
+            if (Math.random() < player.runeBonuses.moteChance) {
+                rewards.motes += 1;
+            }
             // calculating bonus drops here
-            var lvl = PlayerData.getInstance().talents.bounty.level;
+            var lvl = player.getTalentLevel("bounty");
             var numRewards = 1 + (lvl / 10) + ((lvl % 10) / 10 > Math.random() ? 1 : 0);
             for (var t = 0; t < numRewards; t++) {
                 var idx = Common.randint(0, this.monsters[i].drops.length);
                 var dropMulti = Math.max(1, this.monsters[i].level - Math.max(0, Math.min(8, Math.floor(this.monsters[i].level / 20)) * 20));
-                rewards.resource[this.monsters[i].drops[idx].type] += Math.max(0, this.monsters[i].drops[idx].amount * dropMulti);
+                rewards.resource[this.monsters[i].drops[idx].type] += Math.max(0, this.monsters[i].drops[idx].amount * dropMulti) +
+                player.runeBonuses.lootFlat;
             }
             rewards.friendship += this.activeTile.getFriendshipReward();
         }
         rewards.gold = (rewards.gold + (this.activeTile.explored ? 1 : 5)) * this.activeTile.parent.townData.bountyMulti;
         rewards.shade *= MoonlightData.getInstance().getShadowBonus() * this.activeTile.parent.townData.getFriendshipBonus();
+        rewards.friendship *= 1 + player.runeBonuses.friendshipMulti;
 
         if (this.activeTile.isInvaded === true) {
             if (ProgressionStore.getInstance().unlocks.motes === false) {
@@ -205,8 +212,11 @@ export class CombatManager {
 
             if (player.statBlock.canAttack() === true) {
                 var crit = player.statBlock.CritChance() > Math.random();
-                var dmg = player.statBlock.attack(this.monsters[this.target], crit);
-                if (player.talents.cleave.level > 0 && Math.random() < 0.2) {
+                player.statBlock.attack(this.monsters[this.target], crit);
+                if (this.monsters[this.target].currentHealth <= 0) {
+                    player.statBlock.heal(player.statBlock.HealthRegen() * player.runeBonuses.regenOnKill);
+                }
+                if (player.getTalentLevel("cleave") > 0 && Math.random() < 0.2) {
                     var newTarget = this.target;
                     for (var i = 0; i < this.monsters.length; i++) {
                         var num = (newTarget + i) % this.monsters.length;
@@ -217,7 +227,10 @@ export class CombatManager {
                     }
                     if (newTarget !== this.target) {
                         crit = player.statBlock.CritChance() > Math.random();
-                        dmg = player.statBlock.cleave(this.monsters[newTarget], crit);
+                        player.statBlock.cleave(this.monsters[newTarget], crit);
+                        if (this.monsters[newTarget].currentHealth <= 0) {
+                            player.statBlock.heal(player.statBlock.HealthRegen() * player.runeBonuses.regenOnKill);
+                        }
                         if (this.creatureHitCallback !== undefined) {
                             this.creatureHitCallback(newTarget, crit);
                         }

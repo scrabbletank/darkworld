@@ -268,6 +268,15 @@ export class RegionScene extends SceneUIBase {
             }
         }
         if (tile.explored === false) {
+            if (tile.hasRune === true) {
+                this.scene.get("DarkWorld").notifyGear();
+                if (this.progression.unlocks.runes === false) {
+                    this.progression.registerFeatureUnlocked(Statics.UNLOCK_RUNES_UI,
+                        "You found an interesting rock in that last tile and shoved it into your pack, probably due to your crippling need " +
+                        "to hoard things like some RPG character. The rock was glowing so it would probably make a neat good luck charm if you " +
+                        "shoved it into the holes on your gear.");
+                }
+            }
             this.region.exploreTile(tile.x, tile.y);
             this.progression.registerTileExplored();
 
@@ -289,12 +298,15 @@ export class RegionScene extends SceneUIBase {
 
     _updateTile(tile) {
         var clr = toPhaserColor(tile.color);
+        var border = toPhaserColor(tile.borderColor);
         if (tile.revealed === false) {
             clr = Phaser.Display.Color.GetColor(0, 0, 0);
+            border = Phaser.Display.Color.GetColor(40, 80, 40);
         } else if (tile.explored === false && tile.revealed === true) {
             clr = Common.colorLerp(clr, Phaser.Display.Color.GetColor(0, 0, 0), 0.65);
         }
         this.tileElements[tile.y][tile.x].rect.fillColor = clr;
+        this.tileElements[tile.y][tile.x].rect.strokeColor = border;
         if (tile.building !== undefined && tile.revealed === true) {
             this.updateBuildings = true;
             var texture = this._getBuildingImage(tile.x, tile.y);
@@ -456,7 +468,7 @@ export class RegionScene extends SceneUIBase {
 
         }
 
-        if (this.updateBuildings) {
+        if (this.updateBuildings === true) {
             this.updateBuildings = false;
             for (var i = 0; i < this.region.roads.length; i++) {
                 var road = this.region.roads[i];

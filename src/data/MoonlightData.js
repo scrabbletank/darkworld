@@ -68,7 +68,7 @@ export class MoonlightData {
                     texture: { sprite: "moonicons", tile: 10 }
                 },
                 runelands: {
-                    name: "Runelands", level: 0, maxLevel: -1, requires: ["runes"], cost: [500, 0, 1.5],
+                    name: "Runelands", level: 0, maxLevel: -1, requires: ["runes"], cost: [300, 0, 1.25],
                     texture: { sprite: "moonicons", tile: 8 }
                 },
                 moonlightworkers: {

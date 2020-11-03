@@ -127,11 +127,11 @@ export class TownData {
     getTownIncome() {
         var player = new PlayerData();
         return (Math.floor(this.currentPopulation) * this.baseIncome + this.buildingIncome) *
-            this.economyMulti * (1 + player.talents.governance.level * 0.03);
+            this.economyMulti * (1 + player.getTalentLevel("governance") * 0.04);
     }
     getGoldCap() {
         var player = new PlayerData();
-        return (this.currentPopulation * Statics.GOLDCAP_PER_POP + this.goldCapBonus) * this.economyMulti * (1 + player.talents.governance.level * 0.03);
+        return (this.currentPopulation * Statics.GOLDCAP_PER_POP + this.goldCapBonus) * this.economyMulti * (1 + player.getTalentLevel("governance") * 0.04);
     }
     getMaxPopulation() {
         return this.maxPopulation + this.tavernPopulation;

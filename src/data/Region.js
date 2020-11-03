@@ -22,6 +22,7 @@ import { DynamicSettings } from './DynamicSettings';
 import { BuildingRegistry } from './BuildingRegistry';
 import { WorldData } from './WorldData';
 import { ProgressionStore } from './ProgressionStore';
+import { RuneRegistry } from './RuneRegistry';
 
 export class TileData {
 
@@ -37,6 +38,7 @@ export class TileData {
         this.invasionFights = 0;
         this.building = undefined;
         this.defense = 0;
+        this.hasRune = false;
         this.x = x;
         this.y = y;
         //variables not saved
@@ -67,6 +69,7 @@ export class TileData {
             if: this.invasionFights,
             bld: this.building === undefined ? "" : this.building.save(),
             def: this.defense,
+            hr: this.hasRune,
             x: this.x,
             y: this.y
         }
@@ -86,6 +89,7 @@ export class TileData {
         tile.invasionFights = saveObj.if;
         tile.building = saveObj.bld === "" ? undefined : Building.loadFromFile(saveObj.bld, ver);
         tile.defense = saveObj.def;
+        tile.hasRune = saveObj.hr === undefined ? false : saveObj.hr;
         tile.x = saveObj.x;
         tile.y = saveObj.y;
 
@@ -354,6 +358,7 @@ export class Region {
         }
 
         //find a place to put the mystic gate, either randomly in a spot max difficulty or above, or at highest difficulty place otherwise
+        var gatePos;
         if (this.regionLevel >= DynamicSettings.getInstance().minGateRegion) {
             var mysticGateSpots = [];
             var max = 0;
@@ -371,8 +376,36 @@ export class Region {
                 }
             }
             mysticGateSpots.push(maxPos);
-            var gatePos = mysticGateSpots[Common.randint(0, mysticGateSpots.length)];
+            gatePos = mysticGateSpots[Common.randint(0, mysticGateSpots.length)];
             this.map[gatePos[0]][gatePos[1]].init("mysticgate", maxDiff, minDiff, this);
+        }
+
+        //if runes appear on the map, add spawn locations here
+        var runeCount = MoonlightData.getInstance().moonperks.runes.level > 0 ? 5 : 0;
+        runeCount += MoonlightData.getInstance().moonperks.runelands.level;
+        // we can't place runes on the town or gate squares, or on places that already have runes.
+        var validFunc = (x, y) => {
+            return this.map[y][x].hasRune === false && (x !== townPoint[0] || y !== townPoint[1]) && (x !== gatePos[1] || y !== gatePos[0]);
+        };
+        for (var i = 0; i < runeCount; i++) {
+            var posX = Common.randint(0, this.width);
+            var posY = Common.randint(0, this.height);
+
+            if (validFunc(posX, posY) === true) {
+                this.map[posY][posX].hasRune = true;
+            } else {
+                //search for a new valid point
+                var start = posY * this.width + posX;
+                for (var t = 0; t < 20; t++) {
+                    var idx = (start + t) % (this.width * this.height);
+                    posX = idx % this.width;
+                    posY = Math.floor(idx / this.width);
+                    if (validFunc(posX, posY) === true) {
+                        this.map[posY][posX].hasRune = true;
+                        break;
+                    }
+                }
+            }
         }
 
         this.map[townPoint[1]][townPoint[0]].init("town", minDiff, minDiff, this);
@@ -404,6 +437,11 @@ export class Region {
         if (this.map[y][x].revealed === true) {
             this.tilesExplored += 1;
             this.map[y][x].explored = true;
+            if (this.map[y][x].hasRune === true) {
+                this.map[y][x].hasRune = false;
+                var rune = RuneRegistry.getRandomRuneAtLevel(this.regionLevel + 1);
+                PlayerData.getInstance().addRune(rune);
+            }
             if (this.map[y][x].name === "Town") {
                 this.townData.townExplored = true;
             }
@@ -783,7 +821,7 @@ export class Region {
 
         //add resources from buildings here
         var resource = [];
-        var govBonus = 1 + player.talents.governance.level * 0.03;
+        var govBonus = 1 + player.getTalentLevel("governance") * 0.04;
         var tier = Math.min(this.regionLevel, 8);
         for (var i = 0; i < this.resourcesPerDay.length; i++) {
             resource.push(Math.max(0, this.resourcesPerDay[i] * this.townData.productionMulti * govBonus));
@@ -814,7 +852,7 @@ export class Region {
             var s = this.sightings[i];
             //TODO Add ramping strength from land/building
             this.map[s[0]][s[1]].incInvasionPower(this.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease);
-            this.invasionCounter += this.map[s[0]][s[1]].getInvasionMulti() * (1 / (1 + player.talents.guardian.level * 0.25));
+            this.invasionCounter += this.map[s[0]][s[1]].getInvasionMulti() * (1 / (1 + player.getTalentLevel("guardian") * 0.25));
         }
 
         if (this.invasionCounter > Statics.INVASION_THRESHOLD) {

@@ -6,6 +6,8 @@ import { ProgressionStore } from "../data/ProgressionStore";
 import { GearDisplay } from "../ui/GearDisplay";
 import { GearData } from "../data/GearData";
 import { PlayerData } from "../data/PlayerData";
+import { GearRuneWindow } from "../ui/GearRuneWindow";
+import { ImageButton } from "../ui/ImageButton";
 
 export class GearScene extends SceneUIBase {
     constructor(position, name) {
@@ -26,25 +28,26 @@ export class GearScene extends SceneUIBase {
             .setOrigin(0)
             .setInteractive();
 
-        this.allBtn = new TextButton(this, this.relativeX(340), this.relativeY(10), 50, 20, "All");
+        this.runeBtn = new ImageButton(this, this.relativeX(250), this.relativeY(10), 32, 32, { sprite: "runeicons", tile: 0 });
+        this.allBtn = new TextButton(this, this.relativeX(290), this.relativeY(10), 50, 20, "All");
         this.allBtn.onClickHandler(() => { this._changeFilter(-1); });
-        this.tier0Btn = new TextButton(this, this.relativeX(390), this.relativeY(10), 80, 20, "Broken");
+        this.tier0Btn = new TextButton(this, this.relativeX(340), this.relativeY(10), 80, 20, "Broken");
         this.tier0Btn.onClickHandler(() => { this._changeFilter(0); });
-        this.tier1Btn = new TextButton(this, this.relativeX(470), this.relativeY(10), 30, 20, "T1");
+        this.tier1Btn = new TextButton(this, this.relativeX(420), this.relativeY(10), 30, 20, "T1");
         this.tier1Btn.onClickHandler(() => { this._changeFilter(1); });
-        this.tier2Btn = new TextButton(this, this.relativeX(500), this.relativeY(10), 30, 20, "T2");
+        this.tier2Btn = new TextButton(this, this.relativeX(450), this.relativeY(10), 30, 20, "T2");
         this.tier2Btn.onClickHandler(() => { this._changeFilter(2); });
-        this.tier3Btn = new TextButton(this, this.relativeX(530), this.relativeY(10), 30, 20, "T3");
+        this.tier3Btn = new TextButton(this, this.relativeX(480), this.relativeY(10), 30, 20, "T3");
         this.tier3Btn.onClickHandler(() => { this._changeFilter(3); });
-        this.tier4Btn = new TextButton(this, this.relativeX(560), this.relativeY(10), 30, 20, "T4");
+        this.tier4Btn = new TextButton(this, this.relativeX(510), this.relativeY(10), 30, 20, "T4");
         this.tier4Btn.onClickHandler(() => { this._changeFilter(4); });
-        this.tier5Btn = new TextButton(this, this.relativeX(590), this.relativeY(10), 30, 20, "T5");
+        this.tier5Btn = new TextButton(this, this.relativeX(540), this.relativeY(10), 30, 20, "T5");
         this.tier5Btn.onClickHandler(() => { this._changeFilter(5); });
-        this.tier6Btn = new TextButton(this, this.relativeX(620), this.relativeY(10), 30, 20, "T6");
+        this.tier6Btn = new TextButton(this, this.relativeX(570), this.relativeY(10), 30, 20, "T6");
         this.tier6Btn.onClickHandler(() => { this._changeFilter(6); });
-        this.tier7Btn = new TextButton(this, this.relativeX(650), this.relativeY(10), 30, 20, "T7");
+        this.tier7Btn = new TextButton(this, this.relativeX(600), this.relativeY(10), 30, 20, "T7");
         this.tier7Btn.onClickHandler(() => { this._changeFilter(7); });
-        this.tier8Btn = new TextButton(this, this.relativeX(680), this.relativeY(10), 30, 20, "T8");
+        this.tier8Btn = new TextButton(this, this.relativeX(630), this.relativeY(10), 30, 20, "T8");
         this.tier8Btn.onClickHandler(() => { this._changeFilter(8); });
 
         this.prevPageBtn = new TextButton(this, this.relativeX(850), this.relativeY(10), 20, 20, "<")
@@ -163,6 +166,18 @@ export class GearScene extends SceneUIBase {
         this._setupView();
         this._setupGearDisplays();
     }
+    _onRuneHandler(gear) {
+        this._closeRuneWindow();
+        this.runeWindow = new GearRuneWindow(this, 350, 150, gear);
+        this.runeWindow.onCancelHandler(() => { this._closeRuneWindow(); });
+    }
+
+    _closeRuneWindow() {
+        if (this.runeWindow !== undefined) {
+            this.runeWindow.destroy();
+            this.runeWindow = undefined;
+        }
+    }
 
     _setupView() {
         for (var i = 0; i < this.craftDisplays.length; i++) {
@@ -170,12 +185,13 @@ export class GearScene extends SceneUIBase {
         }
         this.craftDisplays = [];
         for (var i = this.page * 6; i < Math.min(this.gearList.length, this.page * 6 + 6); i++) {
-            var x = this.relativeX(320 + i % 2 * 290);
+            var x = this.relativeX(290 + i % 2 * 305);
             var y = this.relativeY(40 + Math.floor((i - this.page * 6) / 2) * 215);
             this.craftDisplays.push(new GearCraftDisplay(this, x, y, this.gearList[i])
                 .registerEvents("onEquip", (gear) => { this._onEquipHandler(gear); })
                 .registerEvents("onUpgrade", (gear) => { this._onUpgradeHandler(gear); })
-                .registerEvents("onFuse", (gear) => { this._onFuseHandler(gear); }));
+                .registerEvents("onFuse", (gear) => { this._onFuseHandler(gear); })
+                .registerEvents("onRune", (gear) => { this._onRuneHandler(gear); }));
         }
     }
 

@@ -26,7 +26,8 @@ export class MoonlightScene extends SceneUIBase {
             .setInteractive();
 
         this.floatingText = undefined;
-        this.moonlightLabel = this.add.bitmapText(this.relativeX(550), this.relativeY(400), "courier20", "MOONLIGHT\n0", 20, 1).setOrigin(0.5);
+        this.moonlightLabel = this.add.bitmapText(this.relativeX(550), this.relativeY(400), "courier20", "MOONLIGHT\n" +
+            MoonlightData.getInstance().moonlight, 20, 1).setOrigin(0.5);
         this.moonlightLabel.setTint(Phaser.Display.Color.GetColor(206, 238, 240));
 
         var standardArray = [[648, 480], [672, 408], [624, 312], [552, 240], [456, 192], [360, 144], [264, 120],

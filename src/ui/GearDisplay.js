@@ -5,7 +5,6 @@ import { GearData } from "../data/GearData";
 export class GearDisplay {
     constructor(sceneContext, x, y, gear) {
         //275x220
-        var progression = new ProgressionStore();
         if (gear === undefined) {
             this.nameLabel = sceneContext.add.bitmapText(x + 5, y + 5, "courier20", "Nothing");
             this.typeLabel = sceneContext.add.bitmapText(x + 5, y + 25, "courier16", "");
