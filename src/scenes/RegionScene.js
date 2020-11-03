@@ -161,6 +161,7 @@ export class RegionScene extends SceneUIBase {
         }
         this.region.map[y][x].amountExplored = this.region.map[y][x].explorationNeeded;
         this.region.exploreTile(x, y);
+        this.scene.get("DarkWorld").changeRegion();
     }
 
     _handleTileClick(x, y) {

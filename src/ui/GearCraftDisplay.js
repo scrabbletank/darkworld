@@ -24,6 +24,7 @@ export class GearCraftDisplay {
         var subtext = gear.tier === 0 ? "Broken " + types[gear.slotType] : "Tier " + gear.tier + " " + types[gear.slotType];
         this.typeLabel = sceneContext.add.bitmapText(x + 5, y + 25, "courier16", subtext);
         this.moteButton = undefined;
+        this.runeButton = undefined;
         this.moteLabel = undefined;
 
         if (gear.level > 0 && progression.unlocks.motes === true) {
@@ -37,7 +38,7 @@ export class GearCraftDisplay {
         }
 
         if (gear.level > 0 && progression.unlocks.runes === true) {
-            this.moteButton = new ImageButton(sceneContext, x + 263, y + 40, 32, 32, { sprite: "runeicons", tile: 0 })
+            this.runeButton = new ImageButton(sceneContext, x + 263, y + 40, 32, 32, { sprite: "runeicons", tile: 0 })
                 .onClickHandler(() => { this._onRune(); });
         }
 
@@ -138,6 +139,9 @@ export class GearCraftDisplay {
         }
         if (this.moteButton !== undefined) {
             this.moteButton.destroy();
+        }
+        if (this.runeButton !== undefined) {
+            this.runeButton.destroy();
         }
     }
 }

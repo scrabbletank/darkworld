@@ -30,7 +30,7 @@ export class TooltipRegistry {
                     (talent.level * 10) + "% + (10%) chance for enemies to drop loot twice.";
             case "Explorer":
                 return "If you want to explore fast you gotta go fast. Increases your explore speed by " +
-                    (talent.level * 20) + "% + (10%).";
+                    (talent.level * 20) + "% + (20%).";
             case "Cleave":
                 return "Hit everything super hard. You gain a 20% chance your attacks hit an additional target dealing " +
                     (talent.level * 20) + "% + (20%) of your Strength in damage";
@@ -172,13 +172,13 @@ export class TooltipRegistry {
             case "Blackiron Gear":
                 return "Motes of Darkness can reach a " + (20 + moonlight.level * 10) + "% + (10%) bonus before diminishing returns.";
             case "Runelands":
-                return "Each region contains " + (1 + moonlight.level) + " + (1) hidden runes.";
+                return "Each region contains " + (5 + moonlight.level) + " + (1) hidden runes.";
             case "Moonlight Workers":
                 return "Production buildings generate " + (moonlight.level) + "% + (1%) more resources per defense.";
             case "Hero's Pouch":
                 return "Increases your gold cap by " + (moonlight.level * 100) + " + (100) per town.";
             case "Night Market":
-                return "Markets increase your economy by 0-" + (10 + moonlight.level) + "% + (1%) based on distance between the Town " +
+                return "Markets increase your economy by 0-" + (7 + moonlight.level) + "% + (1%) based on distance between the Town " +
                     "and other Markets.";
         }
     }

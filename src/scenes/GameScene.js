@@ -557,6 +557,7 @@ export class GameScene extends SceneUIBase {
         this.progression.rebirth();
         var lore = new LoreStore();
         lore.rebirth();
+        this.resourceTierSelected = 0;
 
         this.gearButton.setVisible(this.progression.unlocks.gearTab);
         this.regionButton.setVisible(this.progression.unlocks.exploreTab);
@@ -566,6 +567,7 @@ export class GameScene extends SceneUIBase {
         this.worldButton.setVisible(this.progression.unlocks.worldTab);
         this.moonlightButton.setVisible(this.progression.totalCounts.timesGated > 0);
         this._layoutStats();
+        this._updateInfuseCosts();
         this.gearShowTimer = 2000;
 
         this.loreScene.rebirth();

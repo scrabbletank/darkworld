@@ -29,6 +29,7 @@ export class GearScene extends SceneUIBase {
             .setInteractive();
 
         this.runeBtn = new ImageButton(this, this.relativeX(250), this.relativeY(10), 32, 32, { sprite: "runeicons", tile: 0 });
+        this.runeBtn.setVisible(false);
         this.allBtn = new TextButton(this, this.relativeX(290), this.relativeY(10), 50, 20, "All");
         this.allBtn.onClickHandler(() => { this._changeFilter(-1); });
         this.tier0Btn = new TextButton(this, this.relativeX(340), this.relativeY(10), 80, 20, "Broken");

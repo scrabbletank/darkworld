@@ -55,6 +55,7 @@ export class CombatScene extends SceneUIBase {
     }
 
     _monsterHealthCallback(health, idx) {
+        health = Math.max(0, health);
         this.monsterDiplays[idx].setHealthBar(health / this.combatManager.monsters[idx].MaxHealth(),
             Common.numberString(Math.ceil(health)) + "/" + Common.numberString(this.combatManager.monsters[idx].MaxHealth()));
     }

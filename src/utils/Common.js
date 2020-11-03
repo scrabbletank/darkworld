@@ -75,7 +75,7 @@ export class Common {
     }
 
     static getBonusText(prop, value) {
-        var sign = value >= 0 ? "+" : "-";
+        var sign = value >= 0 ? "+" : "";
         switch (prop) {
             case "health":
                 return sign + Math.floor(value) + " Health";
