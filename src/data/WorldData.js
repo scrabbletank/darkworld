@@ -61,8 +61,12 @@ export class WorldData {
     }
 
     _randomizeTraits(count) {
-        var traits = DynamicSettings.getInstance().fixedTraits;
-        for (var i = 0; i < count + DynamicSettings.getInstance().startingTraits; i++) {
+        var settings = DynamicSettings.getInstance();
+        var traits = []
+        for (var i = 0; i < settings.fixedTraits.length; i++) {
+            traits.push({ type: settings.fixedTraits[i].type, level: settings.fixedTraits[i].level });
+        }
+        for (var i = 0; i < count + settings.startingTraits; i++) {
             var traitType = Common.randint(1, 7);
             var temp = traits.find(t => t.type === traitType);
             if (temp !== undefined) {
@@ -81,7 +85,7 @@ export class WorldData {
         this.nextRegions = [];
         for (var i = 0; i < numChoices; i++) {
             var choice = Common.randint(0, choices.length);
-            var totalTraits = Math.floor((this.regionLevel - 1) / 2);
+            var totalTraits = Math.floor((this.regionList.length - 1) / 2);
             this.nextRegions.push({
                 type: choices[choice],
                 traits: this._randomizeTraits(totalTraits)

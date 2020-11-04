@@ -126,7 +126,7 @@ export class CombatManager {
         var player = PlayerData.getInstance();
 
         for (var i = 0; i < this.monsters.length; i++) {
-            rewards.gold += 1 + Math.floor(Math.max(1, this.monsters[i].level) / 5);
+            rewards.gold += 1 + (Math.max(1, this.monsters[i].level) / 14) + MoonlightData.getInstance().moonperks.gold.level * 0.25;
             rewards.shade += this.monsters[i].xpReward + player.runeBonuses.shadeFlat;
             console.log(player.runeBonuses.shadeFlat);
             rewards.motes += this.monsters[i].motes;

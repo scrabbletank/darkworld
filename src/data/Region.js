@@ -110,9 +110,29 @@ export class TileData {
         this.borderColor = [255, 255 - (d > 0.5 ? 255 * (d - 0.5) * 2 : 0), 255 - Math.min(255, (255 * d * 2))];
         this.yields = [];
         for (var i = 0; i < tileType.yields.length; i++) {
+            var rate = tileType.yields[i].rate;
+            switch (tileType.yields[i].type) {
+                case Statics.RESOURCE_METAL:
+                    rate = rate * (1 + MoonlightData.getInstance().moonperks.metal.level * 0.05);
+                    break;
+                case Statics.RESOURCE_LEATHER:
+                    rate = rate * (1 + MoonlightData.getInstance().moonperks.leather.level * 0.05);
+                    break;
+                case Statics.RESOURCE_FIBER:
+                    rate = rate * (1 + MoonlightData.getInstance().moonperks.fiber.level * 0.05);
+                    break;
+                case Statics.RESOURCE_STONE:
+                    rate = rate * (1 + MoonlightData.getInstance().moonperks.stone.level * 0.05);
+                    break;
+                case Statics.RESOURCE_WOOD:
+                    rate = rate * (1 + MoonlightData.getInstance().moonperks.wood.level * 0.05);
+                    break;
+                case Statics.RESOURCE_CRYSTAL:
+                    rate = rate * (1 + MoonlightData.getInstance().moonperks.crystal.level * 0.05);
+                    break;
+            }
             this.yields.push({
                 type: tileType.yields[i].type,
-                tier: Math.min(8, Math.max(1, Math.floor(difficulty / 20))),
                 rate: tileType.yields[i].rate
             });
         }
@@ -199,6 +219,7 @@ export class Region {
     constructor(width = 8, height = 8, regionLevel, regionType, traits, ignoreGen = false) {
         //non-save variables
         this.tileChangedHandler = undefined;
+        this.sightingHandler = undefined;
         this.resourcesPerDay = [0, 0, 0, 0, 0, 0];
         this.taverns = [];
         this.roads = [];
@@ -417,8 +438,12 @@ export class Region {
     onTileChanged(callback) {
         this.tileChangedHandler = callback;
     }
-    removeTileChanged() {
+    removeHandlers() {
         this.tileChangedHandler = undefined;
+        this.sightingHandler = undefined;
+    }
+    onSighting(callback) {
+        this.sightingHandler = callback;
     }
     _onTileChanged(tile) {
         if (this.tileChangedHandler !== undefined) {
@@ -437,6 +462,7 @@ export class Region {
         if (this.map[y][x].revealed === true) {
             this.tilesExplored += 1;
             this.map[y][x].explored = true;
+            this.townData.addFriendship(10 * MoonlightData.getInstance().moonperks.discovery.level);
             if (this.map[y][x].hasRune === true) {
                 this.map[y][x].hasRune = false;
                 var rune = RuneRegistry.getRandomRuneAtLevel(this.regionLevel + 1);
@@ -519,6 +545,9 @@ export class Region {
         var tile = invadeList[Common.randint(0, invadeList.length)];
         this.sightings.push(tile);
         this.map[tile[0]][tile[1]].sighting();
+        if (this.sightingHandler !== undefined) {
+            this.sightingHandler();
+        }
     }
 
     endSighting(x, y) {
@@ -636,6 +665,7 @@ export class Region {
         //for alchemy
         var drain = [1, 5, 13, 33, 77];
         var gain = [0.05, 0.3, 0.9, 3, 8];
+        var dockBonus = [1, 1.25, 1.5, 1.75, 2];
         for (var i = 0; i < this.productionBuildings.length; i++) {
             var tile = this.map[this.productionBuildings[i][0]][this.productionBuildings[i][1]];
             var prodBonus = 1 + (tile.defense * MoonlightData.getInstance().moonperks.moonlightworkers.level * 0.01);
@@ -669,15 +699,23 @@ export class Region {
                     this.townData.buildingIncome += 2 * tile.building.tier;
                     if (tile.y > 0) {
                         this.map[tile.y - 1][tile.x].roadBuildable = true;
+                        this.map[tile.y - 1][tile.x].houseBuildable = true;
+                        this.map[tile.y - 1][tile.x].roadBonus = Math.max(this.map[tile.y - 1][tile.x].roadBonus, dockBonus[tile.building.tier]);
                     }
                     if (tile.y < this.height - 1) {
                         this.map[tile.y + 1][tile.x].roadBuildable = true;
+                        this.map[tile.y + 1][tile.x].houseBuildable = true;
+                        this.map[tile.y + 1][tile.x].roadBonus = Math.max(this.map[tile.y + 1][tile.x].roadBonus, dockBonus[tile.building.tier]);
                     }
                     if (tile.x > 0) {
                         this.map[tile.y][tile.x - 1].roadBuildable = true;
+                        this.map[tile.y][tile.x - 1].houseBuildable = true;
+                        this.map[tile.y][tile.x - 1].roadBonus = Math.max(this.map[tile.y][tile.x - 1].roadBonus, dockBonus[tile.building.tier]);
                     }
                     if (tile.x < this.width - 1) {
                         this.map[tile.y][tile.x + 1].roadBuildable = true;
+                        this.map[tile.y][tile.x + 1].houseBuildable = true;
+                        this.map[tile.y][tile.x + 1].roadBonus = Math.max(this.map[tile.y][tile.x + 1].roadBonus, dockBonus[tile.building.tier]);
                     }
                     break;
                 case "Alchemy Lab":
@@ -691,7 +729,8 @@ export class Region {
     }
 
     _addBuilding(tile) {
-        tile.defense += MoonlightData.getInstance().moonperks.hardenedvillagers.level;
+        tile.defense += MoonlightData.getInstance().moonperks.hardenedvillagers.level +
+            this.townData.upgrades.reinforcedhouses.level;
         switch (tile.building.name) {
             case "Lumberyard":
             case "Hunter's Lodge":
@@ -728,7 +767,8 @@ export class Region {
         }
     }
     _removeBuilding(tile) {
-        tile.defense -= MoonlightData.getInstance().moonperks.hardenedvillagers.level;
+        tile.defense -= MoonlightData.getInstance().moonperks.hardenedvillagers.level +
+            this.townData.upgrades.reinforcedhouses.level;
         switch (tile.building.name) {
             case "Lumberyard":
             case "Hunter's Lodge":

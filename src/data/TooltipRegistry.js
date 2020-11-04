@@ -18,11 +18,11 @@ export class TooltipRegistry {
             case "Defense":
                 return "Get more armor from Defense. Increases Armor from Defense by " + (talent.level * 10) + "% + (10%).";
             case "Accuracy":
-                return "Crit even harder. You gain " + (2.5 + talent.level * 0.5) + "% + (0.5%) Crit Damage per Accuracy.";
+                return "Crit even harder. You gain " + (4 + talent.level * 0.5) + "% + (0.5%) Crit Damage per Accuracy.";
             case "Hit":
-                return "Gain even more Hit from all sources. Increase your Hit by " + (talent.level * 2) + "% + (2%).";
+                return "Gain even more Hit from all sources. Increase your Hit by " + (talent.level * 3) + "% + (3%).";
             case "Evasion":
-                return "Gain even more Evasion from all sources. Increase your Evasion by " + (talent.level * 2) + "% + (2%).";
+                return "Gain even more Evasion from all sources. Increase your Evasion by " + (talent.level * 3) + "% + (3%).";
             case "Critical":
                 return "Everyone loves to crit, so here is some free crit chance. Increase your crit chance by " + (talent.level * 1) + "% + (1%).";
             case "Bounty":
@@ -180,6 +180,27 @@ export class TooltipRegistry {
             case "Night Market":
                 return "Markets increase your economy by 0-" + (7 + moonlight.level) + "% + (1%) based on distance between the Town " +
                     "and other Markets.";
+            case "Shadow's Metal":
+                return "Metal yields are increased by " + (moonlight.level * 5) + "% + (5%).";
+            case "Shadow's Leather":
+                return "Leather yields are increased by " + (moonlight.level * 5) + "% + (5%).";
+            case "Shadow's Fiber":
+                return "Fiber yields are increased by " + (moonlight.level * 5) + "% + (5%).";
+            case "Shadow's Stone":
+                return "Stone yields are increased by " + (moonlight.level * 5) + "% + (5%).";
+            case "Shadow's Wood":
+                return "Wood yields are increased by " + (moonlight.level * 5) + "% + (5%).";
+            case "Shadow's Crystal":
+                return "Crystal yields are increased by " + (moonlight.level * 5) + "% + (5%).";
+            case "Shadow's Gold":
+                return "Monsters drop " + (moonlight.level * 0.25) + " + (0.25) more gold.";
+            case "Discovery":
+                return "Gain " + (moonlight.level * 10) + " + (10) friendship each time you fully explore a tile.";
+            case "Shadow's Chosen":
+                return "Monsters base shade reward increased by " + (moonlight.level * 1) + " + (1). This is added before other multipliers, " +
+                    "such as Shadow's Blessing or monster level.";
+            case "Corrupted Runes":
+                return "Upgrading and Rerolling Runes costs " + Math.floor(Math.pow(0.93, moonlight.level) * 100) + "% - (~7%) fewer Motes of Darkness.";
         }
     }
 
@@ -223,7 +244,7 @@ export class TooltipRegistry {
                     "Fastest Time: " + new WorldTime(challenge.fastestTime).getTimespanText();
             case "Giant Lands":
                 return "Is this land massive, or are you just really small? Each region is smaller, but takes 25 times longer to explore. " +
-                    "Also all monsters have the Monstrous " + (1 + challenge.completions) + " trait.\n\n" +
+                    "Also all monsters have the Monstrous " + (2 + 2 * challenge.completions) + " trait.\n\n" +
                     "Restrictions: Exploration needed is increased by 25x\n" +
                     "              Reach Gate " + (1 + challenge.completions) + ".\n\n" +
                     "On Every Completion: Increases explore speed by 25%\n" +

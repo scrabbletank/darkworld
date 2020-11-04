@@ -27,12 +27,13 @@ export class MoonlightScene extends SceneUIBase {
 
         this.floatingText = undefined;
         this.moonlightLabel = this.add.bitmapText(this.relativeX(550), this.relativeY(400), "courier20", "MOONLIGHT\n" +
-            MoonlightData.getInstance().moonlight, 20, 1).setOrigin(0.5);
+            Common.numberString((MoonlightData.getInstance().moonlight)), 20, 1).setOrigin(0.5);
         this.moonlightLabel.setTint(Phaser.Display.Color.GetColor(206, 238, 240));
 
         var standardArray = [[648, 480], [672, 408], [624, 312], [552, 240], [456, 192], [360, 144], [264, 120],
         [168, 144], [144, 216], [192, 312], [264, 384], [360, 432], [456, 480], [552, 504],
-        [528, 576], [312, 504], [120, 360], [120, 72], [72, 240]];
+        [528, 576], [312, 504], [120, 360], [120, 72], [72, 240],[672, 552], [744, 432], [696, 288],
+        [624, 192], [528, 120], [408, 72], [264, 48], [24, 384], [192, 456], [216, 552]];
         this.moonlight = new MoonlightData();
 
         this.moonlightButtons = [];

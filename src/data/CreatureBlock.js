@@ -113,7 +113,7 @@ export class CreatureBlock {
         return Math.floor(ret * 100) / 100;
     }
     CritDamage() {
-        var ret = this.stats.critDamage + this.statBonuses.critDamage + this.Accuracy() * Statics.CRITDMG_PER_ACCURACY;
+        var ret = 0.25 + this.stats.critDamage + this.statBonuses.critDamage + this.Accuracy() * Statics.CRITDMG_PER_ACCURACY;
         ret = Math.pow(ret, Statics.CRITDMG_DIMINISHING_POWER);
         return Math.floor(ret * 100) / 100;
     }
@@ -269,7 +269,8 @@ export class CreatureBlock {
 
         this.currentHealth = this.MaxHealth();
         this.name = level < 1 ? "Weak " + name : name;
-        this.xpReward = shadeBase + (shadeBase / 4) * rLvl;
+        var shade = shadeBase + MoonlightData.getInstance().moonperks.shadow2.level;
+        this.xpReward = shade + (shade / 4) * rLvl;
         this.xpReward = this.xpReward * (1 + MoonlightData.getInstance().challenges.megamonsters.completions * 0.05);
         this.drops = rewards;
         this.icon = icon;
@@ -342,7 +343,6 @@ export class CreatureBlock {
                     break;
             }
             extraStats.xpReward += this.xpReward * (1 + MoonlightData.getInstance().challenges.megamonsters.completions * 0.01 * trait.level);
-            this.currentHealth = this.MaxHealth();
         }
 
         for (const prop in this.statBonuses) {
@@ -350,6 +350,7 @@ export class CreatureBlock {
         }
         this.xpReward += extraStats.xpReward;
         this.motes += extraStats.motes;
+        this.currentHealth = this.MaxHealth();
     }
 
     addTrait(trait, level) {

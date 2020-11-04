@@ -106,14 +106,14 @@ export class PlayerBlock extends CreatureBlock {
     Hit() {
         var ret = this.stats.hit + this.statBonuses.hit + this.Dexterity() * Statics.HIT_PER_DEXTERITY;
         ret += this.Dexterity() * this.player.getTalentLevel("dex");
-        ret = ret * (1 + this.player.getTalentLevel("hit") * 0.02);
+        ret = ret * (1 + this.player.getTalentLevel("hit") * 0.03);
         ret += ret * this.player.runeBonuses.hitPercent;
         return Math.floor(ret);
     }
     Evasion() {
         var ret = this.stats.evasion + this.statBonuses.evasion + this.Agility() * Statics.EVA_PER_AGILITY;
         ret += this.Agility() * this.player.getTalentLevel("agi");
-        ret = ret * (1 + this.player.getTalentLevel("evasion") * 0.02);
+        ret = ret * (1 + this.player.getTalentLevel("evasion") * 0.03);
         ret += ret * this.player.runeBonuses.evaPercent;
         return Math.floor(ret);
     }
@@ -124,7 +124,7 @@ export class PlayerBlock extends CreatureBlock {
         return Math.floor(ret * 100) / 100;
     }
     CritDamage() {
-        var ret = this.stats.critDamage + this.statBonuses.critDamage + this.Accuracy() * Statics.CRITDMG_PER_ACCURACY;
+        var ret = 0.25 + this.stats.critDamage + this.statBonuses.critDamage + this.Accuracy() * Statics.CRITDMG_PER_ACCURACY;
         ret += this.Accuracy() * this.player.getTalentLevel("acc") * 0.005;
         ret = Math.pow(ret, Statics.CRITDMG_DIMINISHING_POWER);
         ret += ret * this.player.runeBonuses.critPercent;

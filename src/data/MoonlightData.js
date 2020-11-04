@@ -40,7 +40,7 @@ export class MoonlightData {
                     texture: { sprite: "moonicons", tile: 9 }
                 },
                 nightmarket: {
-                    name: "Night Market", level: 0, maxLevel: -1, requires: [], cost: [35, 45, 1.05],
+                    name: "Night Market", level: 0, maxLevel: -1, requires: [], cost: [35, 45, 1.2],
                     texture: { sprite: "moonicons", tile: 22 }
                 },
                 hardenedvillagers: {
@@ -48,7 +48,7 @@ export class MoonlightData {
                     texture: { sprite: "moonicons", tile: 11 }
                 },
                 shadow: {
-                    name: "Shadow's Blessing", level: 0, maxLevel: -1, requires: [], cost: [10, 10, 1.125],
+                    name: "Shadow's Blessing", level: 0, maxLevel: -1, requires: [], cost: [10, 15, 1.08],
                     texture: { sprite: "moonicons", tile: 12 }
                 },
                 runes: {
@@ -64,25 +64,65 @@ export class MoonlightData {
                     texture: { sprite: "moonicons", tile: 10 }
                 },
                 blackirongear: {
-                    name: "Blackiron Gear", level: 0, maxLevel: -1, requires: ["heartofdarkness"], cost: [30, 100, 1.25],
+                    name: "Blackiron Gear", level: 0, maxLevel: -1, requires: ["heartofdarkness"], cost: [30, 80, 1.25],
                     texture: { sprite: "moonicons", tile: 10 }
                 },
                 runelands: {
-                    name: "Runelands", level: 0, maxLevel: -1, requires: ["runes"], cost: [300, 0, 1.25],
+                    name: "Runelands", level: 0, maxLevel: -1, requires: ["runes"], cost: [300, 150, 1.3],
                     texture: { sprite: "moonicons", tile: 8 }
                 },
                 moonlightworkers: {
-                    name: "Moonlight Workers", level: 0, maxLevel: -1, requires: ["hardenedvillagers"], cost: [100, 100, 1.2],
+                    name: "Moonlight Workers", level: 0, maxLevel: -1, requires: ["hardenedvillagers"], cost: [100, 100, 1.3],
                     texture: { sprite: "moonicons", tile: 19 }
                 },
                 heropouch: {
-                    name: "Hero's Pouch", level: 0, maxLevel: -1, requires: ["vault"], cost: [35, 45, 1.05],
+                    name: "Hero's Pouch", level: 0, maxLevel: -1, requires: ["vault"], cost: [35, 45, 1.1],
                     texture: { sprite: "moonicons", tile: 9 }
                 },
                 moonwine: {
                     name: "Moonwine", level: 0, maxLevel: 2, requires: ["nightmarket"], cost: [500, 0, 5],
                     texture: { sprite: "moonicons", tile: 14 }
                 },
+                metal: {
+                    name: "Shadow's Metal", level: 0, maxLevel: -1, requires: ["str"], cost: [25, 5, 1.1],
+                    texture: { sprite: "moonicons", tile: 26 }
+                },
+                leather: {
+                    name: "Shadow's Leather", level: 0, maxLevel: -1, requires: ["dex"], cost: [25, 5, 1.1],
+                    texture: { sprite: "moonicons", tile: 25 }
+                },
+                fiber: {
+                    name: "Shadow's Fiber", level: 0, maxLevel: -1, requires: ["agi"], cost: [25, 5, 1.1],
+                    texture: { sprite: "moonicons", tile: 27 }
+                },
+                stone: {
+                    name: "Shadow's Stone", level: 0, maxLevel: -1, requires: ["end"], cost: [25, 5, 1.1],
+                    texture: { sprite: "moonicons", tile: 28 }
+                },
+                wood: {
+                    name: "Shadow's Wood", level: 0, maxLevel: -1, requires: ["rec"], cost: [25, 5, 1.1],
+                    texture: { sprite: "moonicons", tile: 24 }
+                },
+                crystal: {
+                    name: "Shadow's Crystal", level: 0, maxLevel: -1, requires: ["def"], cost: [25, 5, 1.1],
+                    texture: { sprite: "moonicons", tile: 29 }
+                },
+                gold: {
+                    name: "Shadow's Gold", level: 0, maxLevel: -1, requires: ["acc"], cost: [120, 30, 1.125],
+                    texture: { sprite: "moonicons", tile: 30 }
+                },
+                discovery: {
+                    name: "Discovery", level: 0, maxLevel: -1, requires: ["moonlightworkers"], cost: [150, 100, 1.25],
+                    texture: { sprite: "moonicons", tile: 15 }
+                },
+                shadow2: {
+                    name: "Shadow's Chosen", level: 0, maxLevel: -1, requires: ["shadow"], cost: [75, 75, 1.1],
+                    texture: { sprite: "moonicons", tile: 20 }
+                },
+                runes3: {
+                    name: "Corrupted Runes", level: 0, maxLevel: -1, requires: ["runelands"], cost: [400, 200, 1.1],
+                    texture: { sprite: "moonicons", tile: 8 }
+                }
             };
 
             this.challenges = {
@@ -174,7 +214,9 @@ export class MoonlightData {
     load(saveObj, ver) {
         this.moonlight = saveObj.ml;
         for (var i = 0; i < saveObj.mp.length; i++) {
-            this.moonperks[saveObj.mp[i][0]].level = saveObj.mp[i][1];
+            if (this.moonperks[saveObj.mp[i][0]] !== undefined) {
+                this.moonperks[saveObj.mp[i][0]].level = saveObj.mp[i][1];
+            }
         }
         this.challengePoints = saveObj.cp;
         for (var i = 0; i < saveObj.c.length; i++) {

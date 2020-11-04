@@ -87,7 +87,7 @@ export class GameScene extends SceneUIBase {
         this.statIcons.push(new TooltipImage(this, 20, 120, 16, 16, { sprite: "icons", tile: 5 },
             "Defense determines how durable your body is. Each point increases your armor by 0.2 and increases armor from gear by ~1% (diminishing returns)."));
         this.statIcons.push(new TooltipImage(this, 20, 140, 16, 16, { sprite: "icons", tile: 6 },
-            "Accuracy determines your ability to strike weak points. Each point increases your Crit damage by 2.5%."));
+            "Accuracy determines your ability to strike weak points. Each point increases your Crit damage by ~4% (diminishing returns)."));
 
         this.statIncButtons.push(new TextButton(this, 150, 20, 16, 16, '+')
             .onClickHandler(() => { this._increaseStat('str'); }));
@@ -287,6 +287,9 @@ export class GameScene extends SceneUIBase {
 
     notifyGear() {
         this.gearButton.setNotification();
+    }
+    notifyRegion() {
+        this.regionButton.setNotification();
     }
 
     _handleProgressionEvents(type, count, text) {

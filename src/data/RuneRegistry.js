@@ -1,4 +1,5 @@
 import { Common } from "../utils/Common";
+import { MoonlightData } from "./MoonlightData";
 
 var RuneWords = {
     Tyr: {
@@ -184,7 +185,7 @@ var RuneWords = {
         dropRate: 20,
         getBonus: (level) => {
             return {
-                shadeFlat: 2 * level
+                shadeFlat: 10 * level
             };
         }
     },
@@ -335,6 +336,11 @@ export class RuneRegistry {
             return RuneWords[rune.word].getBonus(rune.level);
         }
         return {};
+    }
+
+    static getUpgradeCost(rune) {
+        return Math.round((100 + (Math.floor(Math.pow(rune.level - 1, 1.5)) * 200)) *
+            Math.pow(0.93, MoonlightData.getInstance().moonperks.runes3.level));
     }
 
     static getRandomRuneAtLevel(level) {

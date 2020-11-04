@@ -66,7 +66,7 @@ export class DynamicSettings {
                 this.regionSize = [5, 7];
                 this.minGateRegion = challenge.completions;
                 this.exploreSpeed = 1 / 25;
-                this.fixedTraits = [{ type: Statics.TRAIT_MONSTROUS, level: 1 + challenge.completions }];
+                this.fixedTraits = [{ type: Statics.TRAIT_MONSTROUS, level: 2 + challenge.completions * 2 }];
                 break;
             case "Lazy Townsfolk":
                 this.minGateRegion = 2 + challenge.completions;

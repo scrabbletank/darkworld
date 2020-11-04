@@ -36,6 +36,7 @@ export class RegionScene extends SceneUIBase {
         this.updateBuildings = false;
 
         this.upgradeKey = undefined;
+        this.hoveredTile = [-1, -1];
     }
 
     preload() {
@@ -94,8 +95,8 @@ export class RegionScene extends SceneUIBase {
         rect.lineWidth = 1.5;
         rect.setInteractive({ useHandCursor: true })
             .on("pointerdown", () => { this._handleTileClick(x, y); })
-            .on('pointerover', () => { this._setTooltip(x, y); })
-            .on('pointerout', () => { this._disableTooltip() });
+            .on('pointerover', () => { this.hoveredTile = [x, y]; this._setTooltip(x, y); })
+            .on('pointerout', () => { this.hoveredTile = [-1, -1]; this._disableTooltip(); });
 
         var bld = undefined;
         if (this.region.map[y][x].building !== undefined && this.region.map[y][x].revealed === true) {
@@ -105,7 +106,6 @@ export class RegionScene extends SceneUIBase {
             bld.displayWidth = texture.w;
             bld.displayHeight = texture.h;
         }
-        // this.add.bitmapText(this.relativeX(x * this.WIDTH + 120), this.relativeY(y * this.HEIGHT + 70), "courier16", this.region.map[y][x].difficulty + "").setOrigin(0.5);
         return { rect: rect, building: bld };
     }
 
@@ -138,8 +138,10 @@ export class RegionScene extends SceneUIBase {
         this.floatingText = new FloatingTooltip(this, txt, xAdj, yAdj, 190, 82);
     }
     _disableTooltip() {
-        this.floatingText.destroy();
-        this.floatingText = undefined;
+        if (this.floatingText !== undefined) {
+            this.floatingText.destroy();
+            this.floatingText = undefined;
+        }
     }
 
     _exploreTown(x, y) {
@@ -187,6 +189,16 @@ export class RegionScene extends SceneUIBase {
         this.tileSelectWindow.addOnActionHandler((action, blob) => { this._tileActionHandler(action, blob); });
     }
 
+    _canUpgrade(tile) {
+        if (tile.building.name === "Market") {
+            return tile.building.tier < this.region.townData.getMarketLevel();
+        }
+        if (tile.building.name === "Tavern") {
+            return tile.building.tier < this.region.townData.getTavernLevel();
+        }
+        return tile.building.tier < 3;
+    }
+
     _tileActionHandler(action, blob) {
         switch (action) {
             case "explore":
@@ -208,7 +220,7 @@ export class RegionScene extends SceneUIBase {
                 var player = new PlayerData();
                 var tier = Math.floor(this.region.regionLevel);
                 if (Common.canCraft(blob.tile.building.resourceCosts, player.resources[tier]) === true &&
-                    blob.tile.building.goldCost <= player.gold) {
+                    blob.tile.building.goldCost <= player.gold && this._canUpgrade(blob.tile)) {
                     player.spendResource(blob.tile.building.resourceCosts, tier);
                     player.addGold(-blob.tile.building.goldCost);
                     this.region.upgradeBuilding(blob.tile.x, blob.tile.y);
@@ -223,8 +235,10 @@ export class RegionScene extends SceneUIBase {
                     this.region.destroyBuilding(blob.tile.x, blob.tile.y);
                 }
         }
-        this.tileSelectWindow.destroy();
-        this.tileSelectWindow = undefined;
+        if (this.tileSelectWindow !== undefined) {
+            this.tileSelectWindow.destroy();
+            this.tileSelectWindow = undefined;
+        }
     }
     _rebirthClickedHandler() {
         this.rebirthDialog.destroy();
@@ -357,11 +371,12 @@ export class RegionScene extends SceneUIBase {
 
     rebirth() {
         // we need to ensure we're only updating when the current region is changed
-        this.region.removeTileChanged();
+        this.region.removeHandlers();
         this.region = WorldData.instance.getCurrentRegion();
         this.region.onTileChanged((x) => { this._updateTile(x); });
-        for (var i = 0; i < this.region.height; i++) {
-            for (var t = 0; t < this.region.width; t++) {
+        this.region.onSighting((x) => { this.scene.get("DarkWorld").notifyRegion(); });
+        for (var i = 0; i < this.tileElements.length; i++) {
+            for (var t = 0; t < this.tileElements[0].length; t++) {
                 this.tileElements[i][t].rect.destroy();
                 if (this.tileElements[i][t].building !== undefined) {
                     this.tileElements[i][t].building.destroy();
@@ -445,6 +460,7 @@ export class RegionScene extends SceneUIBase {
 
         this.progression.addOnUnlockHandler((a, b, c) => { this._handleProgressionEvent(a, b, c) });
         this.region.onTileChanged((x) => { this._updateTile(x); });
+        this.region.onSighting((x) => { this.scene.get("DarkWorld").notifyRegion(); });
 
         this.upgradeKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.U);
     }
@@ -459,14 +475,13 @@ export class RegionScene extends SceneUIBase {
             var lerp = Math.sin((this.sightingVal / 2000) * Math.PI * 2) * 0.5 + 0.5;
             for (var i = 0; i < this.region.sightings.length; i++) {
                 var s = this.region.sightings[i];
-                if (this.region.map[s[0]][s[1]].isInvaded === true && this.region.map[s[0]][s[1]].invasionPower >= Statics.SIGHTING_THRESHOLD) {
-                    this.tileElements[s[0]][s[1]].rect.fillColor = Common.colorLerp(this.region.map[s[0]][s[1]].color, Phaser.Display.Color.GetColor(255, 0, 255), lerp);
-                }
+                var clr = toPhaserColor(this.region.map[s[0]][s[1]].color);
+                this.tileElements[s[0]][s[1]].rect.fillColor = Common.colorLerp(clr, Phaser.Display.Color.GetColor(255, 0, 255), lerp);
             }
         }
 
-        if (Phaser.Input.Keyboard.JustUp(this.upgradeKey)) {
-
+        if (Phaser.Input.Keyboard.JustUp(this.upgradeKey) && this.hoveredTile[0] !== -1) {
+            this._tileActionHandler("upgrade", { tile: this.region.map[this.hoveredTile[1]][this.hoveredTile[0]] });
         }
 
         if (this.updateBuildings === true) {
