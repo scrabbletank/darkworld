@@ -5,6 +5,7 @@ import { Combat } from "../utils/Combat";
 import { Statics } from "./Statics";
 import { ProgressionStore } from "./ProgressionStore";
 import { WorldData } from "./WorldData";
+import { DynamicSettings } from "./DynamicSettings";
 
 export class CombatManager {
     constructor() {
@@ -128,7 +129,6 @@ export class CombatManager {
         for (var i = 0; i < this.monsters.length; i++) {
             rewards.gold += 1 + (Math.max(1, this.monsters[i].level) / 14) + MoonlightData.getInstance().moonperks.gold.level * 0.25;
             rewards.shade += this.monsters[i].xpReward + player.runeBonuses.shadeFlat;
-            console.log(player.runeBonuses.shadeFlat);
             rewards.motes += this.monsters[i].motes;
             if (Math.random() < player.runeBonuses.moteChance) {
                 rewards.motes += 1;
@@ -136,17 +136,20 @@ export class CombatManager {
             // calculating bonus drops here
             var lvl = player.getTalentLevel("bounty");
             var numRewards = 1 + (lvl / 10) + ((lvl % 10) / 10 > Math.random() ? 1 : 0);
+            var baseLvl = this.activeTile.parent.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease;
             for (var t = 0; t < numRewards; t++) {
                 var idx = Common.randint(0, this.monsters[i].drops.length);
-                var dropMulti = Math.max(1, this.monsters[i].level - Math.max(0, Math.min(8, Math.floor(this.monsters[i].level / 20)) * 20));
+                var dropMulti = (1 + (this.monsters[i].level - baseLvl) * 0.20) + (this.activeTile.parent.regionLevel * 0.1);
+                console.log(this.monsters[i].level + ", " + baseLvl + ", " + dropMulti);
                 rewards.resource[this.monsters[i].drops[idx].type] += Math.max(0, this.monsters[i].drops[idx].amount * dropMulti) +
-                player.runeBonuses.lootFlat;
+                    player.runeBonuses.lootFlat;
             }
             rewards.friendship += this.activeTile.getFriendshipReward();
         }
         rewards.gold = (rewards.gold + (this.activeTile.explored ? 1 : 5)) * this.activeTile.parent.townData.bountyMulti;
         rewards.shade *= MoonlightData.getInstance().getShadowBonus() * this.activeTile.parent.townData.getFriendshipBonus();
-        rewards.friendship *= 1 + player.runeBonuses.friendshipMulti;
+        rewards.friendship *= (1 + player.runeBonuses.friendshipMulti) *
+            (1 + MoonlightData.getInstance().challenges.outcast.completions * 0.1);
 
         if (this.activeTile.isInvaded === true) {
             if (ProgressionStore.getInstance().unlocks.motes === false) {

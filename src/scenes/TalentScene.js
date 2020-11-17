@@ -10,6 +10,10 @@ export class TalentScene extends SceneUIBase {
         super(position, name);
     }
 
+    refresh() {
+        this.rebirth();
+    }
+
     rebirth() {
         this.talentLabel.setText("Talent Points\n" + this.player.talentPoints);
 
@@ -106,7 +110,7 @@ export class TalentScene extends SceneUIBase {
             this._disableTooltip();
         }
         var txt = talent.name + " Lv" + this.player.getTalentLevel(talentName) + "\n" +
-            TooltipRegistry.getTalentTooltip(talent) + "\n\n";
+            TooltipRegistry.getTalentTooltip(talent, this.player.getTalentLevel(talentName)) + "\n\n";
 
         if (talent.requires.length > 0) {
             txt += "Requires: ";

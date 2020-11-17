@@ -98,7 +98,6 @@ export class GearData {
     }
 
     _initGear() {
-        var moonData = new MoonlightData();
         this.gear = [];
         this.tiersAvailable = 0;
 
@@ -110,15 +109,9 @@ export class GearData {
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
         };
-        var statlvl = {
-            health: 0, damageMin: 0.25, damageMax: 0.5, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
         var cost = [0, 0, 0, 0, 0, 0];
         var costlvl = [5, 0, 10, 0, 0, 0];
-        this.gear.push(new Gear("Broken Sword", 0, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Broken Sword", 0, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
@@ -126,15 +119,9 @@ export class GearData {
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 1
         };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.25
-        };
         var cost = [0, 0, 0, 0, 0, 0];
         var costlvl = [0, 10, 0, 5, 0, 0];
-        this.gear.push(new Gear("Old Leathers", 0, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Old Leathers", 0, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
@@ -142,15 +129,9 @@ export class GearData {
             defense: 1, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
         };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0.5, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
         var cost = [0, 0, 0, 0, 0, 0];
         var costlvl = [10, 0, 0, 0, 5, 0];
-        this.gear.push(new Gear("Barrel Lid", 0, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Barrel Lid", 0, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         //initial gear should be available
         this.gear[0].bringToLevel(1);
@@ -162,248 +143,158 @@ export class GearData {
         //////////////////////////////
 
         var stat = {
-            health: 0, damageMin: 2, damageMax: 4, strength: 0,
+            health: 0, damageMin: 2, damageMax: 4, strength: 1,
             dexterity: 1, agility: 0, endurance: 0, recovery: 0,
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0.05, healthRegen: 0, armor: 0
         };
-        var statlvl = {
-            health: 0, damageMin: 0.75, damageMax: 1.5, strength: 0,
-            dexterity: 1, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
         var cost = [10, 0, 25, 5, 0, 0];
         var costlvl = [6, 0, 15, 4, 0, 5];
-        this.gear.push(new Gear("Iron Sword", 1, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Iron Sword", 1, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 1, damageMax: 5, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0.05, critChance: 0.07, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0.6, damageMax: 1.6, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0.025, critChance: 0, healthRegen: 0, armor: 0
+            critDamage: 0.08, critChance: 0.07, healthRegen: 0, armor: 0
         };
         var cost = [20, 0, 15, 5, 0, 0];
         var costlvl = [13, 0, 9, 3, 0, 5];
-        this.gear.push(new Gear("Iron Axe", 1, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Iron Axe", 1, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 1, damageMax: 3, strength: 0,
+            health: 0, damageMin: 1, damageMax: 2.75, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 15, evasion: 5,
-            critDamage: 0, critChance: 0.15, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0.4, damageMax: 0.9, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 10, evasion: 3,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+            defense: 0, accuracy: 0, hit: 12, evasion: 4,
+            critDamage: 0, critChance: 0.13, healthRegen: 0, armor: 0
         };
         var cost = [5, 0, 20, 10, 0, 5];
         var costlvl = [3, 0, 14, 8, 0, 5];
-        this.gear.push(new Gear("Dagger", 1, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Dagger", 1, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 3, damageMax: 5, strength: 1,
+            health: 0, damageMin: 3, damageMax: 5.25, strength: 1,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: -15, evasion: 0,
-            critDamage: 0, critChance: 0.05, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 1.25, damageMax: 2, strength: 1,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: -7, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+            defense: 1, accuracy: 0, hit: -10, evasion: 0,
+            critDamage: 0, critChance: 0.04, healthRegen: 0, armor: 0
         };
         var cost = [10, 10, 0, 0, 0, 20];
         var costlvl = [8, 8, 0, 0, 0, 14];
-        this.gear.push(new Gear("Crystal Hammer", 1, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Crystal Hammer", 1, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 6, evasion: 12,
+            defense: 0, accuracy: 0, hit: 4, evasion: 12,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 1
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 3, evasion: 6,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.25
         };
         var cost = [0, 10, 0, 30, 0, 0];
         var costlvl = [0, 5, 0, 20, 0, 5];
-        this.gear.push(new Gear("Cloak", 1, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Cloak", 1, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 1,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            defense: 0, accuracy: 1, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 2
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 1,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.5
         };
         var cost = [0, 30, 0, 10, 0, 0];
         var costlvl = [0, 20, 0, 5, 0, 5];
-        this.gear.push(new Gear("Hide Armor", 1, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Hide Armor", 1, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
-            health: 5, damageMin: 0, damageMax: 0, strength: 0,
+            health: 7, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: -7,
+            defense: 0, accuracy: 0, hit: 0, evasion: -8,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 3
-        };
-        var statlvl = {
-            health: 3, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: -4,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.9
         };
         var cost = [0, 10, 30, 0, 0, 0];
         var costlvl = [0, 5, 20, 0, 0, 5];
-        this.gear.push(new Gear("Half Plate", 1, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Half Plate", 1, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            dexterity: 1, agility: 0, endurance: 0, recovery: 0,
             defense: 2, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 1
         };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 1, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.25
-        };
         var cost = [30, 0, 10, 0, 0, 0];
         var costlvl = [17, 0, 10, 0, 0, 8];
-        this.gear.push(new Gear("Wooden Shield", 1, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Wooden Shield", 1, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            dexterity: 0, agility: 0, endurance: 2.5, recovery: 0,
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0.3, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0.15, armor: 0
+            critDamage: 0, critChance: 0, healthRegen: 0.5, armor: 0
         };
         var cost = [0, 0, 10, 0, 25, 5];
         var costlvl = [0, 0, 7, 0, 20, 8];
-        this.gear.push(new Gear("Warm Stone", 1, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Warm Stone", 1, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 1, agility: 1, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            defense: 0, accuracy: 1, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0.05, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0.8, agility: 0.8, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
         };
         var cost = [0, 20, 0, 10, 0, 10];
         var costlvl = [0, 15, 0, 7, 0, 13];
-        this.gear.push(new Gear("Wolf-Tooth Necklace", 1, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Wolf-Tooth Necklace", 1, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 1, hit: 15, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 1, hit: 8, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+            defense: 0, accuracy: 2, hit: 15, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 1
         };
         var cost = [0, 15, 0, 20, 0, 5];
         var costlvl = [0, 10, 0, 17, 0, 8];
-        this.gear.push(new Gear("Gloves", 1, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Gloves", 1, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         //////////////////////////////
         // TIER 2
         //////////////////////////////
 
         var stat = {
-            health: 0, damageMin: 10, damageMax: 17, strength: 0,
+            health: 0, damageMin: 8, damageMax: 15, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: -30, evasion: 40,
+            defense: 0, accuracy: 0, hit: -20, evasion: 30,
             critDamage: 0, critChance: 0.12, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 3.2, damageMax: 5.75, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: -11, evasion: 16,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
         };
         var cost = [25, 0, 25, 0, 0, 0];
         var costlvl = [14, 0, 14, 0, 0, 7];
-        this.gear.push(new Gear("Great Spear", 2, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Great Spear", 2, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 7, damageMax: 15, strength: 1,
-            dexterity: 4, agility: 0, endurance: 0, recovery: 0,
+            health: 0, damageMin: 5, damageMax: 11, strength: 1.5,
+            dexterity: 2.5, agility: 0, endurance: 0, recovery: 0,
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0.12, healthRegen: 0, armor: 0
         };
-        var statlvl = {
-            health: 0, damageMin: 2.75, damageMax: 4.25, strength: 0.7,
-            dexterity: 1.4, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
         var cost = [15, 0, 25, 10, 0, 0];
         var costlvl = [9, 0, 14, 5, 0, 7];
-        this.gear.push(new Gear("Steel Sword", 2, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Steel Sword", 2, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 4, damageMax: 11, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 50, evasion: 0,
+            health: 0, damageMin: 3, damageMax: 8, strength: 0,
+            dexterity: 0, agility: 1, endurance: 0, recovery: 2,
+            defense: 0, accuracy: 1, hit: 30, evasion: 0,
             critDamage: 0.1, critChance: 0.17, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 1.65, damageMax: 3.3, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 17, evasion: 0,
-            critDamage: 0.04, critChance: 0, healthRegen: 0, armor: 0
         };
         var cost = [5, 0, 20, 15, 0, 10];
         var costlvl = [4, 0, 15, 9, 0, 7];
-        this.gear.push(new Gear("Hunting Dagger", 2, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Hunting Dagger", 2, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 30, evasion: 70,
+            defense: 0, accuracy: 0, hit: 15, evasion: 45,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 4
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 13, evasion: 26,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.9
         };
         var cost = [0, 15, 0, 35, 0, 0];
         var costlvl = [0, 9, 0, 19, 0, 7];
-        this.gear.push(new Gear("Thief Garb", 2, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Thief Garb", 2, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
@@ -411,258 +302,682 @@ export class GearData {
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 6
         };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 1.75,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 1.65
-        };
         var cost = [0, 35, 0, 15, 0, 0];
         var costlvl = [0, 19, 0, 9, 0, 7];
-        this.gear.push(new Gear("Hunting Leathers", 2, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Hunting Leathers", 2, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
-            health: 20, damageMin: 0, damageMax: 0, strength: 0,
+            health: 15, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: -37,
+            defense: 0, accuracy: 0, hit: 0, evasion: -20,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 8
-        };
-        var statlvl = {
-            health: 6, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: -16,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 2.1
         };
         var cost = [0, 0, 35, 15, 0, 0];
         var costlvl = [0, 0, 19, 9, 0, 7];
-        this.gear.push(new Gear("Full Plate", 2, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Full Plate", 2, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 2, recovery: 0,
-            defense: 4, accuracy: 6, hit: 0, evasion: 0,
+            defense: 3, accuracy: 3, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0.03, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0.9, recovery: 0,
-            defense: 1.3, accuracy: 1.5, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
         };
         var cost = [0, 10, 0, 0, 30, 10];
         var costlvl = [0, 8, 0, 0, 22, 10];
-        this.gear.push(new Gear("Lucky Rock", 2, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Lucky Rock", 2, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 5, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 40,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 1
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 1.8, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 18,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.25
+            defense: 0, accuracy: 0, hit: 0, evasion: 20,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 1.75
         };
         var cost = [0, 30, 0, 15, 0, 5];
         var costlvl = [0, 19, 0, 11, 0, 10];
-        this.gear.push(new Gear("Boots of Speed", 2, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Boots of Speed", 2, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            health: 0, damageMin: 0, damageMax: 0, strength: 2,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 6, accuracy: 0, hit: -24, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 1
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 1.8, accuracy: 0, hit: -11, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0.5
+            defense: 7, accuracy: 0, hit: -20, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 2
         };
         var cost = [0, 15, 0, 10, 25, 0];
         var costlvl = [0, 8, 0, 6, 16, 10];
-        this.gear.push(new Gear("Heavy Bracers", 2, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Heavy Bracers", 2, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 3,
-            dexterity: 3, agility: 3, endurance: 3, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 1,
-            dexterity: 1, agility: 1, endurance: 1, recovery: 0,
+            health: 0, damageMin: 0, damageMax: 0, strength: 2.5,
+            dexterity: 2.5, agility: 2.5, endurance: 2.5, recovery: 0,
             defense: 0, accuracy: 0, hit: 0, evasion: 0,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
         };
         var cost = [0, 10, 25, 0, 0, 15];
         var costlvl = [0, 8, 17, 0, 0, 15];
-        this.gear.push(new Gear("Adventurer's Medallion", 2, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Adventurer's Medallion", 2, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         //////////////////////////////
         // TIER 3
         //////////////////////////////
 
         var stat = {
-            health: 0, damageMin: 30, damageMax: 60, strength: 0,
-            dexterity: 0, agility: 5, endurance: 0, recovery: 5,
-            defense: 0, accuracy: 0, hit: -40, evasion: 60,
-            critDamage: 0.2, critChance: 0.14, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 7, damageMax: 14, strength: 0,
-            dexterity: 0, agility: 1.8, endurance: 0, recovery: 1.8,
-            defense: 0, accuracy: 0, hit: -18, evasion: 24,
-            critDamage: 0.08, critChance: 0, healthRegen: 0, armor: 0
+            health: 0, damageMin: 16, damageMax: 35, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: -42, evasion: 55,
+            critDamage: 0.15, critChance: 0.14, healthRegen: 0, armor: 0
         };
         var cost = [0, 10, 35, 0, 20, 0];
         var costlvl = [0, 7, 17, 0, 11, 10];
-        this.gear.push(new Gear("Thunder Spear", 3, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Thunder Spear", 3, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 27, damageMax: 58, strength: 0,
-            dexterity: 7, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 155, evasion: 0,
+            health: 0, damageMin: 16, damageMax: 27, strength: 0,
+            dexterity: 4, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 30, evasion: 0,
             critDamage: 0, critChance: 0.14, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 6.5, damageMax: 10.25, strength: 0,
-            dexterity: 2.3, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 46, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
         };
         var cost = [15, 0, 40, 0, 0, 10];
         var costlvl = [8, 0, 22, 0, 0, 15];
-        this.gear.push(new Gear("Ardent Blade", 3, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Ardent Blade", 3, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 19, damageMax: 27, strength: 10,
+            health: 0, damageMin: 12, damageMax: 17, strength: 7.5,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 50, evasion: 0,
-            critDamage: 0.1, critChance: 0.17, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 4.1, damageMax: 7.5, strength: 3.25,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 17, evasion: 0,
-            critDamage: 0.04, critChance: 0, healthRegen: 0, armor: 0
+            defense: 0, accuracy: 0, hit: 70, evasion: 0,
+            critDamage: 0, critChance: 0.17, healthRegen: 0, armor: 0
         };
         var cost = [0, 25, 25, 15, 0, 0];
         var costlvl = [0, 15, 15, 5, 0, 10];
-        this.gear.push(new Gear("Dire Claw", 3, Statics.GEAR_WEAPON, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Dire Claw", 3, Statics.GEAR_WEAPON, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 2, damageMax: 4, strength: 0,
+            health: 0, damageMin: 3, damageMax: 4.25, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 170,
+            defense: 0, accuracy: 0, hit: 0, evasion: 70,
             critDamage: 0, critChance: 0, healthRegen: 0, armor: 11
-        };
-        var statlvl = {
-            health: 0, damageMin: 0.9, damageMax: 2.1, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 0, evasion: 57,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 2.5
         };
         var cost = [0, 20, 0, 45, 0, 0];
         var costlvl = [0, 10, 0, 25, 0, 10];
-        this.gear.push(new Gear("Assassin Cloak", 3, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Assassin Cloak", 3, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 4, recovery: 7,
-            defense: 0, accuracy: 0, hit: 100, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 16
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 1.4, recovery: 2.75,
-            defense: 0, accuracy: 0, hit: 36, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 3.9
+            dexterity: 0, agility: 0, endurance: 2.5, recovery: 5,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 15
         };
         var cost = [0, 45, 0, 20, 0, 0];
         var costlvl = [0, 25, 0, 10, 0, 10];
-        this.gear.push(new Gear("Beastmaster Vest", 3, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Beastmaster Vest", 3, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
-            health: 40, damageMin: 0, damageMax: 0, strength: 4,
+            health: 36, damageMin: 0, damageMax: 0, strength: 4,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: -30, evasion: -160,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 22
-        };
-        var statlvl = {
-            health: 13, damageMin: 0, damageMax: 0, strength: 1.3,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: -11, evasion: -48,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 5.25
+            defense: 0, accuracy: 0, hit: -15, evasion: -55,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 20
         };
         var cost = [0, 20, 45, 0, 0, 0];
         var costlvl = [0, 10, 25, 0, 0, 10];
-        this.gear.push(new Gear("Lizardscale Armor", 3, Statics.GEAR_ARMOR, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Lizardscale Armor", 3, Statics.GEAR_ARMOR, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 11, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 7, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0.07, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 3.5, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 2.5, hit: 0, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+            dexterity: 9, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 6, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0.06, healthRegen: 0, armor: 0
         };
         var cost = [0, 40, 0, 15, 0, 10];
         var costlvl = [0, 27, 0, 10, 0, 13];
-        this.gear.push(new Gear("Wolf Gloves", 3, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Wolf Gloves", 3, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            health: 18, damageMin: 0, damageMax: 0, strength: 0,
             dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 211, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 0, accuracy: 0, hit: 74, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+            defense: 0, accuracy: 0, hit: 105, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0.6, armor: 0
         };
         var cost = [0, 0, 0, 0, 35, 30];
         var costlvl = [0, 0, 0, 0, 24, 26];
-        this.gear.push(new Gear("Hyperstone", 3, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Hyperstone", 3, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
             health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 10, accuracy: 0, hit: 0, evasion: -64,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 5
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 0,
-            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
-            defense: 3.1, accuracy: 0, hit: 0, evasion: -22,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 1
+            dexterity: 0, agility: 0, endurance: 3.5, recovery: 0,
+            defense: 7.5, accuracy: 0, hit: 0, evasion: -37,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 3.5
         };
         var cost = [15, 10, 40, 0, 0, 0];
         var costlvl = [9, 6, 22, 0, 0, 13];
-        this.gear.push(new Gear("Tower Shield", 3, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Tower Shield", 3, Statics.GEAR_TRINKET, stat, cost, costlvl));
 
         var stat = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 11,
+            health: 0, damageMin: 0, damageMax: 0, strength: 10,
             dexterity: 0, agility: 0, endurance: 5, recovery: 0,
-            defense: 0, accuracy: 0, hit: -60, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
-        };
-        var statlvl = {
-            health: 0, damageMin: 0, damageMax: 0, strength: 4,
-            dexterity: 0, agility: 0, endurance: 1.5, recovery: 0,
-            defense: 0, accuracy: 0, hit: -17, evasion: 0,
-            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+            defense: 0, accuracy: 0, hit: -33, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 2
         };
         var cost = [0, 35, 0, 20, 10, 0];
         var costlvl = [0, 18, 0, 13, 6, 13];
-        this.gear.push(new Gear("Ogre Belt", 3, Statics.GEAR_TRINKET, stat, statlvl, cost, costlvl));
+        this.gear.push(new Gear("Ogre Belt", 3, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        //////////////////////////////
+        // TIER 4
+        //////////////////////////////
+
+        var stat = {
+            health: 0, damageMin: 22, damageMax: 57, strength: 9,
+            dexterity: 0, agility: 0, endurance: 4, recovery: 0,
+            defense: 0, accuracy: 0, hit: -80, evasion: 0,
+            critDamage: 0, critChance: 0.16, healthRegen: 0, armor: 0
+        };
+        var cost = [40, 10, 35, 0, 0, 0];
+        var costlvl = [22, 5, 19, 0, 0, 14];
+        this.gear.push(new Gear("Giant's Axe", 4, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 26, damageMax: 44, strength: 0,
+            dexterity: 0, agility: 6.5, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 62, evasion: 0,
+            critDamage: 0, critChance: 0.17, healthRegen: 0, armor: 0
+        };
+        var cost = [25, 0, 45, 15, 0, 0];
+        var costlvl = [14, 0, 24, 8, 0, 14];
+        this.gear.push(new Gear("Elven Longsword", 4, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 19, damageMax: 32, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 7, hit: 144, evasion: 0,
+            critDamage: 0, critChance: 0.19, healthRegen: 1.5, armor: 0
+        };
+        var cost = [0, 0, 45, 30, 0, 10];
+        var costlvl = [0, 0, 24, 19, 0, 17];
+        this.gear.push(new Gear("Sacrificial Dagger", 4, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 6.5, agility: 0, endurance: 0, recovery: 0,
+            defense: 6.5, accuracy: 0, hit: 0, evasion: 148,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 19
+        };
+        var cost = [0, 15, 0, 60, 0, 10];
+        var costlvl = [0, 12, 0, 32, 0, 16];
+        this.gear.push(new Gear("Spellweave Robe", 4, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 8,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 5, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 28
+        };
+        var cost = [0, 65, 0, 20, 0, 0];
+        var costlvl = [0, 36, 0, 10, 0, 14];
+        this.gear.push(new Gear("Dire Bear Cloak", 4, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 68, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 13, accuracy: 0, hit: -65, evasion: -157,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 35
+        };
+        var cost = [0, 0, 0, 15, 50, 20];
+        var costlvl = [0, 0, 0, 11, 26, 23];
+        this.gear.push(new Gear("Ancient Armor", 4, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: -24, damageMin: 0, damageMax: 0, strength: 16,
+            dexterity: 16, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0.25, critChance: 0, healthRegen: -1.1, armor: 0
+        };
+        var cost = [30, 15, 0, 0, 40, 0];
+        var costlvl = [14, 9, 0, 0, 22, 20];
+        this.gear.push(new Gear("Demonic Sigil", 4, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 11, accuracy: 7, hit: 0, evasion: -60,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 6
+        };
+        var cost = [10, 0, 50, 0, 0, 25];
+        var costlvl = [7, 0, 31, 0, 0, 27];
+        this.gear.push(new Gear("Mirror Shield", 4, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 7.5, damageMax: 10.5, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 1.25, armor: 0
+        };
+        var cost = [0, 45, 0, 0, 30, 10];
+        var costlvl = [0, 24, 0, 0, 19, 22];
+        this.gear.push(new Gear("Dragonbone Charm", 4, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 8, agility: 8, endurance: 5, recovery: 0,
+            defense: 0, accuracy: 5, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0.05, healthRegen: 0, armor: 0
+        };
+        var cost = [25, 0, 15, 0, 45, 0];
+        var costlvl = [13, 0, 9, 0, 23, 20];
+        this.gear.push(new Gear("Spirit Ring", 4, Statics.GEAR_TRINKET, stat, cost, costlvl));
+        
+        //////////////////////////////
+        // TIER 5
+        //////////////////////////////
+
+        var stat = {
+            health: 0, damageMin: 54, damageMax: 96, strength: 10,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 10, accuracy: 0, hit: -122, evasion: 0,
+            critDamage: 0, critChance: 0.14, healthRegen: 0, armor: 0
+        };
+        var cost = [40, 0, 60, 0, 0, 10];
+        var costlvl = [24, 0, 35, 0, 0, 21];
+        this.gear.push(new Gear("Quake Hammer", 5, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 49, damageMax: 73, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 12,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0.2, critChance: 0.17, healthRegen: 0, armor: 0
+        };
+        var cost = [30, 30, 50, 0, 0, 0];
+        var costlvl = [17, 17, 30, 0, 0, 16];
+        this.gear.push(new Gear("Dawnblade", 5, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 36, damageMax: 54, strength: 5,
+            dexterity: 0, agility: 5, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 200, evasion: 0,
+            critDamage: 0, critChance: 0.21, healthRegen: 0, armor: 5
+        };
+        var cost = [0, 30, 35, 45, 0, 0];
+        var costlvl = [0, 17, 20, 27, 0, 16];
+        this.gear.push(new Gear("Dragon Tooth", 5, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 10, accuracy: 0, hit: 0, evasion: 190,
+            critDamage: 0, critChance: 0, healthRegen: 1.7, armor: 30
+        };
+        var cost = [0, 40, 0, 70, 0, 0];
+        var costlvl = [0, 24, 0, 40, 0, 16];
+        this.gear.push(new Gear("Fire Rat Tunic", 5, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 6, damageMax: 9, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 45, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 39
+        };
+        var cost = [0, 70, 0, 40, 0, 0];
+        var costlvl = [0, 40, 0, 24, 0, 16];
+        this.gear.push(new Gear("Savage Leather", 5, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 100, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: -173,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 52
+        };
+        var cost = [0, 0, 70, 0, 20, 20];
+        var costlvl = [0, 0, 40, 0, 12, 28];
+        this.gear.push(new Gear("Enchanted Plate", 5, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 3,
+            dexterity: 3, agility: 0, endurance: 0, recovery: 0,
+            defense: 3, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0.3, critChance: 0.1, healthRegen: 0, armor: 0
+        };
+        var cost = [20, 0, 0, 0, 40, 50];
+        var costlvl = [11, 0, 0, 0, 24, 50];
+        this.gear.push(new Gear("Power Shard", 5, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: -7,
+            defense: 18, accuracy: 0, hit: 50, evasion: 130,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 11
+        };
+        var cost = [0, 45, 0, 45, 0, 20];
+        var costlvl = [0, 27, 0, 27, 0, 31];
+        this.gear.push(new Gear("Cloak of Displacement", 5, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 20,
+            dexterity: -5, agility: -5, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 20, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0.08, healthRegen: 0, armor: 0
+        };
+        var cost = [15, 0, 0, 20, 75, 0];
+        var costlvl = [9, 0, 0, 11, 44, 21];
+        this.gear.push(new Gear("Pendant of Sin", 5, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 18, endurance: 0, recovery: 20,
+            defense: 0, accuracy: 0, hit: -30, evasion: 117,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+        };
+        var cost = [40, 40, 0, 30, 0, 0];
+        var costlvl = [24, 24, 0, 16, 0, 21];
+        this.gear.push(new Gear("Windwalk Cape", 5, Statics.GEAR_TRINKET, stat, cost, costlvl));
+        
+        //////////////////////////////
+        // TIER 6
+        //////////////////////////////
+
+        var stat = {
+            health: 0, damageMin: 92, damageMax: 140, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: -195, evasion: 0,
+            critDamage: 0.25, critChance: 0.27, healthRegen: 0, armor: 0
+        };
+        var cost = [60, 0, 50, 0, 30, 0];
+        var costlvl = [36, 0, 31, 0, 19, 19];
+        this.gear.push(new Gear("Spear of Desolation", 6, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 77, damageMax: 119, strength: 0,
+            dexterity: 0, agility: 11, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 11, hit: 111, evasion: 0,
+            critDamage: 0, critChance: 0.18, healthRegen: 0, armor: 0
+        };
+        var cost = [45, 0, 65, 30, 0, 0];
+        var costlvl = [27, 0, 40, 19, 0, 19];
+        this.gear.push(new Gear("Arcane Sword", 6, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 66, damageMax: 93, strength: 12,
+            dexterity: 6, agility: 6, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 335, evasion: 0,
+            critDamage: 0, critChance: 0.2, healthRegen: 0, armor: 0
+        };
+        var cost = [60, 0, 60, 0, 20, 0];
+        var costlvl = [37, 0, 37, 0, 12, 19];
+        this.gear.push(new Gear("Orichalcum Dagger", 6, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 170, evasion: 340,
+            critDamage: 0, critChance: 0.07, healthRegen: 0, armor: 49
+        };
+        var cost = [0, 50, 0, 90, 0, 0];
+        var costlvl = [0, 31, 0, 55, 0, 19];
+        this.gear.push(new Gear("Vestigial Clothes", 6, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 18,
+            dexterity: -4, agility: -4, endurance: 15, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 65
+        };
+        var cost = [0, 100, 0, 40, 0, 0];
+        var costlvl = [0, 61, 0, 25, 0, 19];
+        this.gear.push(new Gear("Storm Giant Tunic", 6, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 120, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 26, accuracy: 0, hit: -164, evasion: -472,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 82
+        };
+        var cost = [30, 0, 80, 0, 30, 0];
+        var costlvl = [19, 0, 48, 0, 19, 19];
+        this.gear.push(new Gear("Immovable Plate", 6, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: -70, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 14,
+            defense: 8, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 8.5, armor: 0
+        };
+        var cost = [0, 50, 0, 0, 50, 40];
+        var costlvl = [0, 31, 0, 0, 31, 48];
+        this.gear.push(new Gear("Slime Core", 6, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 11, agility: 11, endurance: 0, recovery: 0,
+            defense: 11, accuracy: 0, hit: 0, evasion: -142,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 20
+        };
+        var cost = [25, 0, 0, 0, 55, 60];
+        var costlvl = [15, 0, 0, 0, 34, 61];
+        this.gear.push(new Gear("Phase Shield", 6, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 27, endurance: 0, recovery: 0,
+            defense: 0, accuracy: -10, hit: 0, evasion: 350,
+            critDamage: 0, critChance: 0.09, healthRegen: 0, armor: 9
+        };
+        var cost = [0, 40, 0, 70, 0, 30];
+        var costlvl = [0, 24, 0, 43, 0, 43];
+        this.gear.push(new Gear("Hermes Boots", 6, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 12, damageMax: 19, strength: 22,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 10, hit: -186, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+        };
+        var cost = [0, 60, 30, 50, 0, 0];
+        var costlvl = [0, 36, 20, 30, 0, 24];
+        this.gear.push(new Gear("Gloves of Power", 6, Statics.GEAR_TRINKET, stat, cost, costlvl));
+        
+        //////////////////////////////
+        // TIER 7
+        //////////////////////////////
+
+        var stat = {
+            health: 0, damageMin: 138, damageMax: 215, strength: 0,
+            dexterity: 0, agility: 0, endurance: 15, recovery: 0,
+            defense: 20, accuracy: 0, hit: -245, evasion: 0,
+            critDamage: 0, critChance: 0.17, healthRegen: 0, armor: 0
+        };
+        var cost = [30, 45, 100, 0, 0, 0];
+        var costlvl = [19, 29, 64, 0, 0, 23];
+        this.gear.push(new Gear("Dark One's Mace", 7, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 122, damageMax: 170, strength: 12,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0.4, critChance: 0.33, healthRegen: 0, armor: 0
+        };
+        var cost = [35, 0, 70, 0, 0, 70];
+        var costlvl = [22, 0, 45, 0, 0, 68];
+        this.gear.push(new Gear("Vorpal Blade", 7, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 112, damageMax: 145, strength: 10,
+            dexterity: 10, agility: 10, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 460, evasion: 0,
+            critDamage: 0, critChance: 0.24, healthRegen: 0, armor: 0
+        };
+        var cost = [15, 0, 120, 40, 0, 0];
+        var costlvl = [10, 0, 77, 25, 0, 23];
+        this.gear.push(new Gear("Adamantine Claws", 7, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 14, accuracy: 0, hit: 120, evasion: 450,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 75
+        };
+        var cost = [0, 65, 0, 110, 0, 0];
+        var costlvl = [0, 42, 0, 70, 0, 23];
+        this.gear.push(new Gear("Shaed", 7, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 27,
+            defense: 0, accuracy: 8, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 98
+        };
+        var cost = [0, 110, 0, 15, 0, 50];
+        var costlvl = [0, 70, 0, 10, 0, 55];
+        this.gear.push(new Gear("Crystaline Scales", 7, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 220, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: -70, evasion: -370,
+            critDamage: 0, critChance: 0, healthRegen: 4, armor: 120
+        };
+        var cost = [0, 0, 70, 0, 60, 45];
+        var costlvl = [0, 0, 45, 0, 38, 52];
+        this.gear.push(new Gear("Runic Armor", 7, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 14,
+            dexterity: 14, agility: 14, endurance: 14, recovery: 0,
+            defense: 14, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: -0.15, healthRegen: 3, armor: 14
+        };
+        var cost = [0, 0, 0, 40, 95, 40];
+        var costlvl = [0, 0, 0, 26, 61, 53];
+        this.gear.push(new Gear("Soul Gem", 7, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 30, accuracy: 30, hit: 0, evasion: -270,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 24
+        };
+        var cost = [130, 20, 0, 0, 25, 0];
+        var costlvl = [83, 13, 0, 0, 16, 28];
+        this.gear.push(new Gear("Lidless Eye", 7, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 17, damageMax: 24, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0.25, critChance: 0.1, healthRegen: 0, armor: 0
+        };
+        var cost = [70, 0, 0, 45, 0, 60];
+        var costlvl = [45, 0, 0, 29, 0, 66];
+        this.gear.push(new Gear("Circlet of Power", 7, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: -185, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 30, agility: 30, endurance: 0, recovery: 30,
+            defense: -15, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0.07, healthRegen: 0, armor: 0
+        };
+        var cost = [0, 70, 0, 70, 35, 0];
+        var costlvl = [0, 45, 0, 45, 22, 28];
+        this.gear.push(new Gear("Demonic Wraps", 7, Statics.GEAR_TRINKET, stat, cost, costlvl));
+        
+        //////////////////////////////
+        // TIER 8
+        //////////////////////////////
+
+        var stat = {
+            health: 0, damageMin: 166, damageMax: 333, strength: 40,
+            dexterity: 0, agility: -10, endurance: 15, recovery: 0,
+            defense: 0, accuracy: 0, hit: -470, evasion: 0,
+            critDamage: 0, critChance: 0.24, healthRegen: 0, armor: 0
+        };
+        var cost = [90, 0, 100, 25, 0, 0];
+        var costlvl = [59, 0, 67, 17, 0, 27];
+        this.gear.push(new Gear("Ragnarok", 8, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 182, damageMax: 265, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0.33, healthRegen: 7, armor: 0
+        };
+        var cost = [0, 45, 90, 0, 80, 0];
+        var costlvl = [0, 30, 60, 0, 53, 27];
+        this.gear.push(new Gear("9 Lives Stealer", 8, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 157, damageMax: 205, strength: 17,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 620, evasion: 0,
+            critDamage: 0.4, critChance: 0.3, healthRegen: 0, armor: 0
+        };
+        var cost = [55, 0, 70, 90, 0, 0];
+        var costlvl = [0, 0, 47, 59, 0, 27];
+        this.gear.push(new Gear("Chthonic Dagger", 8, Statics.GEAR_WEAPON, stat, cost, costlvl));
+
+        var stat = {
+            health: 100, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 0, evasion: 780,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 115
+        };
+        var cost = [0, 45, 0, 140, 0, 30];
+        var costlvl = [0, 30, 0, 93, 0, 47];
+        this.gear.push(new Gear("Angelic Garments", 8, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 12, recovery: 34,
+            defense: 0, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 145
+        };
+        var cost = [0, 140, 0, 75, 0, 0];
+        var costlvl = [0, 93, 0, 50, 0, 27];
+        this.gear.push(new Gear("Terrasque Leather", 8, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 325, damageMin: 0, damageMax: 0, strength: 12,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: -150, evasion: -620,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 180
+        };
+        var cost = [0, 0, 150, 0, 40, 25];
+        var costlvl = [0, 0, 100, 0, 27, 43];
+        this.gear.push(new Gear("God Plate", 8, Statics.GEAR_ARMOR, stat, cost, costlvl));
+
+        var stat = {
+            health: 230, damageMin: 0, damageMax: 0, strength: -12,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 45, accuracy: 0, hit: 0, evasion: 0,
+            critDamage: 0, critChance: -0.12, healthRegen: 0, armor: 31
+        };
+        var cost = [0, 0, 50, 0, 100, 65];
+        var costlvl = [0, 0, 33, 0, 67, 75];
+        this.gear.push(new Gear("Sigil of Protection", 8, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 19, damageMax: 32, strength: 50,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: -20, accuracy: 0, hit: 240, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: -16
+        };
+        var cost = [75, 90, 0, 0, 0, 50];
+        var costlvl = [50, 60, 0, 0, 0, 65];
+        this.gear.push(new Gear("Aura of Bloodlust", 8, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: -210, damageMin: 0, damageMax: 0, strength: 0,
+            dexterity: 0, agility: 0, endurance: 0, recovery: 0,
+            defense: 0, accuracy: 0, hit: 580, evasion: 580,
+            critDamage: 0.3, critChance: 0.14, healthRegen: 0, armor: 0
+        };
+        var cost = [60, 0, 0, 140, 0, 15];
+        var costlvl = [40, 0, 0, 93, 0, 42];
+        this.gear.push(new Gear("Winds of Battle", 8, Statics.GEAR_TRINKET, stat, cost, costlvl));
+
+        var stat = {
+            health: 0, damageMin: 0, damageMax: 0, strength: 17,
+            dexterity: 17, agility: 17, endurance: 17, recovery: 17,
+            defense: 17, accuracy: 17, hit: 0, evasion: 0,
+            critDamage: 0, critChance: 0, healthRegen: 0, armor: 0
+        };
+        var cost = [60, 60, 60, 0, 0, 35];
+        var costlvl = [40, 40, 40, 0, 0, 55];
+        this.gear.push(new Gear("Inner Fire", 8, Statics.GEAR_TRINKET, stat, cost, costlvl));
     }
 }

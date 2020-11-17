@@ -1,8 +1,8 @@
 import { PlayerData } from "./PlayerData";
 import { Statics } from "./Statics";
-import { ProgressionStore } from "./ProgressionStore";
 import { WorldData } from "./WorldData";
 import { MoonlightData } from "./MoonlightData";
+import { DynamicSettings } from "./DynamicSettings";
 
 export class TownData {
     static getTechGoldCost(tech, tier) {
@@ -24,6 +24,11 @@ export class TownData {
             ret.push(Math.floor(((aGold + bGold + cGold) / 5) * tGold) * 5);
         }
         return ret;
+    }
+    static calcFriendshipToLevel(level) {
+        var scalePower = Statics.FRIENDSHIP_POWER - (0.015 * MoonlightData.getInstance().challenges.outcast.completions);
+        return Statics.FRIENDSHIP_BASE + Math.floor(Math.pow(level * Statics.FRIENDSHIP_FLAT, scalePower) /
+            Statics.FRIENDSHIP_FLAT) * Statics.FRIENDSHIP_FLAT;
     }
 
     constructor(tier) {
@@ -145,20 +150,37 @@ export class TownData {
     setTavernPopulation(pop) {
         this.tavernPopulation = pop;
     }
+    getProductionMulti() {
+        var multi = this.productionMulti *
+            (1 + this.friendshipLevel * 0.01 * MoonlightData.getInstance().moonperks.motivatedlabor.level) *
+            DynamicSettings.getInstance().productionMulti;
+        if (DynamicSettings.getInstance().friendshipToProduction === true) {
+            return multi + this.friendshipLevel * 0.05;
+        } else {
+            return multi;
+        }
+    }
 
     addFriendship(value) {
         this.friendship += value;
         if (this.friendship >= this.friendshipToNext) {
             this.friendshipLevel += 1;
-            this._calcFriendshipToNext();
+            this.friendshipToNext = TownData.calcFriendshipToLevel(this.friendshipLevel);
+        }
+    }
+    spendFriendship(value) {
+        this.friendship = Math.max(0, this.friendship - value);
+        for (var i = 0; i < this.friendshipLevel; i++) {
+            var temp = TownData.calcFriendshipToLevel(i);
+            if (this.friendship < temp) {
+                this.friendshipLevel = i;
+                this.friendshipToNext = temp;
+                break;
+            }
         }
     }
     getFriendshipBonus() {
         return 1 + (this.friendshipLevel * Statics.FRIENDSHIP_SHADE_BONUS);
-    }
-    _calcFriendshipToNext() {
-        this.friendshipToNext = Statics.FRIENDSHIP_BASE + Math.floor(Math.pow(this.friendshipLevel * Statics.FRIENDSHIP_FLAT, Statics.FRIENDSHIP_POWER) /
-            Statics.FRIENDSHIP_FLAT) * Statics.FRIENDSHIP_FLAT;
     }
     endOfDay() {
 
@@ -216,7 +238,7 @@ export class TownData {
         this.friendship = saveObj.fr;
         this.friendshipLevel = saveObj.frl;
         this.alchemyEnabled = saveObj.alc;
-        this._calcFriendshipToNext();
+        this.friendshipToNext = TownData.calcFriendshipToLevel(this.friendshipLevel);
         for (var i = 0; i < saveObj.bld.length; i++) {
             this.buildings[saveObj.bld[i][0]].level = saveObj.bld[i][1];
         }

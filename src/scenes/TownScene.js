@@ -7,12 +7,17 @@ import { TownData } from "../data/TownData";
 import { Common } from "../utils/Common";
 import { TextButton } from "../ui/TextButton";
 import { ProgressionStore } from "../data/ProgressionStore";
+import { DynamicSettings } from "../data/DynamicSettings";
 
 export class TownScene extends SceneUIBase {
     constructor(position, name) {
         super(position, name);
 
         this.showBuildings = true;
+    }
+
+    refresh() {
+        this.changeRegion();
     }
 
     rebirth() {
@@ -22,12 +27,16 @@ export class TownScene extends SceneUIBase {
     }
 
     changeRegion() {
+        this.showBuildings = true;
         this._updateStatus();
+        this.updateResearchButton();
+    }
+
+    updateResearchButton() {
         this.upgradesBtn.setVisible(WorldData.instance.getCurrentRegion().townData.researchEnabled);
     }
 
     create() {
-        var progression = new ProgressionStore();
         //background
         this.add.rectangle(this.relativeX(0), this.relativeY(0), 900, 700, 0x000000)
             .setOrigin(0)
@@ -48,14 +57,6 @@ export class TownScene extends SceneUIBase {
         this._updateStatus();
         var worldData = new WorldData();
         worldData.time.registerEvent("onDayEnd", () => { this._endOfDay(); });
-
-        progression.addOnUnlockHandler((type, count, text) => { this._handleProgressionChange(type); });
-    }
-
-    _handleProgressionChange(type) {
-        if (type === Statics.UNLOCK_BUILDING_UI) {
-            this.upgradesBtn.setVisible(true);
-        }
     }
 
     _setupTechDisplay(x, y, tech, tier) {
@@ -69,6 +70,15 @@ export class TownScene extends SceneUIBase {
         var player = new PlayerData();
         if (player.gold >= gold && Common.canCraft(resource, player.resources[region.townData.tier - 1]) === true &&
             region.townData.friendshipLevel >= tech.level) {
+            // If we are spending friendship, we spend the current level of friendship needed. Level 0 requires no friendship,
+            // so don't calculate that here.
+            if (DynamicSettings.getInstance().spendFriendship === true && tech.level > 0) {
+                var friendshipCost = 25;
+                if (tech.level > 1) {
+                    friendshipCost = TownData.calcFriendshipToLevel(tech.level) - TownData.calcFriendshipToLevel(tech.level - 1);
+                }
+                region.townData.spendFriendship(friendshipCost);
+            }
             player.addGold(-gold);
             player.spendResource(resource, region.townData.tier - 1);
             region.townData.increaseTechLevel(tech);
@@ -84,20 +94,21 @@ export class TownScene extends SceneUIBase {
     _updateStatus() {
         var region = WorldData.instance.getCurrentRegion();
         var player = new PlayerData();
+        var prodBonus = region.townData.getProductionMulti();
         var govBonus = (1 + player.getTalentLevel("governance") * 0.04);
 
         var txt = "Population: " + Math.round(region.townData.currentPopulation) + "/" + Math.floor(region.townData.getMaxPopulation()) + "\n" +
             "Tax Income: " + Math.round(region.townData.getTownIncome()) + "g/week\n" +
             "T" + region.townData.tier + " Crafting Cost: " + (Math.round(player.craftingCosts[region.townData.tier - 1] * 10000) / 100) + "%\n" +
             "Economy: " + Math.round(region.townData.economyMulti * 100 * govBonus) + "%\n" +
-            "Production: " + Math.round(region.townData.productionMulti * 100) + "%\n" +
+            "Production: " + Math.round(prodBonus * 100) + "%\n" +
             "Bounty Gold: " + Math.round(region.townData.bountyMulti * 100) + "%\n" +
             "Friendship: " + Math.floor(region.townData.friendship) + "/" + region.townData.friendshipToNext + "\n" +
             "Friendship\nLevel: " + region.townData.friendshipLevel + " (+" + Math.round((region.townData.getFriendshipBonus() - 1) * 100) + "% Shade)\n" +
             "Daily Production:\n";
 
         for (var i = 0; i < region.resourcesPerDay.length; i++) {
-            txt += "  " + Statics.RESOURCE_NAMES[i] + ": " + (Math.floor(region.resourcesPerDay[i] * region.townData.productionMulti * govBonus * 100) / 100) + "\n";
+            txt += "  " + Statics.RESOURCE_NAMES[i] + ": " + (Math.floor(region.resourcesPerDay[i] * prodBonus * govBonus * 100) / 100) + "\n";
         }
         if (region.alchemyDrain > 0) {
             txt += "  Alchemy Drain: " + region.alchemyDrain + "\n" +

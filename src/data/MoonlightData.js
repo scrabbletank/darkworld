@@ -8,31 +8,31 @@ export class MoonlightData {
 
             this.moonperks = {
                 str: {
-                    name: "Moon's Strength", level: 0, maxLevel: -1, requires: [], cost: [10, 2, 1.025],
+                    name: "Moon's Strength", level: 0, maxLevel: -1, requires: [], cost: [7, 2, 1.025],
                     texture: { sprite: "moonicons", tile: 0 }
                 },
                 dex: {
-                    name: "Moon's Dexterity", level: 0, maxLevel: -1, requires: [], cost: [10, 2, 1.025],
+                    name: "Moon's Dexterity", level: 0, maxLevel: -1, requires: [], cost: [7, 2, 1.025],
                     texture: { sprite: "moonicons", tile: 1 }
                 },
                 agi: {
-                    name: "Moon's Agility", level: 0, maxLevel: -1, requires: [], cost: [10, 2, 1.025],
+                    name: "Moon's Agility", level: 0, maxLevel: -1, requires: [], cost: [7, 2, 1.025],
                     texture: { sprite: "moonicons", tile: 2 }
                 },
                 end: {
-                    name: "Moon's Endurance", level: 0, maxLevel: -1, requires: [], cost: [10, 2, 1.025],
+                    name: "Moon's Endurance", level: 0, maxLevel: -1, requires: [], cost: [7, 2, 1.025],
                     texture: { sprite: "moonicons", tile: 3 }
                 },
                 rec: {
-                    name: "Moon's Recovery", level: 0, maxLevel: -1, requires: [], cost: [10, 2, 1.025],
+                    name: "Moon's Recovery", level: 0, maxLevel: -1, requires: [], cost: [7, 2, 1.025],
                     texture: { sprite: "moonicons", tile: 4 }
                 },
                 def: {
-                    name: "Moon's Defense", level: 0, maxLevel: -1, requires: [], cost: [10, 2, 1.025],
+                    name: "Moon's Defense", level: 0, maxLevel: -1, requires: [], cost: [7, 2, 1.025],
                     texture: { sprite: "moonicons", tile: 5 }
                 },
                 acc: {
-                    name: "Moon's Accuracy", level: 0, maxLevel: -1, requires: [], cost: [10, 2, 1.025],
+                    name: "Moon's Accuracy", level: 0, maxLevel: -1, requires: [], cost: [7, 2, 1.025],
                     texture: { sprite: "moonicons", tile: 6 }
                 },
                 vault: {
@@ -55,9 +55,9 @@ export class MoonlightData {
                     name: "Moon Runes", level: 0, maxLevel: 1, requires: [], cost: [1000, 0, 0],
                     texture: { sprite: "moonicons", tile: 8 }
                 },
-                direbeasts: {
-                    name: "Dire Beasts", level: 0, maxLevel: 1, requires: [], cost: [250, 0, 0],
-                    texture: { sprite: "moonicons", tile: 13 }
+                farstrider: {
+                    name: "Farstrider", level: 0, maxLevel: -1, requires: [], cost: [25, 25, 1.15],
+                    texture: { sprite: "moonicons", tile: 15 }
                 },
                 heartofdarkness: {
                     name: "Heart of Darkness", level: 0, maxLevel: -1, requires: [], cost: [100, 100, 1.25],
@@ -111,9 +111,9 @@ export class MoonlightData {
                     name: "Shadow's Gold", level: 0, maxLevel: -1, requires: ["acc"], cost: [120, 30, 1.125],
                     texture: { sprite: "moonicons", tile: 30 }
                 },
-                discovery: {
-                    name: "Discovery", level: 0, maxLevel: -1, requires: ["moonlightworkers"], cost: [150, 100, 1.25],
-                    texture: { sprite: "moonicons", tile: 15 }
+                motivatedlabor: {
+                    name: "Motivated Labor", level: 0, maxLevel: -1, requires: ["moonlightworkers"], cost: [100, 50, 1.5],
+                    texture: { sprite: "moonicons", tile: 17 }
                 },
                 shadow2: {
                     name: "Shadow's Chosen", level: 0, maxLevel: -1, requires: ["shadow"], cost: [75, 75, 1.1],
@@ -122,6 +122,14 @@ export class MoonlightData {
                 runes3: {
                     name: "Corrupted Runes", level: 0, maxLevel: -1, requires: ["runelands"], cost: [400, 200, 1.1],
                     texture: { sprite: "moonicons", tile: 8 }
+                },
+                soulbound: {
+                    name: "Soulbound", level: 0, maxLevel: -1, requires: ["blackirongear"], cost: [250, 100, 1.1],
+                    texture: { sprite: "moonicons", tile: 21 }
+                },
+                discovery: {
+                    name: "Discovery", level: 0, maxLevel: -1, requires: ["farstrider"], cost: [100, 50, 1.2],
+                    texture: { sprite: "moonicons", tile: 16 }
                 }
             };
 
@@ -131,7 +139,8 @@ export class MoonlightData {
                 explore: { name: "Giant Lands", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
                 buildings: { name: "Lazy Townsfolk", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
                 talent: { name: "Talentless", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
-                megamonsters: { name: "Mega Monsters", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 }
+                megamonsters: { name: "Mega Monsters", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 },
+                outcast: { name: "Outcast", completions: 0, maxCompletions: 5, unlocked: false, fastestTime: 0 }
             };
 
             MoonlightData.instance = this;

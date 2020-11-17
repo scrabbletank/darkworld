@@ -133,7 +133,7 @@ export class TileData {
             }
             this.yields.push({
                 type: tileType.yields[i].type,
-                rate: tileType.yields[i].rate
+                rate: rate
             });
         }
         this.parent = region;
@@ -194,20 +194,22 @@ export class TileData {
             var min = this.difficulty < 30 ? 1 : 2;
             var max = (this.difficulty < 5 ? 2 : 3) + (this.difficulty > 15 ? 1 : 0)
             var numCreatures = this.difficulty > 0 ? Common.randint(min, max) : 1;
-
             for (var i = 0; i < numCreatures; i++) {
                 var num = Common.randint(0, this.enemies.length);
                 enemyList.push(CreatureRegistry.GetCreatureByName(this.enemies[num], this.difficulty));
-                if (MoonlightData.getInstance().moonperks.direbeasts.level > 0) {
-                    if (Math.random() < 0.05) {
-                        enemyList[i].addTrait("Dire", 1);
-                    }
-                }
-                for (var t = 0; t < this.parent.traits.length; t++) {
-                    enemyList[i].addTrait(this.parent.traits[t].type, this.parent.traits[t].level);
-                }
-                enemyList[i].applyTraits();
             }
+        }
+
+        for (var i = 0; i < enemyList.length; i++) {
+            if (enemyList[i].level > 100) {
+                if (Math.random() < 0.05) {
+                    enemyList[i].addTrait("Dire", 1);
+                }
+            }
+            for (var t = 0; t < this.parent.traits.length; t++) {
+                enemyList[i].addTrait(this.parent.traits[t].type, this.parent.traits[t].level);
+            }
+            enemyList[i].applyTraits();
         }
 
 
@@ -225,6 +227,7 @@ export class Region {
         this.roads = [];
         this.markets = [];
         this.productionBuildings = [];
+        this.warehouses = [];
         this.alchemyDrain = 0;
         this.alchemyGain = 0;
 
@@ -379,7 +382,7 @@ export class Region {
         }
 
         //find a place to put the mystic gate, either randomly in a spot max difficulty or above, or at highest difficulty place otherwise
-        var gatePos;
+        var gatePos = [-1, -1];
         if (this.regionLevel >= DynamicSettings.getInstance().minGateRegion) {
             var mysticGateSpots = [];
             var max = 0;
@@ -459,7 +462,7 @@ export class Region {
     }
 
     exploreTile(x, y) {
-        if (this.map[y][x].revealed === true) {
+        if (this.map[y][x].revealed === true && this.map[y][x].explored !== true) {
             this.tilesExplored += 1;
             this.map[y][x].explored = true;
             this.townData.addFriendship(10 * MoonlightData.getInstance().moonperks.discovery.level);
@@ -522,7 +525,8 @@ export class Region {
         var invadeList = [];
         for (var y = 1; y < this.height - 1; y++) {
             for (var x = 1; x < this.width - 1; x++) {
-                if (this.map[y][x].explored === false || this.map[y][x].name === "Town" || this.map[y][x].name === "Mystic Gate") {
+                if (this.map[y][x].explored === false || this.map[y][x].name === "Town" || this.map[y][x].name === "Mystic Gate" ||
+                    this.map[y][x].isInvaded === true) {
                     continue;
                 }
                 var canInvade = false;
@@ -570,6 +574,7 @@ export class Region {
         this.markets = [{ x: Math.floor(this.width / 2), y: this.height - 3 }];
         this.taverns = [];
         this.productionBuildings = [];
+        this.warehouses = [];
 
         for (var i = 0; i < this.height; i++) {
             for (var t = 0; t < this.width; t++) {
@@ -580,6 +585,8 @@ export class Region {
                         this.markets.push({ x: t, y: i });
                     } else if (this.map[i][t].building.name === "Tavern") {
                         this.taverns.push([i, t]);
+                    } else if (this.map[i][t].building.name === "Warehouse") {
+                        this.warehouses.push([i, t]);
                     } else if (this.map[i][t].building.name !== "Town House") {
                         this.productionBuildings.push([i, t]);
                     }
@@ -639,7 +646,7 @@ export class Region {
 
         //get market bonuses
         for (var i = 1; i < this.markets.length; i++) {
-            var max = 10 + MoonlightData.getInstance().moonperks.nightmarket.level;
+            var max = 5 + MoonlightData.getInstance().moonperks.nightmarket.level;
             var tier = this.map[this.markets[i].y][this.markets[i].x].building.tier;
             var closest = Common.nearestPointInList(this.markets[i].x, this.markets[i].y, this.markets, true);
             econBonus += Math.max(0, Math.min(max, (closest[1] / Statics.TRADE_HOUSE_MAX_DISTANCE) * max)) * tier / 100;
@@ -660,12 +667,50 @@ export class Region {
             }
             econBonus += bonus * tier;
         }
+        //warehouses add to road bonus for all adjacent buildings
+        for (var i = 1; i < this.warehouses.length; i++) {
+            var bonus = this.map[this.warehouses[i][0]][this.warehouses[i][1]].building.tier * 0.15;
+            for (var y = Math.max(0, this.warehouses[i][0] - 1); y < Math.min(this.height, this.warehouses[i][0] + 2); y++) {
+                for (var x = Math.max(0, this.warehouses[i][1] - 1); x < Math.min(this.width, this.warehouses[i][1] + 2); x++) {
+                    this.map[y][x].roadBonus += bonus;
+                }
+            }
+        }
+
+        //calculate production bonuses of some prod buildings
+        var dockBonus = [1, 1.25, 1.5, 1.75, 2];
+        for (var i = 0; i < this.productionBuildings.length; i++) {
+            var tile = this.map[this.productionBuildings[i][0]][this.productionBuildings[i][1]];
+            switch (tile.building.name) {
+                case "Docks":
+                    if (tile.y > 0) {
+                        this.map[tile.y - 1][tile.x].roadBuildable = true;
+                        this.map[tile.y - 1][tile.x].houseBuildable = true;
+                        this.map[tile.y - 1][tile.x].roadBonus = Math.max(this.map[tile.y - 1][tile.x].roadBonus, dockBonus[tile.building.tier - 1]);
+                    }
+                    if (tile.y < this.height - 1) {
+                        this.map[tile.y + 1][tile.x].roadBuildable = true;
+                        this.map[tile.y + 1][tile.x].houseBuildable = true;
+                        this.map[tile.y + 1][tile.x].roadBonus = Math.max(this.map[tile.y + 1][tile.x].roadBonus, dockBonus[tile.building.tier - 1]);
+                    }
+                    if (tile.x > 0) {
+                        this.map[tile.y][tile.x - 1].roadBuildable = true;
+                        this.map[tile.y][tile.x - 1].houseBuildable = true;
+                        this.map[tile.y][tile.x - 1].roadBonus = Math.max(this.map[tile.y][tile.x - 1].roadBonus, dockBonus[tile.building.tier - 1]);
+                    }
+                    if (tile.x < this.width - 1) {
+                        this.map[tile.y][tile.x + 1].roadBuildable = true;
+                        this.map[tile.y][tile.x + 1].houseBuildable = true;
+                        this.map[tile.y][tile.x + 1].roadBonus = Math.max(this.map[tile.y][tile.x + 1].roadBonus, dockBonus[tile.building.tier - 1]);
+                    }
+                    break;
+            }
+        }
 
         //calculate production bonuses
         //for alchemy
         var drain = [1, 5, 13, 33, 77];
         var gain = [0.05, 0.3, 0.9, 3, 8];
-        var dockBonus = [1, 1.25, 1.5, 1.75, 2];
         for (var i = 0; i < this.productionBuildings.length; i++) {
             var tile = this.map[this.productionBuildings[i][0]][this.productionBuildings[i][1]];
             var prodBonus = 1 + (tile.defense * MoonlightData.getInstance().moonperks.moonlightworkers.level * 0.01);
@@ -697,26 +742,6 @@ export class Region {
                     break;
                 case "Docks":
                     this.townData.buildingIncome += 2 * tile.building.tier;
-                    if (tile.y > 0) {
-                        this.map[tile.y - 1][tile.x].roadBuildable = true;
-                        this.map[tile.y - 1][tile.x].houseBuildable = true;
-                        this.map[tile.y - 1][tile.x].roadBonus = Math.max(this.map[tile.y - 1][tile.x].roadBonus, dockBonus[tile.building.tier]);
-                    }
-                    if (tile.y < this.height - 1) {
-                        this.map[tile.y + 1][tile.x].roadBuildable = true;
-                        this.map[tile.y + 1][tile.x].houseBuildable = true;
-                        this.map[tile.y + 1][tile.x].roadBonus = Math.max(this.map[tile.y + 1][tile.x].roadBonus, dockBonus[tile.building.tier]);
-                    }
-                    if (tile.x > 0) {
-                        this.map[tile.y][tile.x - 1].roadBuildable = true;
-                        this.map[tile.y][tile.x - 1].houseBuildable = true;
-                        this.map[tile.y][tile.x - 1].roadBonus = Math.max(this.map[tile.y][tile.x - 1].roadBonus, dockBonus[tile.building.tier]);
-                    }
-                    if (tile.x < this.width - 1) {
-                        this.map[tile.y][tile.x + 1].roadBuildable = true;
-                        this.map[tile.y][tile.x + 1].houseBuildable = true;
-                        this.map[tile.y][tile.x + 1].roadBonus = Math.max(this.map[tile.y][tile.x + 1].roadBonus, dockBonus[tile.building.tier]);
-                    }
                     break;
                 case "Alchemy Lab":
                     this.alchemyDrain += drain[tile.building.tier - 1];
@@ -764,6 +789,9 @@ export class Region {
             case "Town":
                 this.roads.push([tile.y, tile.x]);
                 break;
+            case "Warehouse":
+                this.warehouses.push([tile.y, tile.x]);
+                break;
         }
     }
     _removeBuilding(tile) {
@@ -800,6 +828,9 @@ export class Region {
                 break;
             case "Road":
                 this.roads = this.roads.filter(p => p[1] !== tile.x || p[0] !== tile.y);
+                break;
+            case "Warehouse":
+                this.warehouses = this.warehouses.filter(p => p[1] !== tile.x || p[0] !== tile.y);
                 break;
         }
     }
@@ -861,10 +892,11 @@ export class Region {
 
         //add resources from buildings here
         var resource = [];
-        var govBonus = 1 + player.getTalentLevel("governance") * 0.04;
+        var prodBonus = this.townData.getProductionMulti() *
+            (1 + player.getTalentLevel("governance") * 0.04);
         var tier = Math.min(this.regionLevel, 8);
         for (var i = 0; i < this.resourcesPerDay.length; i++) {
-            resource.push(Math.max(0, this.resourcesPerDay[i] * this.townData.productionMulti * govBonus));
+            resource.push(Math.max(0, this.resourcesPerDay[i] * prodBonus));
         }
         player.addResource(resource, tier);
 

@@ -179,6 +179,17 @@ export class CreatureBlock {
         var oldVal = this.currentHealth;
         var healMulti = 1;
         this.currentHealth = Math.min(this.MaxHealth(), this.currentHealth + this.HealthRegen() * (delta / 1000) * healMulti);
+        //handle shielded here
+        var shielded = this.findTrait(Statics.TRAIT_SHIELDED);
+        if (shielded !== undefined) {
+            this.shieldCooldown -= delta;
+            console.log(this.name + " " + this.shieldCooldown)
+            if (this.shieldCooldown <= 0) {
+                this.shieldValue += this.Armor() * shielded.level * 0.2;
+                this.shieldCooldown = 1000;
+                this._onHealthChanged();
+            }
+        }
         if (oldVal != this.currentHealth) {
             this._onHealthChanged();
         }
@@ -193,15 +204,6 @@ export class CreatureBlock {
         this.attackCooldown = Math.min(this.attackSpeed, this.attackCooldown + delta * multi);
         if (oldVal != this.attackCooldown) {
             this._onAttackCooldownChanged();
-        }
-        //handle shielded here
-        var shielded = this.findTrait(Statics.TRAIT_SHIELDED);
-        if (shielded !== undefined) {
-            this.shieldCooldown -= delta;
-            if (this.shieldCooldown <= 0) {
-                this.shieldValue = this.Armor() * shielded.level;
-                this.shieldCooldown = 7000;
-            }
         }
     }
     attack(creature, isCrit = false) {
@@ -269,7 +271,7 @@ export class CreatureBlock {
 
         this.currentHealth = this.MaxHealth();
         this.name = level < 1 ? "Weak " + name : name;
-        var shade = shadeBase + MoonlightData.getInstance().moonperks.shadow2.level;
+        var shade = shadeBase + (MoonlightData.getInstance().moonperks.shadow2.level * 2);
         this.xpReward = shade + (shade / 4) * rLvl;
         this.xpReward = this.xpReward * (1 + MoonlightData.getInstance().challenges.megamonsters.completions * 0.05);
         this.drops = rewards;

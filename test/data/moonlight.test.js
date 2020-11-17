@@ -36,11 +36,11 @@ describe('moonlightTests', () => {
     });
 
     test('perks dont level past maximum', () => {
-        moonlightData.moonlight = 1000;
-        moonlightData.levelUpPerk(moonlightData.moonperks.direbeasts);
-        moonlightData.levelUpPerk(moonlightData.moonperks.direbeasts);
+        moonlightData.moonlight = 10000;
+        moonlightData.levelUpPerk(moonlightData.moonperks.runes);
+        moonlightData.levelUpPerk(moonlightData.moonperks.runes);
 
-        expect(moonlightData.moonperks.direbeasts.level).toBe(1);
+        expect(moonlightData.moonperks.runes.level).toBe(1);
     });
 
     test('stat perks increase base stats', () => {

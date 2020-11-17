@@ -9,6 +9,7 @@ import { WorldData } from "../data/WorldData";
 import { Building } from "../data/Building";
 import { FloatingTooltip } from "./FloatingTooltip";
 import { DynamicSettings } from "../data/DynamicSettings";
+import { MoonlightData } from "../data/MoonlightData";
 
 export class TileSelectWindow {
     constructor(scene, x, y, tile) {
@@ -39,7 +40,8 @@ export class TileSelectWindow {
             txt += "Yields:\n"
             for (var i = 0; i < tile.yields.length; i++) {
                 if (tile.yields[i].rate > 0) {
-                    txt += " " + Statics.RESOURCE_NAMES[tile.yields[i].type] + ": " + tile.yields[i].rate + "\n";
+                    txt += " " + Statics.RESOURCE_NAMES[tile.yields[i].type] + ": " +
+                        (Math.floor(tile.yields[i].rate * 100) / 100) + "\n";
                 }
             }
         }
@@ -87,14 +89,17 @@ export class TileSelectWindow {
                 if (tile.dockBuildable === true) {
                     bld.push("docks");
                 }
-                if (region.townData.alchemyEnabled === true) {
-                    bld.push("alchemy");
-                }
                 if (tile.yields.length > 0) {
                     if (tile.houseBuildable) {
                         bld.push("house");
                         if (region.townData.getMarketLevel() > 0) {
                             bld.push("market");
+                        }
+                        if (region.townData.alchemyEnabled === true) {
+                            bld.push("alchemy");
+                        }
+                        if (MoonlightData.getInstance().challenges.buildings.completions > 0) {
+                            bld.push("warehouse");
                         }
                     }
                     if (region.townData.getTavernLevel() > 0) {

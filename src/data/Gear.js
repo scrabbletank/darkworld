@@ -3,7 +3,7 @@ import { RuneRegistry } from './RuneRegistry';
 import { Statics } from './Statics';
 
 export class Gear {
-    constructor(name, tier, slotType, stats, statsLvl, costs, costsLvl) {
+    constructor(name, tier, slotType, stats, costs, costsLvl) {
         // this.statBonuses = {
         //     health: 0,
         //     damageMin: 0,
@@ -26,8 +26,8 @@ export class Gear {
         this.slotType = slotType;
         this.name = name;
         this.statBonuses = stats;
+        this.statsPerLevel = { critChance: 0 };
         this._totalBonuses = stats;
-        this.statsPerLevel = statsLvl;
         this.level = 0;
         this.costs = costs;
         this.costsPerLevel = costsLvl;
@@ -35,6 +35,12 @@ export class Gear {
         this.runes = [];
         this.compiledRunes = [];
         this._runeBonuses = {};
+
+        for (const prop in this.statBonuses) {
+            if (prop !== 'critChance') {
+                this.statsPerLevel[prop] = this.statBonuses[prop] * 0.25;
+            }
+        }
 
         for (var i = 0; i < Statics.RUNESLOTS_PER_TIER[tier]; i++) {
             this.runes.push({ word: "Empty", level: 0 });
