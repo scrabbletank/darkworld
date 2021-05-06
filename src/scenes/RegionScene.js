@@ -58,7 +58,7 @@ export class RegionScene extends SceneUIBase {
     }
 
     _setupRegionButton(idx, x, y) {
-        return new TextButton(this, x, y, 20, 20, idx + "").onClickHandler(() => {
+        return new TextButton(this, x, y, 20, 20, (idx + 1) + "").onClickHandler(() => {
             WorldData.getInstance().setCurrentRegion(idx);
             this.scene.get("DarkWorld").changeRegion();
             this.scene.get("RegionScene").changeRegion();
@@ -73,10 +73,10 @@ export class RegionScene extends SceneUIBase {
         this.regionTiles = [];
 
         if (WorldData.getInstance().regionList.length > 1) {
-            this.regionTiles.push(this.add.bitmapText(this.relativeX(10), this.relativeY(10), "courier20", "Regions:"));
+            this.regionTiles.push(this.add.bitmapText(this.relativeX(660), this.relativeY(10), "courier20", "Regions:"));
             for (var i = 0; i < WorldData.getInstance().regionList.length; i++) {
-                var x = this.relativeX(100 + i * 20);
-                var y = this.relativeY(10);
+                var x = this.relativeX(660 + i * 20);
+                var y = this.relativeY(35);
                 this.regionTiles.push(this._setupRegionButton(i, x, y));
             }
         }
@@ -427,8 +427,8 @@ export class RegionScene extends SceneUIBase {
         this.region = WorldData.instance.getCurrentRegion();
         this.region.onTileChanged((x) => { this._updateTile(x); });
         this.region.onSighting((x) => { this.scene.get("DarkWorld").notifyRegion(); });
-        this.offsetX = 380 - this.region.width * this.WIDTH / 2;
-        this.offsetY = 350 - this.region.height * this.HEIGHT / 2;
+        this.offsetX = 360 - this.region.width * this.WIDTH / 2;
+        this.offsetY = 370 - this.region.height * this.HEIGHT / 2;
 
         for (var i = 0; i < this.tileElements.length; i++) {
             for (var t = 0; t < this.tileElements[0].length; t++) {
