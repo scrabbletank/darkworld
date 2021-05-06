@@ -19,14 +19,7 @@ describe('buildingTests', () => {
     });
 
     test('Resource Buildings give production', () => {
-        region.map[3][3].yields = [
-            { type: Statics.RESOURCE_WOOD, rate: 1 },
-            { type: Statics.RESOURCE_LEATHER, rate: 1 },
-            { type: Statics.RESOURCE_METAL, rate: 1 },
-            { type: Statics.RESOURCE_FIBER, rate: 1 },
-            { type: Statics.RESOURCE_STONE, rate: 1 },
-            { type: Statics.RESOURCE_CRYSTAL, rate: 1 },
-        ]
+        region.map[3][3].yields = [1, 1, 1, 1, 1, 1]
 
         var resNames = ["wood", "leather", "metal", "fiber", "stone", "crystal"]
         region.placeBuilding(3, 2, BuildingRegistry.getBuildingByName("road"));
@@ -43,14 +36,7 @@ describe('buildingTests', () => {
     });
 
     test('production buildings do not give production away from roads', () => {
-        region.map[3][3].yields = [
-            { type: Statics.RESOURCE_WOOD, rate: 1 },
-            { type: Statics.RESOURCE_LEATHER, rate: 1 },
-            { type: Statics.RESOURCE_METAL, rate: 1 },
-            { type: Statics.RESOURCE_FIBER, rate: 1 },
-            { type: Statics.RESOURCE_STONE, rate: 1 },
-            { type: Statics.RESOURCE_CRYSTAL, rate: 1 },
-        ]
+        region.map[3][3].yields = [1, 1, 1, 1, 1, 1]
 
         region.placeBuilding(3, 2, BuildingRegistry.getBuildingByName("road"));
         region.placeBuilding(3, 3, BuildingRegistry.getBuildingByName("wood"));
@@ -117,9 +103,7 @@ describe('buildingTests', () => {
     });
     
     test('roads give production bonuses based on tier and distance to roads', () => {
-        region.map[3][0].yields = [
-            { type: Statics.RESOURCE_WOOD, rate: 1 }
-        ]
+        region.map[3][0].yields = [1, 0, 0, 0, 0, 0]
         region.placeBuilding(3, 3, BuildingRegistry.getBuildingByName("road"));
 
         region.placeBuilding(0, 3, BuildingRegistry.getBuildingByName("wood"));

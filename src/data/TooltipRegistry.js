@@ -18,7 +18,7 @@ export class TooltipRegistry {
             case "Defense":
                 return "Get more armor from Defense. Increases Armor from Defense by " + (lvl * 13) + "% + (13%).";
             case "Accuracy":
-                return "Crit even harder. You gain " + (3 + lvl * 0.5) + "% + (0.5%) Crit Damage per Accuracy.";
+                return "Crit even harder. You gain " + (3 + lvl * 0.5) + " + (0.5) Crit Power per Accuracy.";
             case "Hit":
                 return "Gain even more Hit from all sources. Increase your Hit by " + (lvl * 4) + "% + (4%).";
             case "Evasion":
@@ -175,6 +175,28 @@ export class TooltipRegistry {
                 return "Your explore speed is increased by " + (moonlight.level * 10) + "% + (10%).";
             case "Motivated Labor":
                 return "Production is increased by " + (moonlight.level) + "% + (1%) per friendship level.";
+            case "Crown Lands":
+                return "Each explored tile increases your base gold cap by " + (moonlight.level * 2) + " + (2).";
+            case "Mystic Cauldron":
+                return "Alchemy Labs create " + (moonlight.level * 10) + "% + (10%) more resources from the same inputs.";
+            case "Shadow's Harvest":
+                return "Each day you gain " + (moonlight.level * 0.1) + " + (0.1) shade per villager. This bonus is increased by Shadow's Blessing.";
+            case "Shadow Wolf Charm":
+                return "Unlocks the Shadow Wolf Charm trinket which grants Strength and Damage. Available up to tier " + (moonlight.level) + " + (1)";
+            case "Moonlight Circlet":
+                return "Unlocks the Moonlight Circlet trinket which grants Dexterity and Hit. Available up to tier " + (moonlight.level) + " + (1)";
+            case "Moon Treads":
+                return "Unlocks the Moon Treads trinket which grants Agility and Evasion. Available up to tier " + (moonlight.level) + " + (1)";
+            case "Moonstone":
+                return "Unlocks the Moonstone trinket which grants Endurance, Health, and Crit Resistance. Available up to tier " + (moonlight.level) + " + (1)";
+            case "Dreamlight Bracer":
+                return "Unlocks the Dreamlight Bracer trinket which grants Recovery and Health Regen. Available up to tier " + (moonlight.level) + " + (1)";
+            case "Shadow Veil":
+                return "Unlocks the Shadow Veil trinket which grants Defense and Armor. Available up to tier " + (moonlight.level) + " + (1)";
+            case "Nightmare Pendant":
+                return "Unlocks the Nightmare Pendant trinket which grants Accuracy, Crit Chance and Crit Power. Available up to tier " + (moonlight.level) + " + (1)";
+            case "Night Labour":
+                return "Unlocks Night Labour for Towns. When active, villagers gold income is reduced by 50% while all production is increased by " + (moonlight.level * 10) + "% + (10%).";
         }
     }
 
@@ -279,10 +301,10 @@ export class TooltipRegistry {
             case Statics.TRAIT_QUICK:
                 return "Quick " + trait.level + ": Attack speed is increased by 20%. Has " + trait.level * 25 + "% increased evasion.";
             case Statics.TRAIT_DEADLY:
-                return "Deadly " + trait.level + ": Crit chance is doubled and has " + trait.level * 5 + "% more damage and crit damage.";
+                return "Deadly " + trait.level + ": Crit chance is doubled and has " + trait.level * 5 + "% more damage and crit power.";
             case Statics.TRAIT_SHIELDED:
                 return "Shielded " + trait.level + ": Every second gains " + trait.level * 20 + "% of their armor as a shield that " +
-                    "absorbs incoming damage.";
+                    "absorbs incoming damage. Crit Resistance is increased 1000% while shielded.";
             case Statics.TRAIT_BESERK:
                 return "Beserk " + trait.level + ": Hit chance is increased by " + trait.level * 20 + "%, health regen by " +
                     trait.level * 10 + "% and has a " + Math.floor(((1 - Math.pow(0.92, trait.level)) * 100)) + "% chance to trigger Follow Through.";
@@ -343,7 +365,7 @@ export class TooltipRegistry {
             case "armorPercent":
                 return sign + Math.round(value * 100) + "% Gear Armor";
             case "critPercent":
-                return sign + Math.round(value * 100) + "% Crit Damage";
+                return sign + Math.round(value * 100) + "% Crit Power";
             case "healthPercent":
                 return sign + Math.round(value * 100) + "% Health";
             case "regenPercent":

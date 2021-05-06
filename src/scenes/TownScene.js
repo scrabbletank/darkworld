@@ -6,8 +6,8 @@ import { TechDisplay } from "../ui/TechDisplay";
 import { TownData } from "../data/TownData";
 import { Common } from "../utils/Common";
 import { TextButton } from "../ui/TextButton";
-import { ProgressionStore } from "../data/ProgressionStore";
 import { DynamicSettings } from "../data/DynamicSettings";
+import { MoonlightData } from "../data/MoonlightData";
 
 export class TownScene extends SceneUIBase {
     constructor(position, name) {
@@ -45,6 +45,9 @@ export class TownScene extends SceneUIBase {
         this.townNameLabel = this.add.bitmapText(this.relativeX(10), this.relativeY(10), "courier20", "Town");
         this.regionNameLabel = this.add.bitmapText(this.relativeX(10), this.relativeY(30), "courier16", "Region ");
         this.statsLabel = this.add.bitmapText(this.relativeX(15), this.relativeY(50), "courier16", "");
+        this.nightLabourBtn = new TextButton(this, this.relativeX(15), this.relativeY(50), 180, 20, "Turn On Night Labour")
+            .onClickHandler(() => { this._toggleNightLabour(); });
+        this.nightLabourBtn.setVisible(false);
 
         this.buildingBtn = new TextButton(this, this.relativeX(240), this.relativeY(10), 120, 20, "Buildings")
             .onClickHandler(() => { this._showBuildings(true); });
@@ -86,6 +89,17 @@ export class TownScene extends SceneUIBase {
         }
     }
 
+    _toggleNightLabour() {
+        var region = WorldData.instance.getCurrentRegion();
+        region.townData.toggleNightLabour();
+        if (region.townData.nightLabourActive === true) {
+            this.nightLabourBtn.setText("Turn Off Night Labour");
+        } else {
+            this.nightLabourBtn.setText("Turn On Night Labour");
+        }
+        this._updateStatus();
+    }
+
     _showBuildings(value) {
         this.showBuildings = value;
         this._updateStatus();
@@ -117,6 +131,12 @@ export class TownScene extends SceneUIBase {
 
         this.statsLabel.setText(txt);
         this.regionNameLabel.setText("Region " + (region.regionLevel + 1));
+
+        if (MoonlightData.getInstance().moonperks.nightlabour.level > 0) {
+            var h = this.statsLabel.getTextBounds().local.height + 20;
+            this.nightLabourBtn.setPosition(this.relativeX(15), h);
+            this.nightLabourBtn.setVisible(true);
+        }
 
         for (var i = 0; i < this.buildingDisplays.length; i++) {
             this.buildingDisplays[i].destroy();

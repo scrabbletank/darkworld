@@ -21,10 +21,11 @@ export class PlayerBlock extends CreatureBlock {
             endurance: 5 + this.moonData.moonperks.end.level, //health
             recovery: 5 + this.moonData.moonperks.rec.level, //hp/energy regen?
             defense: 5 + this.moonData.moonperks.def.level, //armor increase
-            accuracy: 5 + this.moonData.moonperks.acc.level, //crit damage
+            accuracy: 5 + this.moonData.moonperks.acc.level, //crit power
             hit: 40,
             evasion: 40,
-            critDamage: 1
+            critPower: 25,
+            critResistance: 25
         };
         this.statBonuses = {
             health: 0,
@@ -39,7 +40,8 @@ export class PlayerBlock extends CreatureBlock {
             accuracy: 0,
             hit: 0,
             evasion: 0,
-            critDamage: 0,
+            critPower: 0,
+            critResistance: 0,
             critChance: 0,
             healthRegen: 0,
             armor: 0
@@ -126,12 +128,15 @@ export class PlayerBlock extends CreatureBlock {
         ret += this.player.runeBonuses.critChance;
         return Math.floor(ret * 100) / 100;
     }
-    CritDamage() {
-        var ret = 0.25 + this.stats.critDamage + this.statBonuses.critDamage + this.Accuracy() * Statics.CRITDMG_PER_ACCURACY;
-        ret += this.Accuracy() * this.player.getTalentLevel("acc") * 0.005;
-        ret = Math.pow(ret, Statics.CRITDMG_DIMINISHING_POWER);
+    CritResistance() {
+        var ret = this.stats.critResistance + this.statBonuses.critResistance + this.Endurance() * Statics.CRITRESISTANCE_PER_ENDURANCE;
+        return Math.floor(ret);
+    }
+    CritPower() {
+        var ret = this.stats.critPower + this.statBonuses.critPower + this.Accuracy() * Statics.CRITPOWER_PER_ACCURACY;
+        ret += this.Accuracy() * this.player.getTalentLevel("acc") * 0.5;
         ret += ret * this.player.runeBonuses.critPercent;
-        return Math.floor(ret * 100) / 100;
+        return Math.floor(ret);
     }
     DamageMin() {
         var ret = this.statBonuses.damageMin * (1 + this.player.runeBonuses.weaponPercent) * (1 + Math.pow(this.Strength(), Statics.SCALING_DIMINISHING_POWER +
@@ -220,7 +225,7 @@ export class PlayerBlock extends CreatureBlock {
         }
         var rawDmg = this.rollDamage();
         if (isCrit === true) {
-            rawDmg = rawDmg * this.CritDamage();
+            rawDmg = rawDmg * this.CritDamage(creature.CritResistance());
             if (Math.random() < (this.player.getTalentLevel("doublecrit") * 0.01 * this.CritChance())) {
                 rawDmg = rawDmg * 2;
             }
@@ -239,7 +244,7 @@ export class PlayerBlock extends CreatureBlock {
         }
         var rawDmg = this.Strength() * this.player.getTalentLevel("cleave") * 0.2;
         if (isCrit === true) {
-            rawDmg = rawDmg * this.CritDamage();
+            rawDmg = rawDmg * this.CritDamage(creature.CritResistance());
             if (Math.random() < (this.player.getTalentLevel("doublecrit") * 0.01 * this.CritChance())) {
                 rawDmg = rawDmg * 2;
             }

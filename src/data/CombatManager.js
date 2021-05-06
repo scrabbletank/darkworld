@@ -6,6 +6,7 @@ import { Statics } from "./Statics";
 import { ProgressionStore } from "./ProgressionStore";
 import { WorldData } from "./WorldData";
 import { DynamicSettings } from "./DynamicSettings";
+import { RegionRegistry } from "./RegionRegistry";
 
 export class CombatManager {
     constructor() {
@@ -14,6 +15,8 @@ export class CombatManager {
         this.globalAttackCooldown = 0;
         this.target = 0;
         this.fightCooldown = Statics.COMBAT_COOLDOWN;
+        this.dropChances = [];
+        this.dropTotals = 0;
 
         this.activeTile = undefined;
         this.playerHitCallback = undefined;
@@ -95,6 +98,13 @@ export class CombatManager {
 
     setTile(tile) {
         this.activeTile = tile;
+        this.dropChances = [100, 100, 100, 100, 100, 100];
+        this.dropTotals = 0;
+        var tileType = RegionRegistry.TILE_TYPES[tile.regName];
+        for (var i = 0; i < tileType.yields.length; i++) {
+            this.dropChances[i] += tileType.yields[i];
+            this.dropTotals += this.dropChances[i];
+        }
     }
 
     initFight() {
@@ -113,6 +123,17 @@ export class CombatManager {
     isInCombat() { return this.combatActive === true && this.fightCooldown <= 0; }
 
     stopCombat() { this.combatActive = false; }
+
+    _getDropIndex() {
+        var c = Common.randint(0, this.dropTotals);
+        for (var i = 0; i < this.dropChances.length; i++) {
+            if (c < this.dropChances[i]) {
+                return i;
+            }
+            c -= this.dropChances[i];
+        }
+        return 0;
+    }
 
     _handleRewards() {
         this.fightCooldown = Statics.COMBAT_COOLDOWN;
@@ -138,11 +159,9 @@ export class CombatManager {
             var numRewards = 1 + (lvl / 10) + ((lvl % 10) / 10 > Math.random() ? 1 : 0);
             var baseLvl = this.activeTile.parent.regionLevel * DynamicSettings.getInstance().regionDifficultyIncrease;
             for (var t = 0; t < numRewards; t++) {
-                var idx = Common.randint(0, this.monsters[i].drops.length);
+                var idx = this._getDropIndex();
                 var dropMulti = (1 + (this.monsters[i].level - baseLvl) * 0.20) + (this.activeTile.parent.regionLevel * 0.1);
-                console.log(this.monsters[i].level + ", " + baseLvl + ", " + dropMulti);
-                rewards.resource[this.monsters[i].drops[idx].type] += Math.max(0, this.monsters[i].drops[idx].amount * dropMulti) +
-                    player.runeBonuses.lootFlat;
+                rewards.resource[idx] += Math.max(0, this.monsters[i].dropBase * dropMulti) + player.runeBonuses.lootFlat;
             }
             rewards.friendship += this.activeTile.getFriendshipReward();
         }

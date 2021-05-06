@@ -24,6 +24,7 @@ import { ImageButton } from "../ui/ImageButton";
 import { DynamicSettings } from "../data/DynamicSettings";
 import LZString from "lz-string";
 import { ExportDialog } from "../ui/ExportDialog";
+import { GuideWindow } from "../ui/GuideWindow";
 
 export class GameScene extends SceneUIBase {
     constructor(position, name) {
@@ -53,14 +54,15 @@ export class GameScene extends SceneUIBase {
     }
 
     preload() {
-        this.load.bitmapFont("courier16", "./../../assets/font/courier16.png", "./../../assets/font/courier16.xml");
-        this.load.bitmapFont("courier20", "./../../assets/font/courier20.png", "./../../assets/font/courier20.xml");
+        this.load.bitmapFont("courier16", "./../../assets/font/anonpro16.png", "./../../assets/font/anonpro16.xml");
+        this.load.bitmapFont("courier20", "./../../assets/font/anonpro20.png", "./../../assets/font/anonpro20.xml");
         this.load.spritesheet("icons", "./../../assets/icons/icons.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("bldicons", "./../../assets/icons/buildingicons.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("roadicons", "./../../assets/icons/roadicons.png", { frameWidth: 50, frameHeight: 50 });
         this.load.spritesheet("moonicons", "./../../assets/icons/moonicons.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("runeicons", "./../../assets/icons/runeicons.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("enemyicons", "./../../assets/enemy/enemyicons.png", { frameWidth: 16, frameHeight: 16 });
+        this.load.image("title", "./../../assets/title.png");
     }
 
     create() {
@@ -84,13 +86,13 @@ export class GameScene extends SceneUIBase {
         this.statIcons.push(new TooltipImage(this, 20, 60, 16, 16, { sprite: "icons", tile: 2 },
             "Agility determines how hard you are to hit. Each point increases your Evasion by 7 and gives a small boost to explore speed."));
         this.statIcons.push(new TooltipImage(this, 20, 80, 16, 16, { sprite: "icons", tile: 3 },
-            "Endurance determines your health. Each point increases your max Health by 5"));
+            "Endurance determines your health resistance against criticals. Each point increases your max Health by 5 and Crit Resistance by 3."));
         this.statIcons.push(new TooltipImage(this, 20, 100, 16, 16, { sprite: "icons", tile: 4 },
             "Recovery determines how easily you heal your wounds. Each point increases your Health Regen by 0.15/s."));
         this.statIcons.push(new TooltipImage(this, 20, 120, 16, 16, { sprite: "icons", tile: 5 },
             "Defense determines how durable your body is. Each point increases your armor by 0.2 and increases armor from gear by ~1% (diminishing returns)."));
         this.statIcons.push(new TooltipImage(this, 20, 140, 16, 16, { sprite: "icons", tile: 6 },
-            "Accuracy determines your ability to strike weak points. Each point increases your Crit damage by ~3% (diminishing returns)."));
+            "Accuracy determines your ability to strike weak points. Each point increases your Crit Power by 3."));
 
         this.statIncButtons.push(new TextButton(this, 150, 20, 16, 16, '+')
             .onClickHandler(() => { this._increaseStat('str'); }));
@@ -124,7 +126,9 @@ export class GameScene extends SceneUIBase {
         this.detailsIcons.push(new TooltipImage(this, 20, 170, 16, 16, { sprite: "icons", tile: 31 },
             "Crit Chance. The chance any hit is a critical hit, dealing extra damage."));
         this.detailsIcons.push(new TooltipImage(this, 20, 170, 16, 16, { sprite: "icons", tile: 30 },
-            "Crit Damage. Your damage is increased by this when you land a critical hit. All sources have diminishing returns."));
+            "Crit Power. Increases your crit damage, but is reduced by the targets Crit Resistance."));
+        this.detailsIcons.push(new TooltipImage(this, 20, 170, 16, 16, { sprite: "icons", tile: 48 },
+            "Crit Resistance. Reduces the damage taken by critical hits."));
 
         this.gearLabels = this.add.bitmapText(20, 30, "courier16", "").setOrigin(0);
 
@@ -192,6 +196,7 @@ export class GameScene extends SceneUIBase {
 
         this.progression.addOnUnlockHandler((a, b, c) => { this._handleProgressionEvents(a, b, c) });
 
+        this.titleImage = this.add.image(650, 25, "title");
         // header buttons
         this.loreButton = new TextButton(this, 200, 60, 122, 20, "Lore")
             .onClickHandler(() => { this.scene.bringToTop("LoreScene"); this.scene.bringToTop("DarkWorld"); });
@@ -208,12 +213,15 @@ export class GameScene extends SceneUIBase {
         this.worldButton = new TextButton(this, 962, 60, 122, 20, "World")
             .onClickHandler(() => { this.scene.bringToTop("WorldScene"); this.scene.bringToTop("DarkWorld"); });
         this.worldTimeLabel = this.add.bitmapText(650, 80, "courier20", "").setOrigin(0.5, 0);
-        this.moonlightButton = new ImageButton(this, 1005, 12, 32, 32, { sprite: "moonicons", tile: 12 })
+        this.moonlightButton = new ImageButton(this, 965, 12, 32, 32, { sprite: "moonicons", tile: 12 })
             .onClickHandler(() => { this.scene.bringToTop("MoonlightScene"); });
 
         this.exportDialog = undefined;
-        this.optionsButton = new ImageButton(this, 1045, 12, 32, 32, { sprite: "icons", tile: 55 })
+        this.guideWindow = undefined;
+        this.optionsButton = new ImageButton(this, 1005, 12, 32, 32, { sprite: "icons", tile: 55 })
             .onClickHandler(() => { this._openExportDialog(); });
+        this.guideButton = new ImageButton(this, 1045, 12, 32, 32, { sprite: "icons", tile: 54 })
+            .onClickHandler(() => { this._openGuideWindow(); });
 
         this.gearButton.setVisible(this.progression.unlocks.gearTab);
         this.regionButton.setVisible(this.progression.unlocks.exploreTab);
@@ -421,7 +429,9 @@ export class GameScene extends SceneUIBase {
         this.detailsLabels.push(this.add.bitmapText(40, this.detailsStart + 140, "courier16",
             Math.floor(this.player.statBlock.CritChance() * 100) + "%"));
         this.detailsLabels.push(this.add.bitmapText(40, this.detailsStart + 160, "courier16",
-            "+" + Common.numberString(Math.floor((this.player.statBlock.CritDamage() - 1) * 100)) + "%"));
+            Common.numberString(this.player.statBlock.CritPower()) + ""));
+        this.detailsLabels.push(this.add.bitmapText(40, this.detailsStart + 180, "courier16",
+            Common.numberString(this.player.statBlock.CritResistance()) + ""));
     }
 
     _updateResources() {
@@ -490,7 +500,7 @@ export class GameScene extends SceneUIBase {
 
         h += this.gearLabels.getTextBounds().local.height + 20;
         this.detailsStart = h;
-        h += 180;
+        h += 200;
         this.resourceStart = h;
 
         this._updateStats();
@@ -545,7 +555,7 @@ export class GameScene extends SceneUIBase {
             GearData.getInstance().tiersAvailable = Math.max(GearData.getInstance().tiersAvailable, rewards.tier + 1);
             this.gearScene._updateTierButtons();
         }
-        this.player.shade += rewards.shade;
+        this.player.addShade(rewards.shade);
         this.player.addResource(rewards.resource, rewards.tier);
         this.player.addMote(rewards.motes);
         this._updateShade();
@@ -568,6 +578,17 @@ export class GameScene extends SceneUIBase {
         if (this.exportDialog !== undefined) {
             this.exportDialog.destroy();
             this.exportDialog = undefined;
+        }
+    }
+    _openGuideWindow() {
+        this._closeGuideWindow();
+        this.guideWindow = new GuideWindow(this, 175, 100);
+        this.guideWindow.onCloseHandler(() => { this._closeGuideWindow(); });
+    }
+    _closeGuideWindow() {
+        if (this.guideWindow !== undefined) {
+            this.guideWindow.destroy();
+            this.guideWindow = undefined;
         }
     }
 

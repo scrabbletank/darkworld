@@ -25,12 +25,8 @@ creatureDefs['wolf'] = {
     },
     attackSpeed: 1100,
     critChance: 0.3,
-    shadeBase: 18,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 2 },
-        { type: Statics.RESOURCE_LEATHER, amount: 2.6 },
-        { type: Statics.RESOURCE_FIBER, amount: 1.2 }
-    ],
+    shadeBase: 19,
+    rewardBase: 1.9,
     icon: { sprite: "enemyicons", tile: 2 }
 };
 creatureDefs['bear'] = {
@@ -54,12 +50,8 @@ creatureDefs['bear'] = {
     },
     attackSpeed: 1800,
     critChance: 0.14,
-    shadeBase: 26,
-    rewards: [
-        { type: Statics.RESOURCE_METAL, amount: 1.8 },
-        { type: Statics.RESOURCE_FIBER, amount: 2.2 },
-        { type: Statics.RESOURCE_STONE, amount: 3.6 }
-    ],
+    shadeBase: 28,
+    rewardBase: 2.4,
     icon: { sprite: "enemyicons", tile: 5 }
 };
 creatureDefs['plant'] = {
@@ -83,12 +75,8 @@ creatureDefs['plant'] = {
     },
     attackSpeed: 1350,
     critChance: 0.1,
-    shadeBase: 18,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 3.6 },
-        { type: Statics.RESOURCE_FIBER, amount: 2 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 1 }
-    ],
+    shadeBase: 19,
+    rewardBase: 2.2,
     icon: { sprite: "enemyicons", tile: 3 }
 };
 creatureDefs['slime'] = {
@@ -112,13 +100,8 @@ creatureDefs['slime'] = {
     },
     attackSpeed: 1300,
     critChance: 0.1,
-    shadeBase: 15,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 2 },
-        { type: Statics.RESOURCE_METAL, amount: 2.4 },
-        { type: Statics.RESOURCE_STONE, amount: 1.6 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 2.8 }
-    ],
+    shadeBase: 16,
+    rewardBase: 1.8,
     icon: { sprite: "enemyicons", tile: 0 }
 };
 creatureDefs['bloom'] = {
@@ -142,12 +125,8 @@ creatureDefs['bloom'] = {
     },
     attackSpeed: 1100,
     critChance: 0.17,
-    shadeBase: 16,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 1.6 },
-        { type: Statics.RESOURCE_LEATHER, amount: 1.6 },
-        { type: Statics.RESOURCE_FIBER, amount: 3.2 }
-    ],
+    shadeBase: 17,
+    rewardBase: 2.2,
     icon: { sprite: "enemyicons", tile: 4 }
 };
 creatureDefs['goblin'] = {
@@ -171,12 +150,8 @@ creatureDefs['goblin'] = {
     },
     attackSpeed: 1300,
     critChance: 0.4,
-    shadeBase: 14,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 2.4 },
-        { type: Statics.RESOURCE_METAL, amount: 2.8 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 1.2 }
-    ],
+    shadeBase: 15,
+    rewardBase: 1.7,
     icon: { sprite: "enemyicons", tile: 12 }
 };
 creatureDefs['formation'] = {
@@ -200,12 +175,8 @@ creatureDefs['formation'] = {
     },
     attackSpeed: 1400,
     critChance: 0.11,
-    shadeBase: 25,
-    rewards: [
-        { type: Statics.RESOURCE_METAL, amount: 3.2 },
-        { type: Statics.RESOURCE_STONE, amount: 3.6 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 4.4 }
-    ],
+    shadeBase: 27,
+    rewardBase: 2.7,
     icon: { sprite: "enemyicons", tile: 10 }
 };
 creatureDefs['whale'] = {
@@ -229,12 +200,8 @@ creatureDefs['whale'] = {
     },
     attackSpeed: 2400,
     critChance: 0.1,
-    shadeBase: 32,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 4.8 },
-        { type: Statics.RESOURCE_LEATHER, amount: 4 },
-        { type: Statics.RESOURCE_METAL, amount: 2.8 }
-    ],
+    shadeBase: 35,
+    rewardBase: 3.5,
     icon: { sprite: "enemyicons", tile: 6 }
 };
 creatureDefs['fish'] = {
@@ -258,12 +225,8 @@ creatureDefs['fish'] = {
     },
     attackSpeed: 1200,
     critChance: 0.17,
-    shadeBase: 18,
-    rewards: [
-        { type: Statics.RESOURCE_LEATHER, amount: 2.8 },
-        { type: Statics.RESOURCE_FIBER, amount: 2.2 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 1.6 }
-    ],
+    shadeBase: 19,
+    rewardBase: 2,
     icon: { sprite: "enemyicons", tile: 7 }
 };
 creatureDefs['lizard'] = {
@@ -287,12 +250,8 @@ creatureDefs['lizard'] = {
     },
     attackSpeed: 1700,
     critChance: 0.14,
-    shadeBase: 28,
-    rewards: [
-        { type: Statics.RESOURCE_LEATHER, amount: 4 },
-        { type: Statics.RESOURCE_FIBER, amount: 3.2 },
-        { type: Statics.RESOURCE_STONE, amount: 2 }
-    ],
+    shadeBase: 33,
+    rewardBase: 2.6,
     icon: { sprite: "enemyicons", tile: 13 }
 };
 creatureDefs['gateguardian'] = {
@@ -303,9 +262,9 @@ creatureDefs['gateguardian'] = {
         dexterity: 1.1,
         agility: 0.8,
         endurance: 1.5,
-        recovery: 1.5,
+        recovery: 1.3,
         defense: 1.1,
-        accuracy: 0.6,
+        accuracy: 0.9,
         armor: 2.7,
         health: 1.2,
         healthRegen: 1,
@@ -316,15 +275,8 @@ creatureDefs['gateguardian'] = {
     },
     attackSpeed: 2000,
     critChance: 0.19,
-    shadeBase: 40,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 2.5 },
-        { type: Statics.RESOURCE_LEATHER, amount: 2.5 },
-        { type: Statics.RESOURCE_METAL, amount: 2.5 },
-        { type: Statics.RESOURCE_FIBER, amount: 2.5 },
-        { type: Statics.RESOURCE_STONE, amount: 2.5 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 2.5 }
-    ],
+    shadeBase: 44,
+    rewardBase: 3.7,
     icon: { sprite: "enemyicons", tile: 9 }
 };
 creatureDefs['elk'] = {
@@ -348,12 +300,8 @@ creatureDefs['elk'] = {
     },
     attackSpeed: 1600,
     critChance: 0.15,
-    shadeBase: 20,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 2.8 },
-        { type: Statics.RESOURCE_LEATHER, amount: 4 },
-        { type: Statics.RESOURCE_STONE, amount: 2.2 }
-    ],
+    shadeBase: 22,
+    rewardBase: 2,
     icon: { sprite: "enemyicons", tile: 1 }
 };
 creatureDefs['drake'] = {
@@ -377,12 +325,8 @@ creatureDefs['drake'] = {
     },
     attackSpeed: 1850,
     critChance: 0.17,
-    shadeBase: 36,
-    rewards: [
-        { type: Statics.RESOURCE_LEATHER, amount: 2.2 },
-        { type: Statics.RESOURCE_METAL, amount: 4.4 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 2.8 }
-    ],
+    shadeBase: 39,
+    rewardBase: 3.2,
     icon: { sprite: "enemyicons", tile: 9 }
 };
 creatureDefs['cactus'] = {
@@ -406,12 +350,8 @@ creatureDefs['cactus'] = {
     },
     attackSpeed: 1800,
     critChance: 0.31,
-    shadeBase: 24,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 1.6 },
-        { type: Statics.RESOURCE_FIBER, amount: 3.4 },
-        { type: Statics.RESOURCE_STONE, amount: 2.8 }
-    ],
+    shadeBase: 26,
+    rewardBase: 2.1,
     icon: { sprite: "enemyicons", tile: 11 }
 };
 creatureDefs['moss'] = {
@@ -435,12 +375,8 @@ creatureDefs['moss'] = {
     },
     attackSpeed: 1850,
     critChance: 0.21,
-    shadeBase: 34,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 4.4 },
-        { type: Statics.RESOURCE_FIBER, amount: 3.6 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 2 }
-    ],
+    shadeBase: 37,
+    rewardBase: 3.5,
     icon: { sprite: "enemyicons", tile: 9 }
 };
 creatureDefs['lion'] = {
@@ -464,12 +400,8 @@ creatureDefs['lion'] = {
     },
     attackSpeed: 2300,
     critChance: 0.21,
-    shadeBase: 34,
-    rewards: [
-        { type: Statics.RESOURCE_LEATHER, amount: 3.2 },
-        { type: Statics.RESOURCE_METAL, amount: 2.4 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 1.2 }
-    ],
+    shadeBase: 37,
+    rewardBase: 2.5,
     icon: { sprite: "enemyicons", tile: 9 }
 };
 creatureDefs['gnoll'] = {
@@ -493,12 +425,8 @@ creatureDefs['gnoll'] = {
     },
     attackSpeed: 1450,
     critChance: 0.1,
-    shadeBase: 26,
-    rewards: [
-        { type: Statics.RESOURCE_LEATHER, amount: 2 },
-        { type: Statics.RESOURCE_METAL, amount: 3.4 },
-        { type: Statics.RESOURCE_STONE, amount: 2.4 }
-    ],
+    shadeBase: 28,
+    rewardBase: 2.7,
     icon: { sprite: "enemyicons", tile: 9 }
 };
 creatureDefs['coyote'] = {
@@ -522,12 +450,8 @@ creatureDefs['coyote'] = {
     },
     attackSpeed: 1300,
     critChance: 0.25,
-    shadeBase: 26,
-    rewards: [
-        { type: Statics.RESOURCE_LEATHER, amount: 2.4 },
-        { type: Statics.RESOURCE_FIBER, amount: 1.6 },
-        { type: Statics.RESOURCE_STONE, amount: 2 }
-    ],
+    shadeBase: 28,
+    rewardBase: 2.1,
     icon: { sprite: "enemyicons", tile: 9 }
 };
 creatureDefs['catfish'] = {
@@ -551,12 +475,8 @@ creatureDefs['catfish'] = {
     },
     attackSpeed: 1250,
     critChance: 0.27,
-    shadeBase: 24,
-    rewards: [
-        { type: Statics.RESOURCE_WOOD, amount: 2.6 },
-        { type: Statics.RESOURCE_FIBER, amount: 1.6 },
-        { type: Statics.RESOURCE_CRYSTAL, amount: 2 }
-    ],
+    shadeBase: 26,
+    rewardBase: 2.2,
     icon: { sprite: "enemyicons", tile: 9 }
 };
 
@@ -565,7 +485,7 @@ export class CreatureRegistry {
     static GetCreatureByName(name, level) {
         var creature = new CreatureBlock();
         creature.setMonsterStats(creatureDefs[name].name, creatureDefs[name].scaleBlock, creatureDefs[name].attackSpeed,
-            creatureDefs[name].critChance, level, creatureDefs[name].shadeBase, creatureDefs[name].rewards, creatureDefs[name].icon);
+            creatureDefs[name].critChance, level, creatureDefs[name].shadeBase, creatureDefs[name].rewardBase, creatureDefs[name].icon);
         return creature;
     }
 }

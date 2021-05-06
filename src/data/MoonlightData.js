@@ -130,6 +130,50 @@ export class MoonlightData {
                 discovery: {
                     name: "Discovery", level: 0, maxLevel: -1, requires: ["farstrider"], cost: [100, 50, 1.2],
                     texture: { sprite: "moonicons", tile: 16 }
+                },
+                crownlands: {
+                    name: "Crown Lands", level: 0, maxLevel: -1, requires: ["discovery"], cost: [60, 25, 1.2],
+                    texture: { sprite: "moonicons", tile: 18 }
+                },
+                mysticcauldron: {
+                    name: "Mystic Cauldron", level: 0, maxLevel: -1, requires: ["moonwine"], cost: [45, 55, 1.2],
+                    texture: { sprite: "moonicons", tile: 23 }
+                },
+                shadow3: {
+                    name: "Shadow's Harvest", level: 0, maxLevel: -1, requires: ["shadow2"], cost: [45, 55, 1.2],
+                    texture: { sprite: "moonicons", tile: 31 }
+                },
+                strtrinket: {
+                    name: "Shadow Wolf Charm", level: 0, maxLevel: 8, requires: ["metal"], cost: [100, 0, 2],
+                    texture: { sprite: "moonicons", tile: 32 }
+                },
+                dextrinket: {
+                    name: "Moonlight Circlet", level: 0, maxLevel: 8, requires: ["leather"], cost: [100, 0, 2],
+                    texture: { sprite: "moonicons", tile: 32 }
+                },
+                agitrinket: {
+                    name: "Moon Treads", level: 0, maxLevel: 8, requires: ["fiber"], cost: [100, 0, 2],
+                    texture: { sprite: "moonicons", tile: 32 }
+                },
+                endtrinket: {
+                    name: "Moonstone", level: 0, maxLevel: 8, requires: ["stone"], cost: [100, 0, 2],
+                    texture: { sprite: "moonicons", tile: 32 }
+                },
+                rectrinket: {
+                    name: "Dreamlight Bracer", level: 0, maxLevel: 8, requires: ["wood"], cost: [100, 0, 2],
+                    texture: { sprite: "moonicons", tile: 32 }
+                },
+                deftrinket: {
+                    name: "Shadow Veil", level: 0, maxLevel: 8, requires: ["crystal"], cost: [100, 0, 2],
+                    texture: { sprite: "moonicons", tile: 32 }
+                },
+                acctrinket: {
+                    name: "Nightmare Pendant", level: 0, maxLevel: 8, requires: ["gold"], cost: [100, 0, 2],
+                    texture: { sprite: "moonicons", tile: 32 }
+                },
+                nightlabour: {
+                    name: "Night Labour", level: 0, maxLevel: -1, requires: ["heropouch"], cost: [100, 25, 1.5],
+                    texture: { sprite: "moonicons", tile: 9 }
                 }
             };
 

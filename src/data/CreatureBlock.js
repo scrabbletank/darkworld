@@ -13,7 +13,6 @@ import { MoonlightData } from "./MoonlightData";
 // endurance increases health by 5,
 // recovery increases HP regen by 0.1 /s
 // defense increases armor by 0.2 and armor values from gear by 1.5%
-// accuracy increases crit damage by 0.025
 
 
 export class CreatureBlock {
@@ -25,10 +24,11 @@ export class CreatureBlock {
             endurance: 5, //health
             recovery: 5, //hp/energy regen?
             defense: 5, //armor increase
-            accuracy: 5, //crit damage
+            accuracy: 5, //crit power
             hit: 40,
             evasion: 40,
-            critDamage: 1
+            critPower: 25,
+            critResistance: 25
         };
         this.statBonuses = {
             health: 0,
@@ -43,7 +43,8 @@ export class CreatureBlock {
             accuracy: 0,
             hit: 0,
             evasion: 0,
-            critDamage: 0,
+            critPower: 0,
+            critResistance: 0,
             critChance: 0,
             healthRegen: 0,
             armor: 0
@@ -112,10 +113,14 @@ export class CreatureBlock {
         var ret = this.statBonuses.critChance;
         return Math.floor(ret * 100) / 100;
     }
-    CritDamage() {
-        var ret = 0.25 + this.stats.critDamage + this.statBonuses.critDamage + this.Accuracy() * Statics.CRITDMG_PER_ACCURACY;
-        ret = Math.pow(ret, Statics.CRITDMG_DIMINISHING_POWER);
-        return Math.floor(ret * 100) / 100;
+    CritPower() {
+        var ret = this.stats.critPower + this.statBonuses.critPower + this.Accuracy() * Statics.CRITPOWER_PER_ACCURACY;
+        return Math.floor(ret);
+    }
+    CritResistance() {
+        var ret = this.stats.critResistance + this.statBonuses.critResistance + this.Endurance() * Statics.CRITRESISTANCE_PER_ENDURANCE;
+        ret = ret * (this.shieldValue > 0 ? 10 : 1);
+        return Math.floor(ret);
     }
     DamageMin() {
         var ret = this.statBonuses.damageMin + this.Strength() * Statics.STRENGTH_DMG_MIN;
@@ -135,6 +140,10 @@ export class CreatureBlock {
     }
     AttackSpeed() {
         return this.attackSpeed;
+    }
+    CritDamage(resist) {
+        console.log(this.CritPower(), resist, Math.max(1, 1 + (-0.5 + (Math.sqrt(this.CritPower()) / Math.sqrt(resist))) * 0.5));
+        return Math.max(1, 1 + (-0.5 + (Math.sqrt(this.CritPower()) / Math.sqrt(resist))) * 0.5);
     }
 
     registerEvent(event, callback) {
@@ -183,7 +192,6 @@ export class CreatureBlock {
         var shielded = this.findTrait(Statics.TRAIT_SHIELDED);
         if (shielded !== undefined) {
             this.shieldCooldown -= delta;
-            console.log(this.name + " " + this.shieldCooldown)
             if (this.shieldCooldown <= 0) {
                 this.shieldValue += this.Armor() * shielded.level * 0.2;
                 this.shieldCooldown = 1000;
@@ -209,7 +217,7 @@ export class CreatureBlock {
     attack(creature, isCrit = false) {
         var rawDmg = this.rollDamage();
         if (isCrit === true) {
-            rawDmg = rawDmg * this.CritDamage();
+            rawDmg = rawDmg * this.CritDamage(creature.CritResistance());
         }
         var dmg = creature.takeDamage(rawDmg, isCrit);
         this.attackCooldown = 0;
@@ -240,7 +248,7 @@ export class CreatureBlock {
 
 
     // used for monsters to add scaling based on level
-    setMonsterStats(name, scaleBlock, attackSpeed, critChance, level, shadeBase, rewards, icon) {
+    setMonsterStats(name, scaleBlock, attackSpeed, critChance, level, shadeBase, rewardBase, icon) {
         this.level = level;
         // offset by 1, level 0 should have no bonuses
         var rLvl = level - 1;
@@ -274,7 +282,7 @@ export class CreatureBlock {
         var shade = shadeBase + (MoonlightData.getInstance().moonperks.shadow2.level * 2);
         this.xpReward = shade + (shade / 4) * rLvl;
         this.xpReward = this.xpReward * (1 + MoonlightData.getInstance().challenges.megamonsters.completions * 0.05);
-        this.drops = rewards;
+        this.dropBase = rewardBase;
         this.icon = icon;
     }
 
@@ -301,7 +309,8 @@ export class CreatureBlock {
             accuracy: 0,
             hit: 0,
             evasion: 0,
-            critDamage: 0,
+            critPower: 0,
+            critResistance: 0,
             critChance: 0,
             healthRegen: 0,
             armor: 0,
@@ -337,7 +346,7 @@ export class CreatureBlock {
                     this.critChance = this.critChance * 2;
                     extraStats.damageMin += this.DamageMin() * (0.05 * trait.level);
                     extraStats.damageMax += this.DamageMax() * (0.05 * trait.level);
-                    extraStats.critDamage += this.CritDamage() * (0.05 * trait.level);
+                    extraStats.critPower += this.CritPower() * (0.05 * trait.level);
                     break;
                 case Statics.TRAIT_BESERK:
                     extraStats.hit += this.Hit() * (0.2 * trait.level);

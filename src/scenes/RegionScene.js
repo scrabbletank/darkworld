@@ -20,8 +20,8 @@ export class RegionScene extends SceneUIBase {
         this.tileClickHandlers = [];
         var worldData = new WorldData();
         this.region = worldData.getCurrentRegion();
-        this.offsetX = 380 - this.region.width * this.WIDTH / 2;
-        this.offsetY = 350 - this.region.height * this.HEIGHT / 2;
+        this.offsetX = 360 - this.region.width * this.WIDTH / 2;
+        this.offsetY = 370 - this.region.height * this.HEIGHT / 2;
 
         this.progression = new ProgressionStore();
         this.letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];

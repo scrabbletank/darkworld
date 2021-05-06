@@ -137,7 +137,7 @@ describe('regionTests', () => {
         region.exploreTile(4, 4);
         region.exploreTile(4, 3);
         region.exploreTile(4, 2);
-        region.map[2][4].yields = [{ type: Statics.RESOURCE_WOOD, rate: 1 }]
+        region.map[2][4].yields = [1, 0, 0, 0, 0, 0]
 
         region.placeBuilding(4, 4, BuildingRegistry.getBuildingByName('road'));
         region.placeBuilding(4, 3, BuildingRegistry.getBuildingByName('road'));

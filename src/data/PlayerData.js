@@ -321,6 +321,9 @@ export class PlayerData {
         this.motes += amount;
         this._onResourcesChanged();
     }
+    addShade(amount) {
+        this.shade += amount;
+    }
 
     addRune(rune) {
         this.runes.push(rune);

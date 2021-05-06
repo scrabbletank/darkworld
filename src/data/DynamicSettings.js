@@ -6,7 +6,7 @@ export class DynamicSettings {
         if (!DynamicSettings.instance) {
             // min region required for gates
             this.minGateRegion = 0;
-            this.regionSize = [9, 11];
+            this.regionSize = [11, 13];
             this.regionDifficultyIncrease = 20;
             this.maxGearTier = 8;
             this.maxResourceTier = 8;
@@ -38,7 +38,7 @@ export class DynamicSettings {
 
     reset() {
         this.minGateRegion = 0;
-        this.regionSize = [9, 11];
+        this.regionSize = [11, 13];
         this.regionDifficultyIncrease = 20;
         this.maxGearTier = 8;
         this.maxResourceTier = 8;
